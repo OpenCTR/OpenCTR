@@ -2,6 +2,11 @@
 
 |Logo|
 
+:repository: `OpenCTR <https://github.com/OpenCTR/OpenCTR>`_
+:license: `GPL3 <http://www.gnu.org/licenses/gpl-3.0.html>`_
+:owner: `Alex Shaw <mailto:alex.shaw.as@gmail.com>`_
+:description: OpenCTR is a free and open-source, cross-platform SDK and Toolchain for developing homebrew 
+for the Nintendo 3DS.
 
 
 .. _CMake: http://www.cmake.org/
