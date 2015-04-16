@@ -213,6 +213,15 @@ II. Fedora/Red Hat
 Building
 ========
 
+~~~~~~~~~~~~~~~~~~~~~~~~
+1. Clone the GitHub repo
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: bash
+
+   git clone https://github.com/OpenCTR/OpenCTR.git OpenCTR
+   cd OpenCTR
+
 
 
 .. _CMake: http://www.cmake.org/
