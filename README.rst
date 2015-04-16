@@ -200,8 +200,8 @@ Fedora/Red Hat
 Building
 ========
 
-Clone the GitHub Repo
----------------------
+1. Clone the GitHub Repo
+------------------------
 
 
 
