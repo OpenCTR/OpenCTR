@@ -213,7 +213,6 @@ II. Fedora/Red Hat
 Building
 ========
 
-~~~~~~~~~~~~~~~~~~~~~~~~
 1. Clone the GitHub repo
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
