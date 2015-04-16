@@ -203,8 +203,20 @@ Building
 1. Clone the GitHub Repo
 ------------------------
 
+.. code-block:: bash
 
+   git clone https://github.com/OpenCTR/OpenCTR.git OpenCTR
+   cd OpenCTR
 
+2. Create the build dir
+-----------------------
+
+CMake works best with out-of-source builds, so create a separate build directory.
+
+.. code-block:: bash
+
+   mkdir build
+   cd build
 
 
 .. _CMake: http://www.cmake.org/
