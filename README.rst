@@ -200,7 +200,9 @@ Fedora/Red Hat
 Building
 ========
 
-WHAT IS WRONG?
+Clone the GitHub Repo
+---------------------
+
 
 
 
