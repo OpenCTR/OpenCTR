@@ -7,6 +7,7 @@
 :owner: `Alex Shaw <mailto:alex.shaw.as@gmail.com>`_
 :description: OpenCTR is a free and open-source, cross-platform SDK and Toolchain for developing homebrew for the Nintendo 3DS.
 
+===========
 Description
 ===========
 
@@ -15,6 +16,7 @@ for the Nintendo 3DS.
 
 This repository contains the build logic to create a working OpenCTR Toolchain.
 
+===============
 Getting Started
 ===============
 
@@ -35,13 +37,15 @@ Follow the guide for your platform:
 
 After everything is ready, proceed to `Building`_ for instructions on building and installing OpenCTR.
 
+-------
 Windows
 -------
 
 .. todo:: Add screenshots to help Windows users.
 
-I. Requirements
-~~~~~~~~~~~~~~~
+~~~~~~~~~~~~
+Requirements
+~~~~~~~~~~~~
 
 Download and install `CMake`_ from http://www.cmake.org/download/.
 
@@ -53,8 +57,9 @@ Optionally, download the latest ``ninja-win.zip`` from https://github.com/martin
 Extract it, and place ``ninja.exe`` in your PATH. Ninja is not *required* but it is *recommended*, 
 because it produces much faster build times.
 
-II. mingw-get
-~~~~~~~~~~~~~
+~~~~~~~~~
+mingw-get
+~~~~~~~~~
 
 On Windows we'll be using mingw-get to install several dependencies. 
 
@@ -98,9 +103,11 @@ Afterwards, install several dependencies:
 To build the OpenCTR documentation, `Sphinx`_ must be installed. Follow the setup instructions 
 `here <http://sphinx-doc.org/install.html#windows-install-python-and-sphinx>`__.
 
+--------
 Mac OS X
 --------
 
+~~~~~~~~~~~~
 Requirements
 ~~~~~~~~~~~~
 
@@ -118,8 +125,9 @@ Alternatively, all 3 dependencies can be installed with Brew:
    brew install python3
    brew install git
 
-See `Step 3 <III. Brew>`__ for more on installing Homebrew.
+See `Brew`_ for more on installing Homebrew.
 
+~~~~~
 Xcode
 ~~~~~
 
@@ -137,6 +145,7 @@ Click "Install" to download and install the Xcode Command Line Tools.
 If you get an error saying that the command line tools are already installed, you can ignore it. 
 It just means that you have already installed the Xcode command line tools.
 
+~~~~
 Brew
 ~~~~
 
@@ -166,6 +175,7 @@ dependencies for building OpenCTR.
    brew install wget
    brew install ninja
 
+-----
 Linux
 -----
 
@@ -179,6 +189,7 @@ It is also recommended that users install a terminal emulator (GNOME Terminal, K
 or an IDE (Code\:\:Blocks, Codelite, Anjuta, Eclipse CDT). This may not be neccessary, as your distro may already 
 come with a terminal emulator pre-installed.
 
+~~~~~~~~~~~~~
 Debian/Ubuntu
 ~~~~~~~~~~~~~
 
@@ -188,6 +199,7 @@ Debian/Ubuntu
                         pkg-config bison doxygen gawk gcc g++ gettext \
                         python3 python3-sphinx wget ninja-build git-core 
 
+~~~~~~~~~~~~~~
 Fedora/Red Hat
 ~~~~~~~~~~~~~~
 
@@ -197,9 +209,11 @@ Fedora/Red Hat
                     automake make m4 libtool pkgconfig bison doxygen gawk \
                     gettext python3 python-sphinx wget ninja-build git
 
+========
 Building
 ========
 
+------------------------
 1. Clone the GitHub Repo
 ------------------------
 
@@ -208,6 +222,7 @@ Building
    git clone https://github.com/OpenCTR/OpenCTR.git OpenCTR
    cd OpenCTR
 
+-----------------------
 2. Create the build dir
 -----------------------
 
@@ -218,6 +233,7 @@ CMake works best with out-of-source builds, so create a separate build directory
    mkdir build
    cd build
 
+-----------------------------------
 3. Generate build files using CMake
 -----------------------------------
 
@@ -243,6 +259,7 @@ delete all your source files if you run it from inside the source dir. But if th
 is separate from the source dir, the entire build dir can be deleted to completely wipe out 
 all traces of the previous build.
 
+----------------
 4. Build OpenCTR
 ----------------
 
@@ -254,10 +271,11 @@ After CMake has finished generating the build files, it is time to build OpenCTR
 
 Wait for OpenCTR to finish building. This can take awhile, up to several hours depending on your machine. 
 
+------------------
 5. Install OpenCTR
 ------------------
 
-Assuming `Step 4 </4. Build OpenCTR>`__ was successful, it is now time to install OpenCTR system-wide.
+Assuming Step 4 was successful, it is now time to install OpenCTR system-wide.
 
 .. code-block:: bash
 
@@ -265,6 +283,7 @@ Assuming `Step 4 </4. Build OpenCTR>`__ was successful, it is now time to instal
 
 Be sure to add ``OpenCTR/bin`` to your PATH.
 
+=====================
 Configuration Options
 =====================
 
@@ -277,16 +296,19 @@ Pass these values to CMake to change how OpenCTR should behave.
 :ENABLE_TOOLCHAIN: Enable/Disable building the OpenCTR Toolchain.
 :ENABLE_LIBCTR: Enable/Disable building libctr as part of OpenCTR.
 
+=============
 Documentation
 =============
 
 https://openctr.github.io/
 
+=======
 Authors
 =======
 
 * Alex Shaw
 
+=======
 License
 =======
 
