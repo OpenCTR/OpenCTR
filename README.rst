@@ -283,39 +283,6 @@ Assuming `Step 4 <4. Build OpenCTR>`__ was successful, it is now time to install
 
 Be sure to add /path/to/OpenCTR/bin to your PATH.
 
-=====================
-Configuration Options
-=====================
-
-Pass these values to CMake to change how OpenCTR should behave.
-
-:CMAKE_BUILD_TYPE: Build Configuration. Debug/Release/RelWithDebInfo/MinSizeRel
-:CMAKE_INSTALL_PREFIX: Directory to install OpenCTR into.
-:ENABLE_DOC: Enable/Disable building and installing the OpenCTR Documentation.
-:ENABLE_TOOLS: Enable/Disable building and installing the OpenCTR Tools.
-:ENABLE_TOOLCHAIN: Enable/Disable building and installing the OpenCTR Toolchain.
-:ENABLE_LIBCTR: Enable/Disable building and installing libctr as part of OpenCTR.
-
-
-=============
-Documentation
-=============
-
-https://openctr.github.io/
-
-=======
-Authors
-=======
-
-* Alex Shaw
-
-=======
-License
-=======
-
-OpenCTR is licensed under version 3 of the `GNU General Public License`_. 
-See `LICENSE`_ for terms.
-
 
 
 .. _CMake: http://www.cmake.org/
