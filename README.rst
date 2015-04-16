@@ -1,10 +1,3 @@
-.. title: README
-.. date: 2015/04/16 03:55:06
-.. tags: gcc, gpl-3, ctr, 3ds, 
-.. link: https://openctr.github.io/
-.. description: README for OpenCTR
-.. type: text
-
 |Building| |Coverage| |License|
 
 |Logo|
