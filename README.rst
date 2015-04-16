@@ -7,7 +7,6 @@
 :owner: `Alex Shaw <mailto:alex.shaw.as@gmail.com>`_
 :description: OpenCTR is a free and open-source, cross-platform SDK and Toolchain for developing homebrew for the Nintendo 3DS.
 
-===========
 Description
 ===========
 
@@ -16,7 +15,6 @@ for the Nintendo 3DS.
 
 This repository contains the build logic to create a working OpenCTR Toolchain.
 
-===============
 Getting Started
 ===============
 
@@ -37,13 +35,11 @@ Follow the guide for your platform:
 
 After everything is ready, proceed to `Building`_ for instructions on building and installing OpenCTR.
 
--------
 Windows
 -------
 
 .. todo:: Add screenshots to help Windows users.
 
-~~~~~~~~~~~~~~~
 I. Requirements
 ~~~~~~~~~~~~~~~
 
@@ -57,7 +53,6 @@ Optionally, download the latest ``ninja-win.zip`` from https://github.com/martin
 Extract it, and place ``ninja.exe`` in your PATH. Ninja is not *required* but it is *recommended*, 
 because it produces much faster build times.
 
-~~~~~~~~~~~~~
 II. mingw-get
 ~~~~~~~~~~~~~
 
@@ -103,13 +98,11 @@ Afterwards, install several dependencies:
 To build the OpenCTR documentation, `Sphinx`_ must be installed. Follow the setup instructions 
 `here <http://sphinx-doc.org/install.html#windows-install-python-and-sphinx>`__.
 
---------
 Mac OS X
 --------
 
-~~~~~~~~~~~~~~~
-I. Requirements
-~~~~~~~~~~~~~~~
+Requirements
+~~~~~~~~~~~~
 
 Download and install `CMake`_ from http://www.cmake.org/download/.
 
@@ -127,9 +120,8 @@ Alternatively, all 3 dependencies can be installed with Brew:
 
 See `Step 3 <III. Brew>`__ for more on installing Homebrew.
 
-~~~~~~~~~
-II. Xcode
-~~~~~~~~~
+Xcode
+~~~~~
 
 Xcode 5 or later is required. Xcode can be installed from the Mac App Store on Snow Leopard (10.6) or later.
 
@@ -145,9 +137,8 @@ Click "Install" to download and install the Xcode Command Line Tools.
 If you get an error saying that the command line tools are already installed, you can ignore it. 
 It just means that you have already installed the Xcode command line tools.
 
-~~~~~~~~~
-III. Brew
-~~~~~~~~~
+Brew
+~~~~
 
 Install `Brew.sh`_ - the missing package manager for OS X.
 
@@ -175,7 +166,6 @@ dependencies for building OpenCTR.
    brew install wget
    brew install ninja
 
------
 Linux
 -----
 
@@ -189,9 +179,8 @@ It is also recommended that users install a terminal emulator (GNOME Terminal, K
 or an IDE (Code\:\:Blocks, Codelite, Anjuta, Eclipse CDT). This may not be neccessary, as your distro may already 
 come with a terminal emulator pre-installed.
 
-~~~~~~~~~~~~~~~~
-I. Debian/Ubuntu
-~~~~~~~~~~~~~~~~
+Debian/Ubuntu
+~~~~~~~~~~~~~
 
 .. code-block:: bash
 
@@ -199,9 +188,8 @@ I. Debian/Ubuntu
                         pkg-config bison doxygen gawk gcc g++ gettext \
                         python3 python3-sphinx wget ninja-build git-core 
 
-~~~~~~~~~~~~~~~~~~
-II. Fedora/Red Hat
-~~~~~~~~~~~~~~~~~~
+Fedora/Red Hat
+~~~~~~~~~~~~~~
 
 .. code-block:: bash
 
@@ -209,7 +197,6 @@ II. Fedora/Red Hat
                     automake make m4 libtool pkgconfig bison doxygen gawk \
                     gettext python3 python-sphinx wget ninja-build git
 
-========
 Building
 ========
 
