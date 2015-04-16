@@ -257,13 +257,13 @@ Wait for OpenCTR to finish building. This can take awhile, up to several hours d
 5. Install OpenCTR
 ------------------
 
-Assuming `Step 4 <4. Build OpenCTR>`__ was successful, it is now time to install OpenCTR system-wide.
+Assuming `Step 4 </4. Build OpenCTR>`__ was successful, it is now time to install OpenCTR system-wide.
 
 .. code-block:: bash
 
    ninja install
 
-Be sure to add /path/to/OpenCTR/bin to your PATH.
+Be sure to add ``OpenCTR/bin`` to your PATH.
 
 Configuration Options
 =====================
@@ -272,10 +272,10 @@ Pass these values to CMake to change how OpenCTR should behave.
 
 :CMAKE_BUILD_TYPE: Build Configuration. Debug/Release/RelWithDebInfo/MinSizeRel
 :CMAKE_INSTALL_PREFIX: Directory to install OpenCTR into.
-:ENABLE_DOC: Enable/Disable building and installing the OpenCTR Documentation.
-:ENABLE_TOOLS: Enable/Disable building and installing the OpenCTR Tools.
-:ENABLE_TOOLCHAIN: Enable/Disable building and installing the OpenCTR Toolchain.
-:ENABLE_LIBCTR: Enable/Disable building and installing libctr as part of OpenCTR.
+:ENABLE_DOC: Enable/Disable building the OpenCTR Documentation.
+:ENABLE_TOOLS: Enable/Disable building the OpenCTR Tools.
+:ENABLE_TOOLCHAIN: Enable/Disable building the OpenCTR Toolchain.
+:ENABLE_LIBCTR: Enable/Disable building libctr as part of OpenCTR.
 
 Documentation
 =============
