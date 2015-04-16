@@ -213,8 +213,7 @@ II. Fedora/Red Hat
 Building
 ========
 
-I. Clone the GitHub Repo
-~~~~~~~~~~~~~~~~~~~~~~~~
+WHAT IS WRONG?
 
 
 
