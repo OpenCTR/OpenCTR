@@ -22,3 +22,15 @@
 # along with OpenCTR.  If not, see <http://www.gnu.org/licenses/>.
 ######################################################################
 
+# OpenCTR-Doc Settings
+set(OPENCTR_DOC_REPO "https://github.com/OpenCTR/OpenCTR-Doc")
+set(OPENCTR_DOC_TAG "v1.0.1")
+
+# OpenCTR-Toolchain Settings
+set(OPENCTR_TOOLCHAIN_REPO "https://github.com/OpenCTR/OpenCTR-Toolchain")
+set(OPENCTR_TOOLCHAIN_TAG "v1.0.1")
+
+# OpenCTR-Tools Settings
+set(OPENCTR_TOOLS_REPO "https://github.com/OpenCTR/OpenCTR-Tools")
+set(OPENCTR_TOOLS_TAG "v1.0.1")
+

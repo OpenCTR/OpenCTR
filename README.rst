@@ -9,14 +9,13 @@ OpenCTR
 :repository: `OpenCTR <https://github.com/OpenCTR/OpenCTR>`_
 :license: `GPL3 <http://www.gnu.org/licenses/gpl-3.0.html>`_
 :owner: `Alex Shaw <mailto:alex.shaw.as@gmail.com>`_
-:description: OpenCTR is a free and open-source, cross-platform SDK and Toolchain for developing homebrew for the Nintendo 3DS.
+:description: OpenCTR is a free, open-source, and cross-platform SDK for developing homebrew for the Nintendo 3DS.
 
 ===========
 Description
 ===========
 
-OpenCTR is a free and open-source, cross-platform SDK and Toolchain for developing homebrew 
-for the Nintendo 3DS.
+OpenCTR is a free, open-source, and cross-platform SDK for developing homebrew for the Nintendo 3DS.
 
 This repository contains the build logic to create a working OpenCTR SDK.
 
