@@ -34,3 +34,23 @@ set(OPENCTR_TOOLCHAIN_TAG "v1.0.1")
 set(OPENCTR_TOOLS_REPO "https://github.com/OpenCTR/OpenCTR-Tools")
 set(OPENCTR_TOOLS_TAG "v1.0.1")
 
+# libctr Settings
+set(LIBCTR_REPO "https://github.com/OpenCTR/libctr")
+set(LIBCTR_TAG "v0.1.0")
+
+# CPack Settings
+set(PROJECT_CONTACT "https://github.com/OpenCTR")
+set(PROJECT_DESCRIPTION "Free and Open-Source Software Development Kit for the Nintendo 3DS.")
+set(PROJECT_ABOUT ${CMAKE_CURRENT_SOURCE_DIR}/README.rst)
+set(PROJECT_README ${CMAKE_CURRENT_SOURCE_DIR}/README.rst)
+set(PROJECT_VENDOR "OpenCTR")
+set(PROJECT_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt)
+set(PROJECT_HOMEPAGE "https://github.com/OpenCTR")
+set(PROJECT_LICENSE "GPLv3")
+
+if(WIN32)
+	set(CPACK_GENERATOR "ZIP")
+else()
+	set(CPACK_GENERATOR "TBZ2")
+endif()
+

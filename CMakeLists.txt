@@ -33,6 +33,7 @@ include(ExternalProject)
 option(ENABLE_DOC "Enable/Disable building OpenCTR-Doc" OFF)
 option(ENABLE_TOOLCHAIN "Enable/Disable building OpenCTR-Toolchain" ON)
 option(ENABLE_TOOLS "Enable/Disable building OpenCTR-Tools" ON)
+option(ENABLE_LIBCTR "Enable/Disable building libctr" ON)
 
 if(ENABLE_DOC)
 	ExternalProject_Add(doc 
@@ -78,6 +79,27 @@ if(ENABLE_TOOLS)
 	)
 endif()
 
+if(ENABLE_LIBCTR)
+	if(NOT ENABLE_TOOLCHAIN)
+		message(SEND_ERROR "ENABLE_LIBCTR requires ENABLE_TOOLCHAIN")
+	endif()
+
+	ExternalProject_Add(libctr
+		DEPENDS toolchain
+		PREFIX ${CMAKE_CURRENT_BINARY_DIR}
+		INSTALL_DIR install
+		GIT_REPOSITORY ${LIBCTR_REPO}
+		GIT_TAG ${LIBCTR_TAG}
+		CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR> -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCTR_ROOT=<INSTALL_DIR>
+		LOG_DOWNLOAD TRUE
+		LOG_UPDATE TRUE
+		LOG_CONFIGURE TRUE
+		LOG_BUILD TRUE
+		LOG_TEST TRUE
+		LOG_INSTALL TRUE
+	)
+endif()
+
 set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "src" "tmp" "install")
 
 install(
@@ -87,3 +109,4 @@ install(
 	MESSAGE_NEVER
 )
 
+include(CPack)
