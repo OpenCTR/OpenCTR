@@ -309,7 +309,15 @@ https://openctr.github.io/
 Authors
 =======
 
-* Alex Shaw
+* Symbitic
+
+https://openctr.github.io/Authors.html
+
+=======
+Credits
+=======
+
+https://openctr.github.io/Credits.html
 
 =======
 License
@@ -318,6 +326,7 @@ License
 OpenCTR is licensed under version 3 of the `GNU General Public License`_. 
 See `LICENSE`_ for terms.
 
+.. todo:: Move some of the "Getting Started" instructions to website.
 
 .. _CMake: http://www.cmake.org/
 
