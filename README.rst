@@ -19,7 +19,6 @@ See `LICENSE.txt`_ for terms.
    :alt: OpenCTR Logo
    :width: 50px
    :height: 50px
-   :align: center
 
 .. |Building| image:: https://img.shields.io/travis/OpenCTR/OpenCTR.svg?style=flat-square&label=Status
    :alt: TravisCI build status
