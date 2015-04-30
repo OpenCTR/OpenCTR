@@ -27,8 +27,8 @@ before_install:
   - sudo apt-get install -y libcloog-ppl-dev 
 
 install:
-  - pip install sphinx
-  - pip install coveralls
+  - sudo pip install sphinx
+  - sudo pip install coveralls
 
 before_script:
   - mkdir build
