@@ -4,15 +4,18 @@
  OpenCTR 
 =========
 
-|Building| |Coverity| |Release| |License|
+|Release| |Building| |Coverity| |License|
 
 OpenCTR is a free, open-source, and cross-platform SDK for developing Nintendo 3DS homebrew.
 
 This repository contains the build logic to create a working OpenCTR SDK.
 
+
 https://openctr.github.io/
 
+
 OpenCTR is licensed under the `GNU General Public License v3.0`_. 
+
 See `LICENSE.rst`_ for terms.
 
 .. |Logo| image:: https://openctr.github.io/_static/logo.svg
