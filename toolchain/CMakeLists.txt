@@ -36,39 +36,17 @@ if(NOT PATCH_EXECUTABLE)
 	message(SEND_ERROR "GNU Patch not found")
 endif()
 
-# General Settings
-set(DOWNLOAD_DIR "${CMAKE_CURRENT_BINARY_DIR}/src")
-set(TMP_DIR "${CMAKE_CURRENT_BINARY_DIR}/tmp")
-set(INSTALL_DIR "${CMAKE_CURRENT_BINARY_DIR}/install")
-
-# Binutils Settings
-set(BINUTILS_URL "ftp://ftp.gnu.org/gnu/binutils/binutils-2.25.tar.bz2")
-set(BINUTILS_HASH "22defc65cfa3ef2a3395faaea75d6331c6e62ea5dfacfed3e2ec17b08c882923")
-set(BINUTILS_PATCH "${CMAKE_CURRENT_SOURCE_DIR}/patches/binutils-2.25.patch")
-
-# GCC Settings
-set(GCC_URL "ftp://ftp.gnu.org/gnu/gcc/gcc-4.8.2/gcc-4.8.2.tar.bz2")
-set(GCC_HASH "09dc2276c73424bbbfda1dbddc62bbbf900c9f185acf7f3e1d773ce2d7e3cdc8")
-set(GCC_PATCH "${CMAKE_CURRENT_SOURCE_DIR}/patches/gcc-4.8.2.patch")
-
-# Newlib Settings
-set(NEWLIB_URL "ftp://sourceware.org/pub/newlib/newlib-2.1.0.tar.gz")
-set(NEWLIB_HASH "3e4d5ab9f0508942b6231b8ade4f8e5048cf92c96ed574c2bd6bd3320a599a48")
-set(NEWLIB_PATCH "${CMAKE_CURRENT_SOURCE_DIR}/patches/newlib-2.1.0.patch")
-
 # Exported for global visibility
-set(CTR_ROOT "${INSTALL_DIR}" CACHE INTERNAL "OpenCTR Root")
+set(CTR_ROOT "${CMAKE_CURRENT_BINARY_DIR}/install" CACHE INTERNAL "OpenCTR Root")
 
 # Binutils target
 ExternalProject_Add(binutils
 	PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-	DOWNLOAD_DIR ${DOWNLOAD_DIR}
-	TMP_DIR ${TMP_DIR}
-	INSTALL_DIR ${INSTALL_DIR}
-	URL "${BINUTILS_URL}"
-	URL_HASH SHA256=${BINUTILS_HASH}
-	DOWNLOAD_NO_PROGRESS TRUE
-	PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet --input=${BINUTILS_PATCH} --directory=<SOURCE_DIR>
+	INSTALL_DIR install
+	URL "ftp://ftp.gnu.org/gnu/binutils/binutils-2.25.tar.bz2" 
+	URL_HASH SHA256=22defc65cfa3ef2a3395faaea75d6331c6e62ea5dfacfed3e2ec17b08c882923 
+	DOWNLOAD_NO_PROGRESS TRUE 
+	PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet --input=${CMAKE_CURRENT_SOURCE_DIR}/patches/binutils-2.25.patch --directory=<SOURCE_DIR> 
 	CONFIGURE_COMMAND PATH=<INSTALL_DIR>/bin:$ENV{PATH} <SOURCE_DIR>/configure 
 		--prefix=<INSTALL_DIR> 
 		--target=arm-none-eabi 
@@ -107,13 +85,11 @@ ExternalProject_Add(binutils
 ExternalProject_Add(gcc
 	DEPENDS binutils
 	PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-	DOWNLOAD_DIR ${DOWNLOAD_DIR}
-	TMP_DIR ${TMP_DIR}
-	INSTALL_DIR ${INSTALL_DIR}
-	URL "${GCC_URL}"
-	URL_HASH SHA256=${GCC_HASH}
+	INSTALL_DIR install
+	URL "ftp://ftp.gnu.org/gnu/gcc/gcc-4.8.2/gcc-4.8.2.tar.bz2"
+	URL_HASH SHA256=09dc2276c73424bbbfda1dbddc62bbbf900c9f185acf7f3e1d773ce2d7e3cdc8
 	DOWNLOAD_NO_PROGRESS TRUE
-	PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet --input=${GCC_PATCH} --directory=<SOURCE_DIR>
+	PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet --input=${CMAKE_CURRENT_SOURCE_DIR}/patches/gcc-4.8.2.patch --directory=<SOURCE_DIR>
 	CONFIGURE_COMMAND PATH=<INSTALL_DIR>/bin:$ENV{PATH} <SOURCE_DIR>/configure 
 		--prefix=<INSTALL_DIR> 
 		--target=arm-none-eabi 
@@ -158,14 +134,12 @@ ExternalProject_Add(gcc
 ExternalProject_Add(newlib
 	DEPENDS binutils
 	PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-	DOWNLOAD_DIR ${DOWNLOAD_DIR}
-	TMP_DIR ${TMP_DIR}
-	INSTALL_DIR ${INSTALL_DIR}
+	INSTALL_DIR install
 	EXCLUDE_FROM_ALL TRUE
-	URL "${NEWLIB_URL}"
-	URL_HASH SHA256=${NEWLIB_HASH}
+	URL "ftp://sourceware.org/pub/newlib/newlib-2.1.0.tar.gz"
+	URL_HASH SHA256=3e4d5ab9f0508942b6231b8ade4f8e5048cf92c96ed574c2bd6bd3320a599a48
 	DOWNLOAD_NO_PROGRESS TRUE
-	PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet --input=${NEWLIB_PATCH} --directory=<SOURCE_DIR>
+	PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet --input=${CMAKE_CURRENT_SOURCE_DIR}/patches/newlib-2.1.0.patch --directory=<SOURCE_DIR>
 	CONFIGURE_COMMAND PATH=<INSTALL_DIR>/bin:$ENV{PATH} <SOURCE_DIR>/configure 
 		--prefix=<INSTALL_DIR>
 		--target=arm-none-eabi 
@@ -210,12 +184,10 @@ ExternalProject_Add_Step(gcc newlib
 )
 
 # Cleanup
-set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "${DOWNLOAD_DIR}")
-set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "${TMP_DIR}")
-set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "${INSTALL_DIR}")
+set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "src" "tmp" "install")
 
 # Installation
-install(DIRECTORY ${INSTALL_DIR}/ DESTINATION OpenCTR
+install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/install/ DESTINATION OpenCTR
 	COMPONENT toolchain
 	USE_SOURCE_PERMISSIONS
 	PATTERN .* EXCLUDE
