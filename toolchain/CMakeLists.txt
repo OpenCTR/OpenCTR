@@ -42,9 +42,9 @@ set(CTR_ROOT "${CMAKE_CURRENT_BINARY_DIR}/install" CACHE INTERNAL "OpenCTR Root"
 # Binutils target
 ExternalProject_Add(binutils
 	PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-	INSTALL_DIR install
+	INSTALL_DIR install 
 	URL "ftp://ftp.gnu.org/gnu/binutils/binutils-2.25.tar.bz2" 
-	URL_HASH SHA256=22defc65cfa3ef2a3395faaea75d6331c6e62ea5dfacfed3e2ec17b08c882923 
+	URL_HASH "SHA256=22defc65cfa3ef2a3395faaea75d6331c6e62ea5dfacfed3e2ec17b08c882923"
 	DOWNLOAD_NO_PROGRESS TRUE 
 	PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet --input=${CMAKE_CURRENT_SOURCE_DIR}/patches/binutils-2.25.patch --directory=<SOURCE_DIR> 
 	CONFIGURE_COMMAND PATH=<INSTALL_DIR>/bin:$ENV{PATH} <SOURCE_DIR>/configure 
@@ -76,9 +76,9 @@ ExternalProject_Add(binutils
 		&> <TMP_DIR>/binutils-configure.log
 	BUILD_COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS}
 	INSTALL_COMMAND ${MAKE_EXECUTABLE} install
-	LOG_DOWNLOAD TRUE
-	LOG_BUILD TRUE
-	LOG_INSTALL TRUE
+	LOG_DOWNLOAD ${ENABLE_LOG}
+	LOG_BUILD ${ENABLE_LOG}
+	LOG_INSTALL ${ENABLE_LOG}
 )
 
 # GCC target
@@ -87,7 +87,7 @@ ExternalProject_Add(gcc
 	PREFIX ${CMAKE_CURRENT_BINARY_DIR}
 	INSTALL_DIR install
 	URL "ftp://ftp.gnu.org/gnu/gcc/gcc-4.8.2/gcc-4.8.2.tar.bz2"
-	URL_HASH SHA256=09dc2276c73424bbbfda1dbddc62bbbf900c9f185acf7f3e1d773ce2d7e3cdc8
+	URL_HASH "SHA256=09dc2276c73424bbbfda1dbddc62bbbf900c9f185acf7f3e1d773ce2d7e3cdc8"
 	DOWNLOAD_NO_PROGRESS TRUE
 	PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet --input=${CMAKE_CURRENT_SOURCE_DIR}/patches/gcc-4.8.2.patch --directory=<SOURCE_DIR>
 	CONFIGURE_COMMAND PATH=<INSTALL_DIR>/bin:$ENV{PATH} <SOURCE_DIR>/configure 
@@ -137,7 +137,7 @@ ExternalProject_Add(newlib
 	INSTALL_DIR install
 	EXCLUDE_FROM_ALL TRUE
 	URL "ftp://sourceware.org/pub/newlib/newlib-2.1.0.tar.gz"
-	URL_HASH SHA256=3e4d5ab9f0508942b6231b8ade4f8e5048cf92c96ed574c2bd6bd3320a599a48
+	URL_HASH "SHA256=3e4d5ab9f0508942b6231b8ade4f8e5048cf92c96ed574c2bd6bd3320a599a48"
 	DOWNLOAD_NO_PROGRESS TRUE
 	PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet --input=${CMAKE_CURRENT_SOURCE_DIR}/patches/newlib-2.1.0.patch --directory=<SOURCE_DIR>
 	CONFIGURE_COMMAND PATH=<INSTALL_DIR>/bin:$ENV{PATH} <SOURCE_DIR>/configure 
@@ -156,9 +156,9 @@ ExternalProject_Add(newlib
 		&> <TMP_DIR>/newlib-configure.log
 	BUILD_COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS}
 	INSTALL_COMMAND ${MAKE_EXECUTABLE} install
-	LOG_DOWNLOAD TRUE
-	LOG_BUILD TRUE
-	LOG_INSTALL TRUE
+	LOG_DOWNLOAD ${ENABLE_LOG}
+	LOG_BUILD ${ENABLE_LOG}
+	LOG_INSTALL ${ENABLE_LOG}
 )
 
 # Dependency Injection: Require "make all-gcc" after "configure"

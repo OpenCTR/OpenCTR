@@ -10,9 +10,11 @@ OpenCTR is a free, open-source, and cross-platform SDK for developing Nintendo 3
 
 This repository contains the build logic to create a working OpenCTR SDK.
 
+-----
 
 https://openctr.github.io/
 
+-----
 
 OpenCTR is licensed under the `GNU General Public License v3.0`_. 
 
@@ -22,6 +24,11 @@ See `LICENSE.rst`_ for terms.
    :alt: OpenCTR Logo
    :width: 250px
    :height: 250px
+   :target: https://openctr.github.io/
+
+.. |Release| image:: https://img.shields.io/github/release/OpenCTR/OpenCTR.svg?style=flat-square&label=Release
+   :alt: Latest Release
+   :target: https://github.com/OpenCTR/OpenCTR/releases/latest
 
 .. |Building| image:: https://img.shields.io/travis/OpenCTR/OpenCTR.svg?style=flat-square&label=Status
    :alt: TravisCI build status
@@ -30,10 +37,6 @@ See `LICENSE.rst`_ for terms.
 .. |Coverity| image:: https://img.shields.io/coverity/scan/4998.svg?style=flat-square&label=Coverity
    :alt: Coverity Scan Build Status
    :target: https://scan.coverity.com/projects/4998
-
-.. |Release| image:: https://img.shields.io/github/release/OpenCTR/OpenCTR.svg?style=flat-square&label=Release
-   :alt: Latest Release
-   :target: https://github.com/OpenCTR/OpenCTR/releases/latest
 
 .. |License| image:: https://img.shields.io/github/license/OpenCTR/OpenCTR.svg?style=flat-square&label=License
    :alt: GNU General Public License v3.0

@@ -27,6 +27,7 @@ include(CMakePackageConfigHelpers)
 
 project(OpenCTR NONE)
 
+option(ENABLE_LOG "Enable/Disable using logs to store all status and error messages" ON)
 option(ENABLE_DOC "Enable/Disable building Sphinx documentation" OFF)
 option(ENABLE_LIBCTRU "Enable/Disable building libctru" ON)
 
