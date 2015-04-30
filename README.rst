@@ -15,7 +15,7 @@ https://openctr.github.io/
 OpenCTR is licensed under the `GNU General Public License v3.0`_. 
 See `LICENSE.txt`_ for terms.
 
-.. |Logo| image:: doc/_static/logo.svg
+.. |Logo| image:: doc/_static/logo.png
    :alt: OpenCTR Logo
    :width: 50px
    :height: 50px
