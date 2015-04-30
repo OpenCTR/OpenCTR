@@ -1,84 +1,42 @@
-|Building| |Coverage| |License|
-
 |Logo|
 
-=======
-OpenCTR
-=======
+=========
+ OpenCTR 
+=========
 
-:repository: `OpenCTR <https://github.com/OpenCTR/OpenCTR>`_
-:license: `GPL3 <http://www.gnu.org/licenses/gpl-3.0.html>`_
-:owner: `Alex Shaw <mailto:alex.shaw.as@gmail.com>`_
-:description: OpenCTR is a free, open-source, and cross-platform SDK for developing homebrew for the Nintendo 3DS.
-
-===========
-Description
-===========
+|Building| |Coverage| |Release| |License|
 
 OpenCTR is a free, open-source, and cross-platform SDK for developing homebrew for the Nintendo 3DS.
 
 This repository contains the build logic to create a working OpenCTR SDK.
 
-===============
-Getting Started
-===============
-
-See https://openctr.github.io/Building.html for help building OpenCTR.
-
-=====================
-Configuration Options
-=====================
-
-Pass these values to CMake to change how OpenCTR should behave.
-
-:CMAKE_BUILD_TYPE: Build Configuration. Debug/Release/RelWithDebInfo/MinSizeRel
-:CMAKE_INSTALL_PREFIX: Directory to install OpenCTR into.
-:ENABLE_DOC: Enable/Disable building the OpenCTR Documentation.
-:ENABLE_TOOLS: Enable/Disable building the OpenCTR Tools.
-:ENABLE_TOOLCHAIN: Enable/Disable building the OpenCTR Toolchain.
-:ENABLE_LIBCTR: Enable/Disable building libctr as part of OpenCTR.
-
-=============
-Documentation
-=============
-
 https://openctr.github.io/
 
-=======
-Authors
-=======
+OpenCTR is licensed under the `GNU General Public License v3.0`_. 
+See `LICENSE.txt`_ for terms.
 
-* Symbitic
+.. |Logo| image:: doc/_static/logo.svg
+   :alt: OpenCTR Logo
+   :width: 50px
+   :height: 50px
+   :align: center
 
-https://openctr.github.io/Authors.html
-
-=======
-Credits
-=======
-
-https://openctr.github.io/Credits.html
-
-=======
-License
-=======
-
-OpenCTR is licensed under version 3 of the `GNU General Public License`_. 
-See `LICENSE`_ for terms.
-
-.. _GNU General Public License: http://www.gnu.org/licenses/gpl.html
-
-.. _LICENSE: ./LICENSE.txt
-
-.. |Building| image:: http://img.shields.io/travis/OpenCTR/OpenCTR/master.svg?style=flat
+.. |Building| image:: https://img.shields.io/travis/OpenCTR/OpenCTR.svg?style=flat-square&label=Status
    :alt: TravisCI build status
    :target: https://travis-ci.org/OpenCTR/OpenCTR
 
-.. |Coverage| image:: http://img.shields.io/coveralls/OpenCTR/OpenCTR/master.svg?style=flat
+.. |Coverage| image:: http://img.shields.io/coveralls/OpenCTR/OpenCTR.svg?style=flat-square&label=Coverage
    :alt: Coveralls.io coverage
-   :target: https://coveralls.io/r/OpenCTR/OpenCTR?branch=master
+   :target: https://coveralls.io/r/OpenCTR/OpenCTR
 
-.. |License| image:: http://img.shields.io/badge/license-gpl3-blue.svg?style=flat
-   :alt: GNU GPL3 License
-   :target: http://www.gnu.org/licenses/gpl-3.0.html
+.. |Release| image:: https://img.shields.io/github/release/OpenCTR/OpenCTR.svg?style=flat-square&label=Release
+   :alt: Latest Release
+   :target: https://github.com/OpenCTR/OpenCTR/releases/latest
 
-.. |Logo| image:: https://avatars2.githubusercontent.com/u/11789047
+.. |License| image:: https://img.shields.io/github/license/OpenCTR/OpenCTR.svg?style=flat-square&label=License
+   :alt: GNU General Public License v3.0
+   :target: http://choosealicense.com/licenses/gpl-3.0/
+
+.. _`GNU General Public License v3.0`: http://www.gnu.org/licenses/gpl.html
+
+.. _`LICENSE.txt`: ./LICENSE.txt

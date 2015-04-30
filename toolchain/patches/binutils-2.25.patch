@@ -1,0 +1,47 @@
+diff -burN binutils-2.25/gold/binary.cc binutils-2.25-new/gold/binary.cc
+--- binutils-2.25/gold/binary.cc	2014-10-14 02:32:04.000000000 -0500
++++ binutils-2.25-new/gold/binary.cc	2015-01-18 18:35:32.000000000 -0600
+@@ -24,7 +24,11 @@
+ 
+ #include <cerrno>
+ #include <cstring>
++#ifdef __APPLE__
++#include <ctype.h>
++#else
+ #include "safe-ctype.h"
++#endif
+ 
+ #include "elfcpp.h"
+ #include "stringpool.h"
+@@ -153,7 +157,11 @@
+   for (std::string::iterator p = mangled_name.begin();
+        p != mangled_name.end();
+        ++p)
++#ifdef __APPLE__
++    if (!isalnum(*p))
++#else
+     if (!ISALNUM(*p))
++#endif
+       *p = '_';
+   mangled_name = "_binary_" + mangled_name;
+   std::string start_symbol_name = mangled_name + "_start";
+diff -burN binutils-2.25/gold/system.h binutils-2.25-new/gold/system.h
+--- binutils-2.25/gold/system.h	2014-10-14 02:32:04.000000000 -0500
++++ binutils-2.25-new/gold/system.h	2015-01-18 18:26:00.000000000 -0600
+@@ -110,6 +110,8 @@
+ #define Unordered_map __gnu_cxx::hash_map
+ #define Unordered_multimap __gnu_cxx::hash_multimap
+ 
++/* Clang libc++ support */
++#if !defined(_LIBCPP_VERSION)
+ namespace __gnu_cxx
+ {
+ 
+@@ -130,6 +132,7 @@
+ };
+ 
+ }
++#endif /* !defined(_LIBCPP_VERSION) */
+ 
+ #define reserve_unordered_map(map, n) ((map)->resize(n))
+ 

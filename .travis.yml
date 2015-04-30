@@ -1,0 +1,39 @@
+
+language: 
+  - c
+
+compiler:
+  - gcc
+  - clang
+
+notifications:
+  email:
+    recipients:
+      - alex.shaw.as@gmail.com
+    on_success: always
+    on_failure: always
+    on_start: never
+
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -y cmake
+  - sudo apt-get install -y rpm
+  - sudo apt-get install -y binutils
+  - sudo apt-get install -y gawk
+  - sudo apt-get install -y libgmp-dev
+  - sudo apt-get install -y libmpfr-dev
+  - sudo apt-get install -y libmpc-dev
+  - sudo apt-get install -y libcloog-isl-dev
+  - sudo apt-get install -y libcloog-ppl-dev 
+
+install:
+  - pip install sphinx
+  - pip install coveralls
+
+before_script:
+  - mkdir build
+  - cd build
+  - cmake .. -DENABLE_DOC=ON -DENABLE_UPLOAD=ON -DCPACK_GENERATOR="TBZ2;RPM;DPKG"
+
+script:
+  - make

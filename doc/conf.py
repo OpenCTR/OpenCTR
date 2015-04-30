@@ -1,8 +1,4 @@
-#.rst:
-# CMakeProjectVersion
-# -------------------
-# 
-# Project version. 
+# -*- coding: utf-8 -*-
 
 ######################################################################
 # This file is part of OpenCTR.
@@ -21,8 +17,34 @@
 # along with OpenCTR.  If not, see <http://www.gnu.org/licenses/>.
 ######################################################################
 
-set(PROJECT_VERSION_MAJOR 1)
-set(PROJECT_VERSION_MINOR 0)
-set(PROJECT_VERSION_PATCH 2)
+needs_sphinx = "1.3"
 
-set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
+project = u"OpenCTR"
+copyright = u"2015"
+version = u"1.0.0"
+
+source_suffix = ".rst"
+
+master_doc = "index"
+
+extensions = [ "sphinx.ext.todo" ]
+
+todo_include_todos = True
+
+html_title = "OpenCTR"
+html_theme = "haiku"
+html_static_path = [ "_static" ]
+html_use_index = True
+html_show_sourcelink = False
+html_show_sphinx = False
+html_show_copyright = False
+html_favicon = "_static/favicon.ico"
+html_add_permalinks = ""
+html_logo = "_static/logo.svg"
+
+html_theme_options = { 
+	"nosidebar": True, 
+	"full_logo": True, 
+	"visitedlinkcolor": "#dc3c01"
+}
+

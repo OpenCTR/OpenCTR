@@ -15,98 +15,73 @@
 # along with OpenCTR.  If not, see <http://www.gnu.org/licenses/>.
 ######################################################################
 
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 2.8)
 
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 
 if(NOT CMAKE_BUILD_TYPE)
-	set(CMAKE_BUILD_TYPE "Debug" CACHE INTERNAL "Values: Debug, Release, RelWithDebInfo, MinSizeRel")
+	set(CMAKE_BUILD_TYPE "Debug" CACHE INTERNAL "Debug/Release/RelWithDebInfo/MinSizeRel")
 endif()
+
+include(CMakePackageConfigHelpers)
 
 project(OpenCTR NONE)
 
-include(CMakeProjectSettings)
-include(CMakeProjectVersion)
+option(ENABLE_DOC "Enable/Disable building Sphinx documentation" OFF)
+option(ENABLE_LIBCTRU "Enable/Disable building libctru" ON)
 
-include(ExternalProject)
+# We are installing several **hundred** files, it is a *much* cleaner 
+# experience without install status messages.
+set(CMAKE_INSTALL_MESSAGE "NEVER")
 
-option(ENABLE_DOC "Enable/Disable building OpenCTR-Doc" OFF)
-option(ENABLE_TOOLCHAIN "Enable/Disable building OpenCTR-Toolchain" ON)
-option(ENABLE_TOOLS "Enable/Disable building OpenCTR-Tools" ON)
-option(ENABLE_LIBCTR "Enable/Disable building libctr" ON)
+# Adjust where CMake packages are installed to.
+if(WIN32)
+	set(CMAKE_PREFIX "CMake")
+else()
+	set(CMAKE_PREFIX "share/cmake")
+endif()
 
 if(ENABLE_DOC)
-	ExternalProject_Add(doc 
-		PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-		INSTALL_DIR install
-		GIT_REPOSITORY ${OPENCTR_DOC_REPO}
-		GIT_TAG ${OPENCTR_DOC_TAG}
-		CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR> -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-		LOG_DOWNLOAD TRUE
-		LOG_UPDATE TRUE
-		LOG_CONFIGURE TRUE
-		LOG_BUILD TRUE
-		LOG_TEST TRUE
-		LOG_INSTALL TRUE
-	)
+	add_subdirectory(doc)
 endif()
 
-if(ENABLE_TOOLCHAIN)
-	ExternalProject_Add(toolchain 
-		PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-		INSTALL_DIR install
-		GIT_REPOSITORY ${OPENCTR_TOOLCHAIN_REPO}
-		GIT_TAG ${OPENCTR_TOOLCHAIN_TAG}
-		CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR> -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-		LOG_DOWNLOAD TRUE
-		LOG_UPDATE TRUE
-	)
-endif()
+add_subdirectory(toolchain)
+add_subdirectory(tools)
+add_subdirectory(projects)
 
-if(ENABLE_TOOLS)
-	ExternalProject_Add(tools
-		PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-		INSTALL_DIR install
-		GIT_REPOSITORY ${OPENCTR_TOOLS_REPO}
-		GIT_TAG ${OPENCTR_TOOLS_TAG}
-		CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR> -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-		LOG_DOWNLOAD TRUE
-		LOG_UPDATE TRUE
-		LOG_CONFIGURE TRUE
-		LOG_BUILD TRUE
-		LOG_TEST TRUE
-		LOG_INSTALL TRUE
-	)
-endif()
-
-if(ENABLE_LIBCTR)
-	if(NOT ENABLE_TOOLCHAIN)
-		message(SEND_ERROR "ENABLE_LIBCTR requires ENABLE_TOOLCHAIN")
-	endif()
-
-	ExternalProject_Add(libctr
-		DEPENDS toolchain
-		PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-		INSTALL_DIR install
-		GIT_REPOSITORY ${LIBCTR_REPO}
-		GIT_TAG ${LIBCTR_TAG}
-		CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR> -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCTR_ROOT=<INSTALL_DIR>
-		LOG_DOWNLOAD TRUE
-		LOG_UPDATE TRUE
-		LOG_CONFIGURE TRUE
-		LOG_BUILD TRUE
-		LOG_TEST TRUE
-		LOG_INSTALL TRUE
-	)
-endif()
-
-set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "src" "tmp" "install")
-
-install(
-	DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/install/
-	DESTINATION OpenCTR
-	USE_SOURCE_PERMISSIONS
-	MESSAGE_NEVER
+# Configure CTR_ROOT.cmake.in
+configure_package_config_file(
+	${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/CTR_ROOT.cmake.in
+	${CMAKE_CURRENT_BINARY_DIR}/CTR_ROOT.cmake
+	INSTALL_DESTINATION ${CMAKE_PREFIX}
 )
+
+# Install CTR_ROOT.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/CTR_ROOT.cmake 
+	DESTINATION OpenCTR/${CMAKE_PREFIX}
+	COMPONENT cmake
+)
+
+# Install CMake Modules
+install(DIRECTORY cmake/Modules/
+	DESTINATION OpenCTR/${CMAKE_PREFIX}
+	COMPONENT cmake
+	USE_SOURCE_PERMISSIONS
+	REGEX "^\\..*$;^.*\\.in$;^CMake.*\\.cmake$;^Find.*\\.cmake$" EXCLUDE
+)
+
+# CPack Settings
+set(PROJECT_CONTACT "https://github.com/OpenCTR")
+set(PROJECT_DESCRIPTION "Free and Open-Source Software Development Kit for the Nintendo 3DS.")
+set(PROJECT_ABOUT ${CMAKE_CURRENT_SOURCE_DIR}/README.rst)
+set(PROJECT_README ${CMAKE_CURRENT_SOURCE_DIR}/README.rst)
+set(PROJECT_VENDOR "OpenCTR")
+set(PROJECT_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt)
+set(PROJECT_LICENSE_NAME "GPLv3")
+set(PROJECT_HOMEPAGE "https://github.com/OpenCTR")
+set(PROJECT_VERSION_MAJOR 1)
+set(PROJECT_VERSION_MINOR 0)
+set(PROJECT_VERSION_PATCH 0)
+set(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH})
 
 include(CPack)
