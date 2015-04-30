@@ -36,36 +36,35 @@ add_custom_target(doc ALL
 )
 
 if(ENABLE_UPLOAD)
+	# Git is required for pushing to GitHub Pages.
 	find_package(Git QUIET REQUIRED)
 
-	add_custom_target(upload
+	# Create custom 'upload' target
+	add_custom_target(upload 
 		DEPENDS html
 		# Remove the existing upload directory.
 		COMMAND ${CMAKE_COMMAND} -E remove_directory ${UPLOAD_DIR}
 		# Clone the GitHub Pages repo
-		COMMAND ${GIT_EXECUTABLE} clone https://github.com/OpenCTR/OpenCTR.github.io ${UPLOAD_DIR}
+		COMMAND ${GIT_EXECUTABLE} clone --quiet https://github.com/OpenCTR/OpenCTR.github.io ${UPLOAD_DIR}
 		# Remove all existing files
 		COMMAND ${GIT_EXECUTABLE} -C ${UPLOAD_DIR} rm -rf --quiet .
 		# Copy the HTML files into the git repository
-		COMMAND ${CMAKE_COMMAND} -E copy_directory ${HTML_DIR}/ ${UPLOAD_DIR}/
+		COMMAND ${CMAKE_COMMAND} -E copy_directory ${HTML_DIR} ${UPLOAD_DIR}/
 		# Create the .nojekyll to allow subdirectories
 		COMMAND ${CMAKE_COMMAND} -E touch ${UPLOAD_DIR}/.nojekyll
 		# Add the newly copied files into Git
 		COMMAND ${GIT_EXECUTABLE} -C ${UPLOAD_DIR} add .
 		# Commit the new files
-		COMMAND ${GIT_EXECUTABLE} -C ${UPLOAD_DIR} commit -m "Updated HTML documentation"
+		COMMAND ${GIT_EXECUTABLE} -C ${UPLOAD_DIR} commit --quiet -m "Updated HTML documentation"
 		# Push the new files into GitHub
-		COMMAND ${GIT_EXECUTABLE} -C ${UPLOAD_DIR} push 
-		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-		COMMENT "Uploading to GitHub Pages"
+		COMMAND ${GIT_EXECUTABLE} -C ${UPLOAD_DIR} push --quiet origin master
 	)
+
+	# Cleanup files created from upload
+	set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "upload")
 endif()
 
-set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "${DOC_DIR}")
-set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "${DOCTREE_DIR}")
-set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "${HTML_DIR}")
-set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "${RST_DIR}")
-set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "${UPLOAD_DIR}")
+set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "doc")
 
 install(DIRECTORY ${HTML_DIR} DESTINATION OpenCTR/doc
 	COMPONENT documentation
