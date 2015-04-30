@@ -13,7 +13,7 @@ This repository contains the build logic to create a working OpenCTR SDK.
 https://openctr.github.io/
 
 OpenCTR is licensed under the `GNU General Public License v3.0`_. 
-See :doc:`LICENSE.rst`_ for terms.
+See `LICENSE.rst` for terms.
 
 .. |Logo| image:: doc/_static/logo.png
    :alt: OpenCTR Logo
