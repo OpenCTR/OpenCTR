@@ -44,7 +44,6 @@ ExternalProject_Add(binutils
 	PREFIX ${CMAKE_CURRENT_BINARY_DIR}
 	INSTALL_DIR install 
 	URL "ftp://ftp.gnu.org/gnu/binutils/binutils-2.25.tar.bz2" 
-	URL_HASH "SHA256=22defc65cfa3ef2a3395faaea75d6331c6e62ea5dfacfed3e2ec17b08c882923"
 	DOWNLOAD_NO_PROGRESS TRUE 
 	PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet --input=${CMAKE_CURRENT_SOURCE_DIR}/patches/binutils-2.25.patch --directory=<SOURCE_DIR> 
 	CONFIGURE_COMMAND PATH=<INSTALL_DIR>/bin:$ENV{PATH} <SOURCE_DIR>/configure 
@@ -87,7 +86,6 @@ ExternalProject_Add(gcc
 	PREFIX ${CMAKE_CURRENT_BINARY_DIR}
 	INSTALL_DIR install
 	URL "ftp://ftp.gnu.org/gnu/gcc/gcc-4.8.2/gcc-4.8.2.tar.bz2"
-	URL_HASH "SHA256=09dc2276c73424bbbfda1dbddc62bbbf900c9f185acf7f3e1d773ce2d7e3cdc8"
 	DOWNLOAD_NO_PROGRESS TRUE
 	PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet --input=${CMAKE_CURRENT_SOURCE_DIR}/patches/gcc-4.8.2.patch --directory=<SOURCE_DIR>
 	CONFIGURE_COMMAND PATH=<INSTALL_DIR>/bin:$ENV{PATH} <SOURCE_DIR>/configure 
