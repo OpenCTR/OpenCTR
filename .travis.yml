@@ -30,6 +30,7 @@ install:
   - sudo pip install coveralls
 
 before_script:
+  - cmake --version
   - mkdir build
   - cd build
   - cmake .. -DENABLE_DOC=ON -DENABLE_UPLOAD=ON -DENABLE_LOG=OFF -DCPACK_GENERATOR="TBZ2;RPM;DPKG"
