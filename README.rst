@@ -23,7 +23,6 @@ See `LICENSE.rst`_ for terms.
 .. |Logo| image:: https://openctr.github.io/_static/logo.svg
    :alt: OpenCTR Logo
    :width: 250px
-   :height: 250px
    :target: https://openctr.github.io/
 
 .. |Release| image:: https://img.shields.io/github/release/OpenCTR/OpenCTR.svg?style=flat-square&label=Release

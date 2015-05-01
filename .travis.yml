@@ -15,6 +15,7 @@ notifications:
 
 before_install:
   - sudo apt-get update -qq
+  - sudo apt-get install -y wget
   - sudo apt-get install -y cmake
   - sudo apt-get install -y rpm
   - sudo apt-get install -y binutils
@@ -24,10 +25,12 @@ before_install:
   - sudo apt-get install -y libmpc-dev
   - sudo apt-get install -y libcloog-isl-dev
   - sudo apt-get install -y libcloog-ppl-dev 
+  - sudo pip install sphinx
 
 install:
-  - sudo pip install sphinx
-  - sudo pip install coveralls
+  - wget "http://www.cmake.org/files/v3.0/cmake-3.0.1-Linux-i386.tar.gz"
+  - tar -xvzf "cmake-3.0.1-Linux-i386.tar.gz"
+  - export PATH=$PWD/cmake-3.0.1-Linux-i386/bin:$PATH
 
 before_script:
   - cmake --version
