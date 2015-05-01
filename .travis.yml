@@ -28,9 +28,9 @@ before_install:
   - sudo pip install sphinx
 
 install:
-  - wget "http://www.cmake.org/files/v3.0/cmake-3.0.1-Linux-i386.tar.gz"
-  - tar -xvzf "cmake-3.0.1-Linux-i386.tar.gz"
-  - export PATH=$PWD/cmake-3.0.1-Linux-i386/bin:$PATH
+  - wget -O "/tmp/cmake-3.0.1-Linux-i386.tar.gz" "http://www.cmake.org/files/v3.0/cmake-3.0.1-Linux-i386.tar.gz"
+  - tar -xvf "/tmp/cmake-3.0.1-Linux-i386.tar.gz"
+  - export PATH=$PWD/cmake-3.0.1-Linux-i386/bin/:$PATH
 
 before_script:
   - cmake --version
