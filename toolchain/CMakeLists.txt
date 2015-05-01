@@ -39,6 +39,20 @@ endif()
 # Exported for global visibility
 set(CTR_ROOT "${CMAKE_CURRENT_BINARY_DIR}/install" CACHE INTERNAL "OpenCTR Root")
 
+if(ENABLE_LOG)
+	set(BINUTILS_CONFIGURE_LOG "<TMP_DIR>/binutils-configure.log")
+	set(GCC_CONFIGURE_LOG "<TMP_DIR>/gcc-configure.log")
+	set(NEWLIB_CONFIGURE_LOG "<TMP_DIR>/newlib-configure.log")
+	set(GCC_ALL_LOG "<TMP_DIR>/all-gcc.log")
+	set(GCC_INSTALL_LOG "<TMP_DIR>/install-gcc.log")
+else()
+	set(BINUTILS_CONFIGURE_LOG "/dev/stdout")
+	set(GCC_CONFIGURE_LOG "/dev/stdout")
+	set(NEWLIB_CONFIGURE_LOG "/dev/stdout")
+	set(GCC_ALL_LOG "/dev/stdout")
+	set(GCC_INSTALL_LOG "/dev/stdout")
+endif()
+
 # Binutils target
 ExternalProject_Add(binutils
 	PREFIX ${CMAKE_CURRENT_BINARY_DIR}
@@ -72,7 +86,7 @@ ExternalProject_Add(binutils
 		--enable-gold=yes 
 		--enable-interworks 
 		--enable-nlsi=no 
-		&> <TMP_DIR>/binutils-configure.log
+		&> ${BINUTILS_CONFIGURE_LOG}
 	BUILD_COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS}
 	INSTALL_COMMAND ${MAKE_EXECUTABLE} install
 	LOG_DOWNLOAD ${ENABLE_LOG}
@@ -120,7 +134,7 @@ ExternalProject_Add(gcc
 		--with-arch=armv6 
 		--with-arch=armv6k 
 		--with-tune=mpcore 
-		&> <TMP_DIR>/gcc-configure.log
+		&> ${GCC_CONFIGURE_LOG}
 	BUILD_COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS}
 	INSTALL_COMMAND ${MAKE_EXECUTABLE} install
 	LOG_DOWNLOAD TRUE
@@ -151,7 +165,7 @@ ExternalProject_Add(newlib
 		--disable-newlib-supplied-syscalls 
 		--enable-newlib-mb 
 		--enable-newlib-io-long-long 
-		&> <TMP_DIR>/newlib-configure.log
+		&> ${NEWLIB_CONFIGURE_LOG}
 	BUILD_COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS}
 	INSTALL_COMMAND ${MAKE_EXECUTABLE} install
 	LOG_DOWNLOAD ${ENABLE_LOG}
@@ -161,14 +175,14 @@ ExternalProject_Add(newlib
 
 # Dependency Injection: Require "make all-gcc" after "configure"
 ExternalProject_Add_Step(gcc all-gcc
-	COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS} all-gcc &> <TMP_DIR>/all-gcc.log
+	COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS} all-gcc &> ${GCC_ALL_LOG}
 	DEPENDEES configure
 	WORKING_DIRECTORY <BINARY_DIR>
 )
 
 # Dependency Injection: Require "make install-gcc" after "all-gcc"
 ExternalProject_Add_Step(gcc install-gcc
-	COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS} install-gcc &> <TMP_DIR>/install-gcc.log
+	COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS} install-gcc &> ${GCC_INSTALL_LOG}
 	DEPENDEES all-gcc
 	WORKING_DIRECTORY <BINARY_DIR>
 )
