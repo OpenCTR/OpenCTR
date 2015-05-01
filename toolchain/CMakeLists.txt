@@ -45,12 +45,15 @@ if(ENABLE_LOG)
 	set(NEWLIB_CONFIGURE_LOG "<TMP_DIR>/newlib-configure.log")
 	set(GCC_ALL_LOG "<TMP_DIR>/all-gcc.log")
 	set(GCC_INSTALL_LOG "<TMP_DIR>/install-gcc.log")
+	set(LOG_FLAG 1)
 else()
 	set(BINUTILS_CONFIGURE_LOG "/dev/stdout")
 	set(GCC_CONFIGURE_LOG "/dev/stdout")
 	set(NEWLIB_CONFIGURE_LOG "/dev/stdout")
 	set(GCC_ALL_LOG "/dev/stdout")
 	set(GCC_INSTALL_LOG "/dev/stdout")
+	set(VERBOSE_FLAG "VERBOSE=1")
+	set(LOG_FLAG 0)
 endif()
 
 # Binutils target
@@ -87,11 +90,11 @@ ExternalProject_Add(binutils
 		--enable-interworks 
 		--enable-nlsi=no 
 		&> ${BINUTILS_CONFIGURE_LOG}
-	BUILD_COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS}
+	BUILD_COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS} ${VERBOSE_FLAG}
 	INSTALL_COMMAND ${MAKE_EXECUTABLE} install
-	LOG_DOWNLOAD ${ENABLE_LOG}
-	LOG_BUILD ${ENABLE_LOG}
-	LOG_INSTALL ${ENABLE_LOG}
+	LOG_DOWNLOAD ${LOG_FLAG}
+	LOG_BUILD ${LOG_FLAG}
+	LOG_INSTALL ${LOG_FLAG}
 )
 
 # GCC target
