@@ -11,31 +11,18 @@
 # 
 # OpenCTR is distributed in the hope that it will be useful, 
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 # 
 # You should have received a copy of the GNU General Public License 
 # along with OpenCTR. If not, see <http://www.gnu.org/licenses/>.
 ####################################################################
 
-include(ExternalProject)
+%rename link old_link
 
-# OpenCTR-Tools
-ExternalProject_Add(tools
-	DEPENDS gcc
-	PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-	INSTALL_DIR ${OPENCTR_INSTALL_DIR}
-	GIT_REPOSITORY "https://github.com/OpenCTR/OpenCTR-Tools"
-	GIT_TAG "master"
-	CMAKE_ARGS 
-		-DCMAKE_INSTALL_PREFIX=<INSTALL_DIR> 
-		-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} 
-	LOG_DOWNLOAD TRUE
-	LOG_CONFIGURE TRUE
-	LOG_BUILD TRUE
-	LOG_INSTALL TRUE
-)
+*link:
+%(old_link) -T 3dsx.ld%s -d --emit-relocs --use-blx
 
-# Cleanup
-set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "src")
-set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "tmp")
+*startfile:
+3dsx_crt0%O%s crti%O%s crtbegin%O%s
+

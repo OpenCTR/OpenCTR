@@ -1,0 +1,88 @@
+# -*- coding: utf-8 -*-
+
+###############################################################################
+# Copyright (C) 2015 OpenCTR Contributors
+# 
+# This file is part of OpenCTR.
+# 
+# OpenCTR is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+# 
+# OpenCTR is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, see <http://www.gnu.org/licenses/>.
+# 
+###############################################################################
+
+import os
+import sys
+
+# Add the source directory to the references.
+sys.path.insert(0, r"@RST_PATH@")
+
+# Require at-least Sphinx 1.0
+needs_sphinx = "1.0"
+
+# Project settings
+project = u"OpenCTR"
+copyright = u"2015"
+version = u"@OPENCTR_VERSION_MAJOR@.@OPENCTR_VERSION_MINOR@"
+release = u"@OPENCTR_VERSION_MAJOR@.@OPENCTR_VERSION_MINOR@"
+
+# The suffix of source filenames.
+source_suffix = ".rst"
+
+# The encoding of source files.
+source_encoding = "utf-8-sig"
+
+# Use "index.rst" as the root document.
+master_doc = "index"
+
+# Sphinx extensions to load.
+extensions = [ 
+	"sphinx.ext.todo" 
+]
+
+# Make "todo::" directives visible.
+todo_include_todos = True
+
+# Use C/C++ as the default language.
+highlight_language = "c"
+
+# EPUB-specific settings
+epub_title = u"OpenCTR"
+epub_author = u"Symbitic"
+epub_publisher = u"Symbitic"
+epub_copyright = u"2015, OpenCTR Contributors"
+epub_basename = u"OpenCTR-@OPENCTR_VERSION_MAJOR@.@OPENCTR_VERSION_MINOR@"
+epub_theme = "epub"
+epub_language = "en"
+epub_scheme = "URL"
+epub_cover = ()
+epub_guide = ()
+epub_exclude_files = ['search.html']
+
+# HTML-specific settings.
+html_title = "OpenCTR"
+html_theme_path = [ "@THEME_PATH@" ]
+html_theme = "openctr_theme"
+html_static_path = [ "@STATIC_PATH@" ]
+html_use_index = True
+html_show_sourcelink = False
+html_show_sphinx = False
+html_show_copyright = False
+html_favicon = "@STATIC_PATH@/favicon.ico"
+html_add_permalinks = ""
+html_logo = "@STATIC_PATH@/logo.svg"
+
+# Allow readthedocs.org to override theme
+on_rtd = os.environ.get("READTHEDOCS", None) == "True"
+if on_rtd:
+	html_theme = "default"
+

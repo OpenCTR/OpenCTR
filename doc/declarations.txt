@@ -1,9 +1,0 @@
-.. include:: <isonum.txt>
-
-.. raw:: html
-
-    <style>.strike {text-decoration: line-through;}</style>
-
-.. role:: strike
-    :class: strike
-

@@ -1,19 +1,22 @@
-######################################################################
-# This file is part of OpenCTR.
+####################################################################
+# OpenCTR - A free and open-source SDK for Nintendo 3DS homebrew. 
 # 
-# OpenCTR is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# Copyright (C) 2015 The OpenCTR Project. 
 # 
-# OpenCTR is distributed in the hope that it will be useful,
+# This file is part of OpenCTR. 
+# 
+# OpenCTR is free software: you can redistribute it and/or modify 
+# it under the terms of the GNU General Public License version 3 as 
+# published by the Free Software Foundation.
+# 
+# OpenCTR is distributed in the hope that it will be useful, 
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 # 
-# You should have received a copy of the GNU General Public License
-# along with OpenCTR.  If not, see <http://www.gnu.org/licenses/>.
-######################################################################
+# You should have received a copy of the GNU General Public License 
+# along with OpenCTR. If not, see <http://www.gnu.org/licenses/>.
+####################################################################
 
 include(ExternalProject)
 include(ProcessorCount)
@@ -36,34 +39,15 @@ if(NOT PATCH_EXECUTABLE)
 	message(SEND_ERROR "GNU Patch not found")
 endif()
 
-# Exported for global visibility
-set(CTR_ROOT "${CMAKE_CURRENT_BINARY_DIR}/install" CACHE INTERNAL "OpenCTR Root")
-
-if(ENABLE_LOG)
-	set(BINUTILS_CONFIGURE_LOG "<TMP_DIR>/binutils-configure.log")
-	set(GCC_CONFIGURE_LOG "<TMP_DIR>/gcc-configure.log")
-	set(NEWLIB_CONFIGURE_LOG "<TMP_DIR>/newlib-configure.log")
-	set(GCC_ALL_LOG "<TMP_DIR>/all-gcc.log")
-	set(GCC_INSTALL_LOG "<TMP_DIR>/install-gcc.log")
-	set(LOG_FLAG 1)
-else()
-	set(BINUTILS_CONFIGURE_LOG "/dev/stdout")
-	set(GCC_CONFIGURE_LOG "/dev/stdout")
-	set(NEWLIB_CONFIGURE_LOG "/dev/stdout")
-	set(GCC_ALL_LOG "/dev/stdout")
-	set(GCC_INSTALL_LOG "/dev/stdout")
-	set(VERBOSE_FLAG "VERBOSE=1")
-	set(LOG_FLAG 0)
-endif()
-
 # Binutils target
 ExternalProject_Add(binutils
 	PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-	INSTALL_DIR install 
+	INSTALL_DIR ${OPENCTR_INSTALL_DIR}
 	URL "ftp://ftp.gnu.org/gnu/binutils/binutils-2.25.tar.bz2" 
+	URL_HASH SHA256=22defc65cfa3ef2a3395faaea75d6331c6e62ea5dfacfed3e2ec17b08c882923
 	DOWNLOAD_NO_PROGRESS TRUE 
 	PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet --input=${CMAKE_CURRENT_SOURCE_DIR}/patches/binutils-2.25.patch --directory=<SOURCE_DIR> 
-	CONFIGURE_COMMAND PATH=<INSTALL_DIR>/bin:$ENV{PATH} <SOURCE_DIR>/configure 
+	CONFIGURE_COMMAND <SOURCE_DIR>/configure 
 		--prefix=<INSTALL_DIR> 
 		--target=arm-none-eabi 
 		--disable-nls 
@@ -71,41 +55,36 @@ ExternalProject_Add(binutils
 		--disable-debug 
 		--disable-dependency-tracking 
 		--disable-werror 
-		--enable-checking=release 
-		--disable-libquadmath 
-		--disable-libquadmath-support 
-		--disable-libada 
-		--disable-libssp 
-		--disable-libmudflap 
 		--disable-bootstrap 
-		--disable-libstdcxx 
-		--disable-decimal-float 
+		--enable-checking=release 
 		--enable-lto 
 		--enable-plugins 
-		--enable-ld=default 
+		--enable-gold=yes
+		--enable-ld=default
 		--enable-poison-system-directories 
 		--enable-install-libbfd 
 		--enable-build-with-cxx 
-		--enable-gold=yes 
 		--enable-interworks 
 		--enable-nlsi=no 
-		&> ${BINUTILS_CONFIGURE_LOG}
-	BUILD_COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS} ${VERBOSE_FLAG}
+		--enable-threads
+	BUILD_COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS}
 	INSTALL_COMMAND ${MAKE_EXECUTABLE} install
-	LOG_DOWNLOAD ${LOG_FLAG}
-	LOG_BUILD ${LOG_FLAG}
-	LOG_INSTALL ${LOG_FLAG}
+	LOG_DOWNLOAD TRUE
+	LOG_CONFIGURE TRUE
+	LOG_BUILD TRUE
+	LOG_INSTALL TRUE
 )
 
 # GCC target
 ExternalProject_Add(gcc
 	DEPENDS binutils
 	PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-	INSTALL_DIR install
-	URL "ftp://ftp.gnu.org/gnu/gcc/gcc-4.8.2/gcc-4.8.2.tar.bz2"
+	INSTALL_DIR ${OPENCTR_INSTALL_DIR}
+	URL "ftp://ftp.gnu.org/gnu/gcc/gcc-4.9.2/gcc-4.9.2.tar.bz2"
+	URL_HASH SHA256=2020c98295856aa13fda0f2f3a4794490757fc24bcca918d52cc8b4917b972dd
 	DOWNLOAD_NO_PROGRESS TRUE
-	PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet --input=${CMAKE_CURRENT_SOURCE_DIR}/patches/gcc-4.8.2.patch --directory=<SOURCE_DIR>
-	CONFIGURE_COMMAND PATH=<INSTALL_DIR>/bin:$ENV{PATH} <SOURCE_DIR>/configure 
+	PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet --input=${CMAKE_CURRENT_SOURCE_DIR}/patches/gcc-4.9.2.patch --directory=<SOURCE_DIR>
+	CONFIGURE_COMMAND <SOURCE_DIR>/configure 
 		--prefix=<INSTALL_DIR> 
 		--target=arm-none-eabi 
 		--disable-nls 
@@ -113,34 +92,23 @@ ExternalProject_Add(gcc
 		--disable-debug 
 		--disable-dependency-tracking 
 		--disable-werror 
-		--with-bugurl=alshaw@ilstu.edu  
+		--with-bugurl=https://github.com/OpenCTR/OpenCTR/issues
 		--enable-checking=release 
-		--disable-libquadmath 
-		--disable-libquadmath-support 
-		--disable-libada 
-		--disable-libssp 
-		--disable-libmudflap 
 		--disable-bootstrap 
-		--disable-libstdcxx 
-		--disable-decimal-float 
 		--enable-interwork 
 		--enable-languages=c,c++ 
-		--disable-libgomp 
-		--disable-threads 
+		--enable-threads 
 		--disable-win32-registry 
 		--with-newlib 
 		--without-headers 
 		--enable-lto 
-		--disable-multilib 
+		--enable-multilib 
 		--with-endian=little 
-		--with-arch=armv4t 
-		--with-arch=armv6 
 		--with-arch=armv6k 
-		--with-tune=mpcore 
-		&> ${GCC_CONFIGURE_LOG}
 	BUILD_COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS}
 	INSTALL_COMMAND ${MAKE_EXECUTABLE} install
 	LOG_DOWNLOAD TRUE
+	LOG_CONFIGURE TRUE
 	LOG_BUILD TRUE
 	LOG_INSTALL TRUE
 )
@@ -149,45 +117,40 @@ ExternalProject_Add(gcc
 ExternalProject_Add(newlib
 	DEPENDS binutils
 	PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-	INSTALL_DIR install
+	INSTALL_DIR ${OPENCTR_INSTALL_DIR}
 	EXCLUDE_FROM_ALL TRUE
-	URL "ftp://sourceware.org/pub/newlib/newlib-2.1.0.tar.gz"
-	URL_HASH "SHA256=3e4d5ab9f0508942b6231b8ade4f8e5048cf92c96ed574c2bd6bd3320a599a48"
+	URL "ftp://sourceware.org/pub/newlib/newlib-2.2.0.tar.gz"
+	URL_HASH SHA256=f8add263b0737591aff451b12a00c262c2efac4fa87d741fa1c318fc3bb335be
 	DOWNLOAD_NO_PROGRESS TRUE
-	PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet --input=${CMAKE_CURRENT_SOURCE_DIR}/patches/newlib-2.1.0.patch --directory=<SOURCE_DIR>
-	CONFIGURE_COMMAND PATH=<INSTALL_DIR>/bin:$ENV{PATH} <SOURCE_DIR>/configure 
-		--prefix=<INSTALL_DIR>
+	PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet --input=${CMAKE_CURRENT_SOURCE_DIR}/patches/newlib-2.2.0.patch --directory=<SOURCE_DIR>
+	CONFIGURE_COMMAND <SOURCE_DIR>/configure 
+		--prefix=<INSTALL_DIR> 
 		--target=arm-none-eabi 
-		--disable-nls 
-		--disable-shared 
-		--disable-debug 
-		--disable-dependency-tracking 
-		--disable-werror 
-		--disable-bootstrap 
-		--disable-multilib 
 		--disable-newlib-supplied-syscalls 
 		--enable-newlib-mb 
-		--enable-newlib-io-long-long 
-		&> ${NEWLIB_CONFIGURE_LOG}
+		--enable-multilib
 	BUILD_COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS}
 	INSTALL_COMMAND ${MAKE_EXECUTABLE} install
-	LOG_DOWNLOAD ${ENABLE_LOG}
-	LOG_BUILD ${ENABLE_LOG}
-	LOG_INSTALL ${ENABLE_LOG}
+	LOG_DOWNLOAD TRUE
+	LOG_CONFIGURE TRUE
+	LOG_BUILD TRUE
+	LOG_INSTALL TRUE
 )
 
 # Dependency Injection: Require "make all-gcc" after "configure"
 ExternalProject_Add_Step(gcc all-gcc
-	COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS} all-gcc &> ${GCC_ALL_LOG}
+	COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS} all-gcc
 	DEPENDEES configure
 	WORKING_DIRECTORY <BINARY_DIR>
+	LOG TRUE
 )
 
 # Dependency Injection: Require "make install-gcc" after "all-gcc"
 ExternalProject_Add_Step(gcc install-gcc
-	COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS} install-gcc &> ${GCC_INSTALL_LOG}
+	COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS} install-gcc
 	DEPENDEES all-gcc
 	WORKING_DIRECTORY <BINARY_DIR>
+	LOG TRUE
 )
 
 # Dependency Injection: Make GCC 'build' stage depend on Newlib
@@ -199,11 +162,6 @@ ExternalProject_Add_Step(gcc newlib
 )
 
 # Cleanup
-set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "src" "tmp" "install")
+set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "src")
+set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "tmp")
 
-# Installation
-install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/install/ DESTINATION OpenCTR
-	COMPONENT toolchain
-	USE_SOURCE_PERMISSIONS
-	PATTERN .* EXCLUDE
-)

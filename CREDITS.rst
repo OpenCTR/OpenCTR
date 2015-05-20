@@ -1,13 +1,27 @@
-=========
- Credits 
-=========
+=======
+Credits
+=======
 
-* `Wintermute`_ and `devkitPro`_ for the Binutils, GCC, and Newlib patches.
+This file is a partial list of people who have contributed to the development 
+of OpenCTR. Patches to add the names of contributors are always welcome.
 
-For a complete list of credits, see 
-https://openctr.github.io/Credits.html
+Recognized fields are: 
+  + name (N)
+  + email (E)
+  + web-address (W)
+  + description (D)
 
-.. _Wintermute: http://davejmurphy.com/
+N: Symbitic
+E: alex.shaw.as@gmail.com
+W: https://github.com/Symbitic
+D: Original OpenCTR author.
 
-.. _devkitPro: https://github.com/devkitPro
+N: devkitPro
+W: http://devkitpro.org/
+D: Provider of devkitARM, which is an inspiration for much of OpenCTR.
+
+N: Wintermute
+E: davem@devkitpro.org
+W: http://davejmurphy.com/
+D: Author of the Binutils/GCC/Newlib patches used in OpenCTR.
 

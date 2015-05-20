@@ -1,0 +1,353 @@
+####################################################################
+# OpenCTR - A free and open-source SDK for Nintendo 3DS homebrew. 
+# 
+# Copyright (C) 2015 The OpenCTR Project. 
+# 
+# This file is part of OpenCTR. 
+# 
+# OpenCTR is free software: you can redistribute it and/or modify 
+# it under the terms of the GNU General Public License version 3 as 
+# published by the Free Software Foundation.
+# 
+# OpenCTR is distributed in the hope that it will be useful, 
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License 
+# along with OpenCTR. If not, see <http://www.gnu.org/licenses/>.
+####################################################################
+
+# 
+# Import required modules
+# 
+
+include(CMakeFindDependencyMacro)
+
+####################################################################
+
+# 
+# Package constants
+# 
+
+set(OPENCTR_VERSION @OPENCTR_VERSION@)
+
+####################################################################
+
+# 
+# Package macros
+# 
+
+function(force var)
+	set(${var} "${ARGN}" CACHE INTERNAL "${var}" FORCE)
+endfunction()
+
+####################################################################
+
+# 
+# CMake Package initialization
+# 
+
+@PACKAGE_INIT@
+
+####################################################################
+
+# 
+# Locate GCC, G++, AR, RANLIB
+# 
+
+find_program(ARM_EABI_GCC arm-none-eabi-gcc
+	PATHS ${PACKAGE_PREFIX_DIR}/bin
+	NO_DEFAULT_PATH
+)
+
+find_program(ARM_EABI_GXX arm-none-eabi-g++
+	PATHS ${PACKAGE_PREFIX_DIR}/bin
+	NO_DEFAULT_PATH
+)
+
+find_program(ARM_EABI_AR arm-none-eabi-ar
+	PATHS ${PACKAGE_PREFIX_DIR}/bin
+	NO_DEFAULT_PATH
+)
+
+find_program(ARM_EABI_RANLIB arm-none-eabi-ranlib
+	PATHS ${PACKAGE_PREFIX_DIR}/bin
+	NO_DEFAULT_PATH
+)
+
+if(NOT ARM_EABI_GCC)
+	set(OpenCTR_FOUND FALSE)
+	set(OpenCTR_NOTFOUND_MESSAGE "Could not locate arm-none-eabi-gcc")
+	return()
+endif()
+
+if(NOT ARM_EABI_GXX)
+	set(OpenCTR_FOUND FALSE)
+	set(OpenCTR_NOTFOUND_MESSAGE "Could not locate arm-none-eabi-g++")
+	return()
+endif()
+
+if(NOT ARM_EABI_AR)
+	set(OpenCTR_FOUND FALSE)
+	set(OpenCTR_NOTFOUND_MESSAGE "Could not locate arm-none-eabi-ar")
+	return()
+endif()
+
+if(NOT ARM_EABI_RANLIB)
+	set(OpenCTR_FOUND FALSE)
+	set(OpenCTR_NOTFOUND_MESSAGE "Could not locate arm-none-eabi-ranlib")
+	return()
+endif()
+
+####################################################################
+
+# 
+# OpenCTR Settings
+# 
+
+list(APPEND CMAKE_PREFIX_PATH ${PACKAGE_PREFIX_DIR})
+list(APPEND CMAKE_PREFIX_PATH ${PACKAGE_PREFIX_DIR}/arm-none-eabi)
+
+force(CMAKE_SYSTEM_NAME "Generic")
+force(CMAKE_SYSTEM_VERSION 1)
+force(CMAKE_SYSTEM_PROCESSOR "ARM")
+
+include(CMakeForceCompiler)
+
+cmake_force_c_compiler(${ARM_EABI_GCC} GNU)
+cmake_force_cxx_compiler(${ARM_EABI_GXX} GNU)
+
+force(CMAKE_FIND_ROOT_PATH "${PACKAGE_PREFIX_DIR}")
+force(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+force(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+force(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+
+force(CMAKE_EXECUTABLE_SUFFIX ".elf")
+force(CMAKE_EXECUTABLE_SUFFIX_C ".elf")
+force(CMAKE_EXECUTABLE_SUFFIX_CXX ".elf")
+force(CMAKE_STATIC_LIBRARY_PREFIX "lib")
+force(CMAKE_STATIC_LIBRARY_SUFFIX ".a")
+force(CMAKE_SIZEOF_VOID_P "4")
+force(CMAKE_STANDARD_LIBRARIES "-lc -lm")
+force(CMAKE_LINK_LIBRARY_SUFFIX)
+force(CMAKE_SHARED_LIBRARY_PREFIX)
+force(CMAKE_SHARED_LIBRARY_SUFFIX)
+force(CMAKE_DL_LIBS)
+force(CMAKE_FIND_LIBRARY_PREFIXES "lib")
+force(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+
+force(CMAKE_C_OUTPUT_EXTENSION ".o")
+force(CMAKE_CXX_OUTPUT_EXTENSION ".o")
+force(CMAKE_ASM_OUTPUT_EXTENSION ".o")
+
+####################################################################
+
+# 
+# Clear CMake Flags
+# 
+
+force(CMAKE_ASM_FLAGS)
+force(CMAKE_ASM_FLAGS_DEBUG)
+force(CMAKE_ASM_FLAGS_RELEASE)
+force(CMAKE_ASM_FLAGS_RELWITHDEBINFO)
+force(CMAKE_ASM_FLAGS_MINSIZEREL)
+force(CMAKE_C_FLAGS)
+force(CMAKE_C_FLAGS_DEBUG)
+force(CMAKE_C_FLAGS_RELEASE)
+force(CMAKE_C_FLAGS_RELWITHDEBINFO)
+force(CMAKE_C_FLAGS_MINSIZEREL)
+force(CMAKE_CXX_FLAGS)
+force(CMAKE_CXX_FLAGS_DEBUG)
+force(CMAKE_CXX_FLAGS_RELEASE)
+force(CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+force(CMAKE_CXX_FLAGS_MINSIZEREL)
+force(CMAKE_EXE_LINKER_FLAGS)
+force(CMAKE_EXE_LINKER_FLAGS_DEBUG)
+force(CMAKE_EXE_LINKER_FLAGS_RELEASE)
+force(CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO)
+force(CMAKE_EXE_LINKER_FLAGS_MINSIZEREL)
+
+####################################################################
+
+# 
+# ASM Flags
+# 
+
+# ARMv6 Architecture.
+force(CMAKE_ASM_FLAGS "-march=armv6k ${CMAKE_ASM_FLAGS}")
+# ARM11 MPCore CPU.
+force(CMAKE_ASM_FLAGS "-mtune=mpcore ${CMAKE_ASM_FLAGS}")
+# Hardware Floating Point.
+force(CMAKE_ASM_FLAGS "-mfloat-abi=hard ${CMAKE_ASM_FLAGS}")
+
+####################################################################
+
+# 
+# General C/C++ Flags
+# 
+
+# Use pipes instead of temp files, for faster compiling.
+force(CMAKE_C_FLAGS "-pipe ${CMAKE_C_FLAGS}")
+# Base Optimization level (-O3/-Og can still override).
+force(CMAKE_C_FLAGS "-O2 ${CMAKE_C_FLAGS}")
+# Use 32-Bit ARM-mode.
+force(CMAKE_C_FLAGS "-marm ${CMAKE_C_FLAGS}")
+# ARMv6 Architecture.
+force(CMAKE_C_FLAGS "-march=armv6k ${CMAKE_C_FLAGS}")
+# ARM11 MPCore Processor.
+force(CMAKE_C_FLAGS "-mtune=mpcore ${CMAKE_C_FLAGS}")
+# 32-bit aligned relocations.
+force(CMAKE_C_FLAGS "-mword-relocations ${CMAKE_C_FLAGS}")
+# Loosen type checking requirements
+force(CMAKE_C_FLAGS "-fno-strict-aliasing ${CMAKE_C_FLAGS}")
+# Disable Run-Time Type Information.
+force(CMAKE_CXX_FLAGS "-fno-rtti ${CMAKE_CXX_FLAGS}")
+# Disable Exception Handling.
+force(CMAKE_CXX_FLAGS "-fno-exceptions ${CMAKE_CXX_FLAGS}")
+
+####################################################################
+
+# 
+# C/C++ Debug Flags.
+# 
+
+####################################################################
+
+# 
+# C/C++ Release Flags.
+# 
+
+# Maximum optimization settings
+force(CMAKE_C_FLAGS_RELEASE "-O3 ${CMAKE_C_FLAGS_RELEASE}")
+# Not-Debug mode
+force(CMAKE_C_FLAGS_RELEASE "-DNDEBUG ${CMAKE_C_FLAGS_RELEASE}")
+# Heavy pointer analysis
+force(CMAKE_C_FLAGS_RELEASE "-fipa-pta ${CMAKE_C_FLAGS_RELEASE}")
+# Disgard the frame pointer
+force(CMAKE_C_FLAGS_RELEASE "-fomit-frame-pointer ${CMAKE_C_FLAGS_RELEASE}")
+# Place each function in a separate section
+force(CMAKE_C_FLAGS_RELEASE "-ffunction-sections ${CMAKE_C_FLAGS_RELEASE}")
+# Place each data item in a separate section
+force(CMAKE_C_FLAGS_RELEASE "-fdata-sections ${CMAKE_C_FLAGS_RELEASE}")
+# Link-Time Optimization
+force(CMAKE_C_FLAGS_RELEASE "-flto ${CMAKE_C_FLAGS_RELEASE}")
+# Use the Gold LTO Plugin
+force(CMAKE_C_FLAGS_RELEASE "-fuse-linker-plugin ${CMAKE_C_FLAGS_RELEASE}")
+# Allow LTO-enabled objects to link with regular objects
+force(CMAKE_C_FLAGS_RELEASE "-ffat-lto-objects ${CMAKE_C_FLAGS_RELEASE}")
+# Maximum compression of LTO information
+force(CMAKE_C_FLAGS_RELEASE "-flto-compression-level=9 ${CMAKE_C_FLAGS_RELEASE}")
+# Speed up math calculations
+force(CMAKE_C_FLAGS_RELEASE "-ffast-math ${CMAKE_C_FLAGS_RELEASE}")
+# Color-coded warnings, errors, and status messages
+force(CMAKE_C_FLAGS_RELEASE "-fdiagnostics-color=always ${CMAKE_C_FLAGS_RELEASE}")
+# Generate stack to unwind execution thread
+force(CMAKE_C_FLAGS_RELEASE "-funwind-tables ${CMAKE_C_FLAGS_RELEASE}")
+
+####################################################################
+
+# 
+# Copy all CMAKE_C_FLAGS into CMAKE_CXX_FLAGS
+# 
+
+force(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} ${CMAKE_CXX_FLAGS}")
+force(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} ${CMAKE_CXX_FLAGS_DEBUG}")
+force(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} ${CMAKE_CXX_FLAGS_RELEASE}")
+force(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO} ${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
+force(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_C_FLAGS_MINSIZEREL} ${CMAKE_CXX_FLAGS_MINSIZEREL}")
+
+####################################################################
+
+# 
+# C/C++ Standards
+# 
+
+# Use C11 (w/GNU Extensions)
+force(CMAKE_C_FLAGS "-std=gnu11 ${CMAKE_C_FLAGS}")
+# Use C++11 (w/GNU Extensions)
+force(CMAKE_CXX_FLAGS "-std=gnu++11 ${CMAKE_CXX_FLAGS}")
+
+####################################################################
+
+# 
+# CMake utils
+# 
+
+# CMake ar
+set(CMAKE_AR "${ARM_EABI_AR}")
+# CMake ranlib
+set(CMAKE_RANLIB "${ARM_EABI_RANLIB}")
+
+####################################################################
+
+# OpenCTR Linker script
+# 
+
+# 3DSX Linker Script.
+force(CMAKE_EXE_LINKER_FLAGS "--specs=3dsx.specs ${CMAKE_EXE_LINKER_FLAGS}")
+
+####################################################################
+
+# Disable shared-library support.
+set_property(GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS FALSE)
+
+####################################################################
+
+# 
+# Target properties
+# 
+
+force(UNIX TRUE)
+force(APPLE FALSE)
+force(WIN32 FALSE)
+force(CYGWIN FALSE)
+
+####################################################################
+
+# 
+# Remove any existing platform-specific linker flags
+# 
+
+set(CMAKE_C_LINK_FLAGS "")
+set(CMAKE_CXX_LINK_FLAGS "")
+
+####################################################################
+
+# 
+# OpenCTR Components
+# 
+
+set(_supported_components artool 3dsxtool libctru)
+
+list(LENGTH OpenCTR_FIND_COMPONENTS len)
+if((len EQUAL 0) OR (NOT OpenCTR_FIND_COMPONENTS))
+	# TODO: Copy _supported_components into _components.
+	set(_components artool 3dsxtool libctru)
+else()
+	set(_components ${OpenCTR_FIND_COMPONENTS})
+endif()
+
+foreach(_comp ${_components})
+	# Make sure the component is a recognized component of OpenCTR.
+	list(FIND _supported_components ${_comp} IDX)
+	if(IDX EQUAL -1)
+		set(OpenCTR_FOUND False)
+		set(OpenCTR_NOTFOUND_MESSAGE "Unsupported component: ${_comp}")
+	endif()
+
+	# Find the component
+	find_dependency(${_comp})
+
+	# Check if the component was found.
+	string(TOUPPER "${_comp}" COMP_NAME)
+	if(${${COMP_NAME}_FOUND})
+		set(OpenCTR_${_comp}_FOUND TRUE)
+	endif()
+
+endforeach()
+
+check_required_components(OpenCTR)
+
+####################################################################
+
