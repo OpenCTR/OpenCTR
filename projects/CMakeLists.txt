@@ -22,7 +22,7 @@ include(ExternalProject)
 
 if(ENABLE_LIBCTRU)
 	ExternalProject_Add(libctru
-		DEPENDS tools gcc
+		DEPENDS tools toolchain
 		PREFIX ${CMAKE_CURRENT_BINARY_DIR}
 		INSTALL_DIR ${OPENCTR_INSTALL_DIR}/arm-none-eabi
 		GIT_REPOSITORY "https://github.com/OpenCTR/libctru"

@@ -27,7 +27,7 @@ add_custom_command(
 		-c ${CMAKE_CURRENT_SOURCE_DIR}/3dsx_crt0.s
 	COMMENT "3dsx_crt0.s"
 	MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/3dsx_crt0.s
-	DEPENDS gcc
+	DEPENDS toolchain
 )
 
 # Mark 3dsx_crt0.o as generated

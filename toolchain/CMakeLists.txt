@@ -18,8 +18,11 @@
 # along with OpenCTR. If not, see <http://www.gnu.org/licenses/>.
 ####################################################################
 
-include(ExternalProject)
 include(ProcessorCount)
+
+if((NOT ENABLE_GCC) AND (NOT ENABLE_LLVM))
+	message(SEND_ERROR "ENABLE_GCC and/or ENABLE_LLVM must be enabled.")
+endif()
 
 # Identify the number of cores we can use.
 ProcessorCount(N)
@@ -39,129 +42,41 @@ if(NOT PATCH_EXECUTABLE)
 	message(SEND_ERROR "GNU Patch not found")
 endif()
 
-# Binutils target
-ExternalProject_Add(binutils
-	PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-	INSTALL_DIR ${OPENCTR_INSTALL_DIR}
-	URL "ftp://ftp.gnu.org/gnu/binutils/binutils-2.25.tar.bz2" 
-	URL_HASH SHA256=22defc65cfa3ef2a3395faaea75d6331c6e62ea5dfacfed3e2ec17b08c882923
-	DOWNLOAD_NO_PROGRESS TRUE 
-	PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet --input=${CMAKE_CURRENT_SOURCE_DIR}/patches/binutils-2.25.patch --directory=<SOURCE_DIR> 
-	CONFIGURE_COMMAND <SOURCE_DIR>/configure 
-		--prefix=<INSTALL_DIR> 
-		--target=arm-none-eabi 
-		--disable-nls 
-		--disable-shared 
-		--disable-debug 
-		--disable-dependency-tracking 
-		--disable-werror 
-		--disable-bootstrap 
-		--enable-checking=release 
-		--enable-lto 
-		--enable-plugins 
-		--enable-gold=yes
-		--enable-ld=default
-		--enable-poison-system-directories 
-		--enable-install-libbfd 
-		--enable-build-with-cxx 
-		--enable-interworks 
-		--enable-nlsi=no 
-		--enable-threads
-	BUILD_COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS}
-	INSTALL_COMMAND ${MAKE_EXECUTABLE} install
-	LOG_DOWNLOAD TRUE
-	LOG_CONFIGURE TRUE
-	LOG_BUILD TRUE
-	LOG_INSTALL TRUE
-)
+# Binutils settings
+set(BINUTILS_PATCH "${CMAKE_CURRENT_SOURCE_DIR}/patches/binutils-2.25.patch")
+set(BINUTILS_URL "ftp://ftp.gnu.org/gnu/binutils/binutils-2.25.tar.bz2")
+set(BINUTILS_HASH "22defc65cfa3ef2a3395faaea75d6331c6e62ea5dfacfed3e2ec17b08c882923")
 
-# GCC target
-ExternalProject_Add(gcc
-	DEPENDS binutils
-	PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-	INSTALL_DIR ${OPENCTR_INSTALL_DIR}
-	URL "ftp://ftp.gnu.org/gnu/gcc/gcc-4.9.2/gcc-4.9.2.tar.bz2"
-	URL_HASH SHA256=2020c98295856aa13fda0f2f3a4794490757fc24bcca918d52cc8b4917b972dd
-	DOWNLOAD_NO_PROGRESS TRUE
-	PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet --input=${CMAKE_CURRENT_SOURCE_DIR}/patches/gcc-4.9.2.patch --directory=<SOURCE_DIR>
-	CONFIGURE_COMMAND <SOURCE_DIR>/configure 
-		--prefix=<INSTALL_DIR> 
-		--target=arm-none-eabi 
-		--disable-nls 
-		--disable-shared 
-		--disable-debug 
-		--disable-dependency-tracking 
-		--disable-werror 
-		--with-bugurl=https://github.com/OpenCTR/OpenCTR/issues
-		--enable-checking=release 
-		--disable-bootstrap 
-		--enable-interwork 
-		--enable-languages=c,c++ 
-		--enable-threads 
-		--disable-win32-registry 
-		--with-newlib 
-		--without-headers 
-		--enable-lto 
-		--enable-multilib 
-		--with-endian=little 
-		--with-arch=armv6k 
-	BUILD_COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS}
-	INSTALL_COMMAND ${MAKE_EXECUTABLE} install
-	LOG_DOWNLOAD TRUE
-	LOG_CONFIGURE TRUE
-	LOG_BUILD TRUE
-	LOG_INSTALL TRUE
-)
+# GCC settings
+set(GCC_URL "ftp://ftp.gnu.org/gnu/gcc/gcc-4.9.2/gcc-4.9.2.tar.bz2")
+set(GCC_HASH "2020c98295856aa13fda0f2f3a4794490757fc24bcca918d52cc8b4917b972dd")
+set(GCC_PATCH "${CMAKE_CURRENT_SOURCE_DIR}/patches/gcc-4.9.2.patch")
 
-# Newlib target
-ExternalProject_Add(newlib
-	DEPENDS binutils
-	PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-	INSTALL_DIR ${OPENCTR_INSTALL_DIR}
-	EXCLUDE_FROM_ALL TRUE
-	URL "ftp://sourceware.org/pub/newlib/newlib-2.2.0.tar.gz"
-	URL_HASH SHA256=f8add263b0737591aff451b12a00c262c2efac4fa87d741fa1c318fc3bb335be
-	DOWNLOAD_NO_PROGRESS TRUE
-	PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet --input=${CMAKE_CURRENT_SOURCE_DIR}/patches/newlib-2.2.0.patch --directory=<SOURCE_DIR>
-	CONFIGURE_COMMAND <SOURCE_DIR>/configure 
-		--prefix=<INSTALL_DIR> 
-		--target=arm-none-eabi 
-		--disable-newlib-supplied-syscalls 
-		--enable-newlib-mb 
-		--enable-multilib
-	BUILD_COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS}
-	INSTALL_COMMAND ${MAKE_EXECUTABLE} install
-	LOG_DOWNLOAD TRUE
-	LOG_CONFIGURE TRUE
-	LOG_BUILD TRUE
-	LOG_INSTALL TRUE
-)
+# Newlib settings
+set(NEWLIB_URL "ftp://sourceware.org/pub/newlib/newlib-2.2.0.tar.gz")
+set(NEWLIB_HASH "f8add263b0737591aff451b12a00c262c2efac4fa87d741fa1c318fc3bb335be")
+set(NEWLIB_PATCH "${CMAKE_CURRENT_SOURCE_DIR}/patches/newlib-2.2.0.patch")
 
-# Dependency Injection: Require "make all-gcc" after "configure"
-ExternalProject_Add_Step(gcc all-gcc
-	COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS} all-gcc
-	DEPENDEES configure
-	WORKING_DIRECTORY <BINARY_DIR>
-	LOG TRUE
-)
+# LLVM settings
+set(LLVM_URL "http://llvm.org/releases/3.6.0/llvm-3.6.0.src.tar.xz")
+set(LLVM_HASH "b39a69e501b49e8f73ff75c9ad72313681ee58d6f430bfad4d81846fe92eb9ce")
 
-# Dependency Injection: Require "make install-gcc" after "all-gcc"
-ExternalProject_Add_Step(gcc install-gcc
-	COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS} install-gcc
-	DEPENDEES all-gcc
-	WORKING_DIRECTORY <BINARY_DIR>
-	LOG TRUE
-)
+# Clang settings
+set(CLANG_URL "http://llvm.org/releases/3.6.0/cfe-3.6.0.src.tar.xz")
+set(CLANG_HASH "be0e69378119fe26f0f2f74cffe82b7c26da840c9733fe522ed3c1b66b11082d")
 
-# Dependency Injection: Make GCC 'build' stage depend on Newlib
-ExternalProject_Add_Step(gcc newlib
-	COMMAND ${CMAKE_MAKE_PROGRAM} newlib
-	DEPENDEES install-gcc
-	DEPENDERS build
-	WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-)
+# Create a toolchain CMake target
+add_custom_target(toolchain ALL)
 
-# Cleanup
-set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "src")
-set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "tmp")
+# Add binutils target
+add_subdirectory(binutils)
 
+# Add GCC target
+if(ENABLE_GCC)
+	add_subdirectory(gcc)
+endif()
+
+# Add LLVM target
+if(ENABLE_LLVM)
+	add_subdirectory(llvm)
+endif()

@@ -18,6 +18,15 @@
 # along with OpenCTR. If not, see <http://www.gnu.org/licenses/>.
 ####################################################################
 
+####################################################################
+
+# 
+# Minimum required version of CMake
+# 
+cmake_minimum_required(VERSION 3.0.0)
+
+####################################################################
+
 # 
 # Import required modules
 # 
@@ -351,3 +360,9 @@ check_required_components(OpenCTR)
 
 ####################################################################
 
+# 
+# Include OpenCTR Macros
+# 
+include(${CMAKE_CURRENT_LIST_DIR}/openctr-macros.cmake)
+
+####################################################################

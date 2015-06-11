@@ -32,6 +32,8 @@ project(OpenCTR NONE)
 
 option(ENABLE_DOC "Enable/Disable building Sphinx documentation" OFF)
 option(ENABLE_LIBCTRU "Enable/Disable building libctru" ON)
+option(ENABLE_GCC "Enable/Disable GCC toolchain" ON)
+option(ENABLE_LLVM "Enable/Disable LLVM/Clang toolchain" OFF)
 
 # Disable install messages
 set(CMAKE_INSTALL_MESSAGE "NEVER")
@@ -48,9 +50,17 @@ configure_package_config_file(
 	INSTALL_PREFIX ${OPENCTR_INSTALL_DIR}
 )
 
+# Configure openctr-macros.cmake
+configure_package_config_file(
+	${CMAKE_CURRENT_SOURCE_DIR}/CMake/openctr-macros.cmake.in
+	${OPENCTR_INSTALL_DIR}/lib/cmake/OpenCTR/openctr-macros.cmake
+	INSTALL_DESTINATION lib/cmake/OpenCTR
+	INSTALL_PREFIX ${OPENCTR_INSTALL_DIR}
+)
+
 # Create openctr-config-version.cmake
 write_basic_package_version_file(
-	${OPENCTR_INSTALL_DIR}/lib/cmake/OpenCTR/openctr-config-version.cmake 
+	${OPENCTR_INSTALL_DIR}/lib/cmake/OpenCTR/openctr-config-version.cmake
 	COMPATIBILITY AnyNewerVersion 
 	VERSION ${OPENCTR_VERSION}
 )
@@ -77,8 +87,8 @@ set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "install")
 # CPack Settings
 set(PROJECT_CONTACT "https://github.com/OpenCTR")
 set(PROJECT_DESCRIPTION "Free SDK for the Nintendo 3DS")
-set(PROJECT_README ${CMAKE_CURRENT_SOURCE_DIR}/README.rst)
 set(PROJECT_VENDOR "OpenCTR")
+set(PROJECT_README ${CMAKE_CURRENT_SOURCE_DIR}/README.rst)
 set(PROJECT_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt)
 set(PROJECT_LICENSE_NAME "GPLv3")
 set(PROJECT_HOMEPAGE "https://github.com/OpenCTR")
