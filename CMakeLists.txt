@@ -39,7 +39,7 @@ option(ENABLE_LLVM "Enable/Disable LLVM/Clang toolchain" OFF)
 set(CMAKE_INSTALL_MESSAGE "NEVER")
 
 # OpenCTR build settings
-set(OPENCTR_VERSION 1.0.0)
+set(OPENCTR_VERSION 0.0.0)
 set(OPENCTR_INSTALL_DIR "${CMAKE_CURRENT_BINARY_DIR}/install")
 
 # Configure openctr-config.cmake

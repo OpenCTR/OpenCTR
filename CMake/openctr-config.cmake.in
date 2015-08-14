@@ -18,52 +18,19 @@
 # along with OpenCTR. If not, see <http://www.gnu.org/licenses/>.
 ####################################################################
 
-####################################################################
-
-# 
-# Minimum required version of CMake
-# 
 cmake_minimum_required(VERSION 3.0.0)
-
-####################################################################
-
-# 
-# Import required modules
-# 
 
 include(CMakeFindDependencyMacro)
 
-####################################################################
-
-# 
-# Package constants
-# 
-
 set(OPENCTR_VERSION @OPENCTR_VERSION@)
-
-####################################################################
-
-# 
-# Package macros
-# 
 
 function(force var)
 	set(${var} "${ARGN}" CACHE INTERNAL "${var}" FORCE)
 endfunction()
 
-####################################################################
-
-# 
-# CMake Package initialization
-# 
-
 @PACKAGE_INIT@
 
 ####################################################################
-
-# 
-# Locate GCC, G++, AR, RANLIB
-# 
 
 find_program(ARM_EABI_GCC arm-none-eabi-gcc
 	PATHS ${PACKAGE_PREFIX_DIR}/bin
@@ -177,6 +144,9 @@ force(CMAKE_EXE_LINKER_FLAGS_RELEASE)
 force(CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO)
 force(CMAKE_EXE_LINKER_FLAGS_MINSIZEREL)
 
+set(CMAKE_C_LINK_FLAGS "")
+set(CMAKE_CXX_LINK_FLAGS "")
+
 ####################################################################
 
 # 
@@ -198,18 +168,32 @@ force(CMAKE_ASM_FLAGS "-mfloat-abi=hard ${CMAKE_ASM_FLAGS}")
 
 # Use pipes instead of temp files, for faster compiling.
 force(CMAKE_C_FLAGS "-pipe ${CMAKE_C_FLAGS}")
-# Base Optimization level (-O3/-Og can still override).
-force(CMAKE_C_FLAGS "-O2 ${CMAKE_C_FLAGS}")
 # Use 32-Bit ARM-mode.
 force(CMAKE_C_FLAGS "-marm ${CMAKE_C_FLAGS}")
 # ARMv6 Architecture.
 force(CMAKE_C_FLAGS "-march=armv6k ${CMAKE_C_FLAGS}")
 # ARM11 MPCore Processor.
 force(CMAKE_C_FLAGS "-mtune=mpcore ${CMAKE_C_FLAGS}")
+# Hardware Floating Point (with software fallback)
+force(CMAKE_C_FLAGS "-mfloat-abi=softfp ${CMAKE_C_FLAGS}")
+# VFPv2 Floating Point Unit
+force(CMAKE_C_FLAGS "-mfpu=vfp ${CMAKE_C_FLAGS}")
 # 32-bit aligned relocations.
 force(CMAKE_C_FLAGS "-mword-relocations ${CMAKE_C_FLAGS}")
-# Loosen type checking requirements
-force(CMAKE_C_FLAGS "-fno-strict-aliasing ${CMAKE_C_FLAGS}")
+# Place each function in a separate section
+force(CMAKE_C_FLAGS "-ffunction-sections ${CMAKE_C_FLAGS}")
+# Place each data item in a separate section
+force(CMAKE_C_FLAGS "-fdata-sections ${CMAKE_C_FLAGS}")
+# 32-bit enumerations (required by AAPCS).
+force(CMAKE_C_FLAGS "-fno-short-enums ${CMAKE_C_FLAGS}")
+# 16-bit wide characters (required by AAPCS).
+force(CMAKE_C_FLAGS "-fshort-wchar ${CMAKE_C_FLAGS}")
+# Signed 8-bit characters (required by AAPCS).
+force(CMAKE_C_FLAGS "-fsigned-char ${CMAKE_C_FLAGS}")
+# Use the MPCore CP15 register as the TLS pointer.
+force(CMAKE_C_FLAGS "-mtp=cp15 ${CMAKE_C_FLAGS}")
+# Enable warnings
+force(CMAKE_C_FLAGS "-Wall ${CMAKE_CXX_FLAGS}")
 # Disable Run-Time Type Information.
 force(CMAKE_CXX_FLAGS "-fno-rtti ${CMAKE_CXX_FLAGS}")
 # Disable Exception Handling.
@@ -220,6 +204,21 @@ force(CMAKE_CXX_FLAGS "-fno-exceptions ${CMAKE_CXX_FLAGS}")
 # 
 # C/C++ Debug Flags.
 # 
+
+# Optimize for best debugging experience.
+force(CMAKE_C_FLAGS_DEBUG "-Og ${CMAKE_C_FLAGS_DEBUG}")
+# Debug mode.
+force(CMAKE_C_FLAGS_DEBUG "-DDEBUG ${CMAKE_C_FLAGS_DEBUG}")
+# Output as much debugging information as possible.
+force(CMAKE_C_FLAGS_DEBUG "-g ${CMAKE_C_FLAGS_DEBUG}")
+# Generate DWARFv4-format debug info.
+force(CMAKE_C_FLAGS_DEBUG "-gdwarf-4 ${CMAKE_C_FLAGS_DEBUG}")
+# Push changes in the stack to the MPCore
+force(CMAKE_C_FLAGS_DEBUG "-fstack-check ${CMAKE_C_FLAGS_DEBUG}")
+# Generate hardware traps for integer overflows
+force(CMAKE_C_FLAGS_DEBUG "-ftrapv ${CMAKE_C_FLAGS_DEBUG}")
+# Provides best GDB integration
+force(CMAKE_C_FLAGS_DEBUG "-fvar-tracking-assignments ${CMAKE_C_FLAGS_DEBUG}")
 
 ####################################################################
 
@@ -235,10 +234,6 @@ force(CMAKE_C_FLAGS_RELEASE "-DNDEBUG ${CMAKE_C_FLAGS_RELEASE}")
 force(CMAKE_C_FLAGS_RELEASE "-fipa-pta ${CMAKE_C_FLAGS_RELEASE}")
 # Disgard the frame pointer
 force(CMAKE_C_FLAGS_RELEASE "-fomit-frame-pointer ${CMAKE_C_FLAGS_RELEASE}")
-# Place each function in a separate section
-force(CMAKE_C_FLAGS_RELEASE "-ffunction-sections ${CMAKE_C_FLAGS_RELEASE}")
-# Place each data item in a separate section
-force(CMAKE_C_FLAGS_RELEASE "-fdata-sections ${CMAKE_C_FLAGS_RELEASE}")
 # Link-Time Optimization
 force(CMAKE_C_FLAGS_RELEASE "-flto ${CMAKE_C_FLAGS_RELEASE}")
 # Use the Gold LTO Plugin
@@ -247,6 +242,8 @@ force(CMAKE_C_FLAGS_RELEASE "-fuse-linker-plugin ${CMAKE_C_FLAGS_RELEASE}")
 force(CMAKE_C_FLAGS_RELEASE "-ffat-lto-objects ${CMAKE_C_FLAGS_RELEASE}")
 # Maximum compression of LTO information
 force(CMAKE_C_FLAGS_RELEASE "-flto-compression-level=9 ${CMAKE_C_FLAGS_RELEASE}")
+# Use BFD as the linker (for LTO)
+force(CMAKE_C_FLAGS_RELEASE "-fuse-ld=bfd ${CMAKE_C_FLAGS_RELEASE}")
 # Speed up math calculations
 force(CMAKE_C_FLAGS_RELEASE "-ffast-math ${CMAKE_C_FLAGS_RELEASE}")
 # Color-coded warnings, errors, and status messages
@@ -290,9 +287,29 @@ set(CMAKE_RANLIB "${ARM_EABI_RANLIB}")
 
 ####################################################################
 
+# 
 # OpenCTR Linker script
 # 
 
+# Garbage collection of unused code.
+# force(CMAKE_EXE_LINKER_FLAGS "-Wl,--gc-sections ${CMAKE_EXE_LINKER_FLAGS}")
+# Disable the executable stack.
+# force(CMAKE_EXE_LINKER_FLAGS "-Wl,-z,noexecstack ${CMAKE_EXE_LINKER_FLAGS}")
+# Report any undefined symbols at link-time.
+# force(CMAKE_EXE_LINKER_FLAGS "-Wl,--no-undefined ${CMAKE_EXE_LINKER_FLAGS}")
+# Discard unneeded references.
+# force(CMAKE_EXE_LINKER_FLAGS "-Wl,--as-needed ${CMAKE_EXE_LINKER_FLAGS}")
+# Enable incremental compilation. (GoLD only)
+# force(CMAKE_EXE_LINKER_FLAGS "-Wl,--incremental ${CMAKE_EXE_LINKER_FLAGS}")
+# Run linker multithreaded. (GoLD only)
+# force(CMAKE_EXE_LINKER_FLAGS "-Wl,--threads ${CMAKE_EXE_LINKER_FLAGS}")
+
+# Define common (global) symbols
+force(CMAKE_EXE_LINKER_FLAGS "-Wl,-d ${CMAKE_EXE_LINKER_FLAGS}")
+# Relocatable output
+force(CMAKE_EXE_LINKER_FLAGS "-Wl,--emit-relocs ${CMAKE_EXE_LINKER_FLAGS}")
+# Enable BLX
+force(CMAKE_EXE_LINKER_FLAGS "-Wl,--use-blx ${CMAKE_EXE_LINKER_FLAGS}")
 # 3DSX Linker Script.
 force(CMAKE_EXE_LINKER_FLAGS "--specs=3dsx.specs ${CMAKE_EXE_LINKER_FLAGS}")
 
@@ -315,19 +332,10 @@ force(CYGWIN FALSE)
 ####################################################################
 
 # 
-# Remove any existing platform-specific linker flags
-# 
-
-set(CMAKE_C_LINK_FLAGS "")
-set(CMAKE_CXX_LINK_FLAGS "")
-
-####################################################################
-
-# 
 # OpenCTR Components
 # 
 
-set(_supported_components artool 3dsxtool libctru)
+set(_supported_components artool 3dsxtool libctru libctr)
 
 list(LENGTH OpenCTR_FIND_COMPONENTS len)
 if((len EQUAL 0) OR (NOT OpenCTR_FIND_COMPONENTS))
