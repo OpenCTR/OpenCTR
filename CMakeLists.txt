@@ -27,7 +27,6 @@ set(CMAKE_INSTALL_MESSAGE "NEVER")
 set(OPENCTR_ROOT "${CMAKE_CURRENT_BINARY_DIR}/install")
 
 include(CMakePackageConfigHelpers)
-include(Setup)
 
 project(OpenCTR LANGUAGES NONE VERSION 0.0.1)
 

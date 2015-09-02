@@ -48,11 +48,6 @@ addons:
       - binutils
       - binutils-gold
       - binutils-dev
-      - cloog-isl
-      - cloog-ppl
-      - libcloog-isl-dev
-      - libcloog-parma-dev
-      - libcloog-ppl-dev
       - gawk
 
 env:
