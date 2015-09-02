@@ -23,30 +23,30 @@ include(ExternalProject)
 # Binutils target
 ExternalProject_Add(binutils
 	PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-	INSTALL_DIR ${OPENCTR_INSTALL_DIR}
+	INSTALL_DIR ${OPENCTR_ROOT}
 	URL "${BINUTILS_URL}" 
 	URL_HASH "SHA256=${BINUTILS_HASH}"
 	DOWNLOAD_NO_PROGRESS TRUE 
 	PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet --input=${BINUTILS_PATCH} --directory=<SOURCE_DIR> 
-	CONFIGURE_COMMAND <SOURCE_DIR>/configure 
-		--prefix=<INSTALL_DIR> 
-		--target=arm-none-eabi 
-		--disable-nls 
-		--disable-shared 
-		--disable-debug 
-		--disable-dependency-tracking 
-		--disable-werror 
-		--disable-bootstrap 
-		--enable-checking=release 
-		--enable-lto 
-		--enable-plugins 
+	CONFIGURE_COMMAND <SOURCE_DIR>/configure
+		--prefix=<INSTALL_DIR>
+		--target=arm-none-eabi
+		--disable-nls
+		--disable-shared
+		--disable-debug
+		--disable-dependency-tracking
+		--disable-werror
+		--disable-bootstrap
+		--enable-checking=release
+		--enable-lto
+		--enable-plugins
 		--enable-gold=yes
 		--enable-ld=default
-		--enable-poison-system-directories 
-		--enable-install-libbfd 
-		--enable-build-with-cxx 
-		--enable-interworks 
-		--enable-nlsi=no 
+		--enable-poison-system-directories
+		--enable-install-libbfd
+		--enable-build-with-cxx
+		--enable-interworks
+		--enable-nlsi=no
 	BUILD_COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS}
 	INSTALL_COMMAND ${MAKE_EXECUTABLE} install
 	LOG_DOWNLOAD TRUE
@@ -58,4 +58,3 @@ ExternalProject_Add(binutils
 # Cleanup
 set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "src")
 set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "tmp")
-

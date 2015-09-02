@@ -23,7 +23,7 @@ find_package(Sphinx QUIET REQUIRED)
 option(ENABLE_UPLOAD "Enable 'upload' target to upload documentation" OFF)
 
 set(CONFIG_PATH "${CMAKE_CURRENT_BINARY_DIR}")
-set(HTML_PATH "${OPENCTR_INSTALL_DIR}/share/doc/OpenCTR")
+set(HTML_PATH "${OPENCTR_ROOT}/share/doc/OpenCTR")
 set(RST_PATH "${CMAKE_CURRENT_SOURCE_DIR}/rst")
 set(UPLOAD_PATH "${CMAKE_CURRENT_BINARY_DIR}/upload")
 set(THEME_PATH "${CMAKE_CURRENT_SOURCE_DIR}/_themes")

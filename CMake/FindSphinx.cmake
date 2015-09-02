@@ -36,54 +36,54 @@
 ####################################################################
 
 if(APPLE)
-	# Fink
-	list(APPEND SPHINX_PATH_DIRS "/sw")
-	# DarwinPorts
-	list(APPEND SPHINX_PATH_DIRS "/opt/local")
+    # Fink
+    list(APPEND SPHINX_PATH_DIRS "/sw")
+    # DarwinPorts
+    list(APPEND SPHINX_PATH_DIRS "/opt/local")
 endif()
 
 if(CMAKE_SYSTEM_NAME MATCHES "(Solaris|SunOS)")
-	# BlastWave
-	list(APPEND SPHINX_PATH_DIRS "/opt/csw")
+    # BlastWave
+    list(APPEND SPHINX_PATH_DIRS "/opt/csw")
 endif()
 
 if(UNIX)
-	list(APPEND SPHINX_PATH_DIRS "/usr")
-	list(APPEND SPHINX_PATH_DIRS "/usr/local")
+    list(APPEND SPHINX_PATH_DIRS "/usr")
+    list(APPEND SPHINX_PATH_DIRS "/usr/local")
 endif()
 
 find_program(SPHINX_EXECUTABLE
-	NAMES
-		sphinx-build 
-		sphinx-build.exe 
-		sphinx-build.py 
-	PATHS 
-		${SPHINX_PATH_DIRS} 
-	PATH_SUFFIXES 
-		bin
-	DOC 
-		"Path to sphinx-build"
+    NAMES
+        sphinx-build 
+        sphinx-build.exe 
+        sphinx-build.py 
+    PATHS 
+        ${SPHINX_PATH_DIRS} 
+    PATH_SUFFIXES 
+        bin
+    DOC 
+        "Path to sphinx-build"
 )
 
 if(NOT SPHINX_VERSION)
-	set(_SPHINX_VERSION "0.0.0")
+    set(_SPHINX_VERSION "0.0.0")
 
-	if(SPHINX_EXECUTABLE)
-		execute_process(
-			COMMAND ${SPHINX_EXECUTABLE} --version
-			RESULT_VARIABLE result 
-			OUTPUT_VARIABLE output 
-			ERROR_VARIABLE error 
-			OUTPUT_STRIP_TRAILING_WHITESPACE
-		)
-		if(${result} EQUAL 0)
-			if("${output}" MATCHES "^Sphinx \\(sphinx-build\\) ([0-9]+\\.[0-9]+\\.[0-9]+)$")
-				string(REGEX REPLACE "^Sphinx \\(sphinx-build\\) ([0-9]+\\.[0-9]+\\.[0-9]+)$" "\\1" _SPHINX_VERSION "${output}")
-			endif()
-		endif()
-	endif()
+    if(SPHINX_EXECUTABLE)
+        execute_process(
+            COMMAND ${SPHINX_EXECUTABLE} --version
+            RESULT_VARIABLE result 
+            OUTPUT_VARIABLE output 
+            ERROR_VARIABLE error 
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+        )
+        if(${result} EQUAL 0)
+            if("${output}" MATCHES "^Sphinx \\(sphinx-build\\) ([0-9]+\\.[0-9]+\\.[0-9]+)$")
+                string(REGEX REPLACE "^Sphinx \\(sphinx-build\\) ([0-9]+\\.[0-9]+\\.[0-9]+)$" "\\1" _SPHINX_VERSION "${output}")
+            endif()
+        endif()
+    endif()
 
-	set(SPHINX_VERSION "${_SPHINX_VERSION}" CACHE STRING "Sphinx version")
+    set(SPHINX_VERSION "${_SPHINX_VERSION}" CACHE STRING "Sphinx version")
 endif()
 
 include(FindPackageHandleStandardArgs)

@@ -1,0 +1,60 @@
+#.rst:
+# OpenCTR.cmake
+# -------------
+#
+# Install ``OpenCTR.cmake`` to
+# :variable:`CMAKE_ROOT`/Modules so that users can set 
+# :variable:`CMAKE_TOOLCHAIN_FILE` by just including this file.
+
+####################################################################
+# OpenCTR - A free and open-source SDK for Nintendo 3DS homebrew. 
+# 
+# Copyright (C) 2015 The OpenCTR Project. 
+# 
+# This file is part of OpenCTR. 
+# 
+# OpenCTR is free software: you can redistribute it and/or modify 
+# it under the terms of the GNU General Public License version 3 as 
+# published by the Free Software Foundation.
+# 
+# OpenCTR is distributed in the hope that it will be useful, 
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License 
+# along with OpenCTR. If not, see <http://www.gnu.org/licenses/>.
+####################################################################
+
+cmake_minimum_required(VERSION 3.0.0)
+if(CMAKE_VERSION VERSION_LESS 3.0.0)
+    set(OpenCTR_FOUND FALSE)
+    set(OpenCTR_NOTFOUND_MESSAGE "OpenCTR requires CMake 3.0.0 or later.")
+    return()
+endif()
+
+if(NOT OPENCTR_ROOT)
+    set(OPENCTR_ROOT @CMAKE_INSTALL_PREFIX@)
+endif()
+
+set(OPENCTR_TOOLCHAIN_FILE
+    "${OPENCTR_ROOT}/lib/cmake/OpenCTR/OpenCTR-Toolchain.cmake")
+
+if(NOT EXISTS ${OPENCTR_ROOT})
+    message(SEND_ERROR "OpenCTR not found at ${OPENCTR_ROOT}.")
+    return()
+endif()
+
+if(NOT EXISTS ${OPENCTR_TOOLCHAIN_FILE})
+    message(SEND_ERROR "OpenCTR Toolchain file not found.")
+    return()
+endif()
+
+set(CMAKE_TOOLCHAIN_FILE "${OPENCTR_TOOLCHAIN_FILE}" CACHE INTERNAL
+    "CMAKE_TOOLCHAIN_FILE for OpenCTR." FORCE)
+
+list(APPEND CMAKE_PREFIX_PATH "${OPENCTR_ROOT}")
+list(APPEND CMAKE_PREFIX_PATH "${OPENCTR_ROOT}/arm-none-eabi")
+
+# TODO: If PROJECT() already called, error.
+

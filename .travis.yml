@@ -1,0 +1,68 @@
+
+language: c
+
+sudo: false
+
+os:
+  - linux
+
+compiler:
+  - clang
+
+notifications:
+  email:
+    recipients:
+      - alex.shaw.as@gmail.com
+    on_success: change
+    on_failure: always
+    on_start: never
+
+branches:
+  only:
+    - master
+
+cache:
+  - apt
+
+addons:
+  apt:
+    sources:
+      - george-edison55-precise-backports
+      - llvm-toolchain-precise-3.6
+      - ubuntu-toolchain-r-test
+    packages:
+      - clang-3.6
+      - cmake
+      - cmake-data
+      - gcc-4.9
+      - g++-4.9
+      - ninja-build
+      - build-essential
+      - libgmp-dev
+      - libmpfr-dev
+      - libmpc-dev
+      - autoconf
+      - bison
+      - flex
+      - libtool
+      - binutils
+      - binutils-gold
+      - binutils-dev
+      - cloog-isl
+      - cloog-ppl
+      - libcloog-isl-dev
+      - libcloog-parma-dev
+      - libcloog-ppl-dev
+      - gawk
+
+env:
+  matrix:
+    - CMAKE_CC="/usr/bin/clang-3.6" CMAKE_CXX="/usr/bin/clang++-3.6" CMAKE_BUILD_TYPE="Release"
+
+before_script:
+  - mkdir build
+  - cd build
+  - cmake -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE -DCMAKE_C_COMPILER=$CMAKE_CC -DCMAKE_CXX_COMPILER=$CMAKE_CXX -G Ninja ..
+
+script:
+  - echo cmake --build . --config $CMAKE_BUILD_TYPE --target gcc
