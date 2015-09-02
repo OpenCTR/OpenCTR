@@ -53,9 +53,9 @@ See `CREDITS.rst`_ for a complete list of acknowledgments.
    :width: 250px
    :target: https://openctr.github.io/
 
-.. |Status| image:: https://img.shields.io/travis/Symbitic/CBuild.svg?style=flat-square&label=Build
+.. |Status| image:: https://img.shields.io/travis/OpenCTR/OpenCTR.svg?style=flat-square&label=Build
    :alt: TravisCI status.
-   :target: https://travis-ci.org/Symbitic/CBuild
+   :target: https://travis-ci.org/OpenCTR/OpenCTR
 
 .. |Release| image:: https://img.shields.io/github/release/OpenCTR/OpenCTR.svg?style=flat-square&label=Release
    :alt: Latest Release
