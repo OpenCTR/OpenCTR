@@ -60,4 +60,4 @@ before_script:
   - cmake -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE -DCMAKE_C_COMPILER=$CMAKE_CC -DCMAKE_CXX_COMPILER=$CMAKE_CXX -G Ninja ..
 
 script:
-  - echo cmake --build . --config $CMAKE_BUILD_TYPE --target gcc
+  - cmake --build . --config $CMAKE_BUILD_TYPE --target binutils
