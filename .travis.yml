@@ -61,3 +61,7 @@ before_script:
 
 script:
   - cmake --build . --config $CMAKE_BUILD_TYPE --target binutils
+
+after_failure:
+  - cat /home/travis/build/OpenCTR/OpenCTR/build/toolchain/binutils/src/binutils-stamp/binutils-build-out.log
+  - cat /home/travis/build/OpenCTR/OpenCTR/build/toolchain/binutils/src/binutils-stamp/binutils-build-err.log
