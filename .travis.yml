@@ -49,6 +49,7 @@ addons:
       - binutils-gold
       - binutils-dev
       - gawk
+      - texinfo
 
 env:
   matrix:
