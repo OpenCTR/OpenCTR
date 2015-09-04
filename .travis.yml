@@ -61,8 +61,7 @@ before_script:
   - cmake -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE -DCMAKE_C_COMPILER=$CMAKE_CC -DCMAKE_CXX_COMPILER=$CMAKE_CXX -G Ninja ..
 
 script:
-  - cmake --build . --config $CMAKE_BUILD_TYPE --target binutils
+  - cmake --build . --config $CMAKE_BUILD_TYPE --target gcc
 
 after_failure:
-  - cat /home/travis/build/OpenCTR/OpenCTR/build/toolchain/binutils/src/binutils-stamp/binutils-build-out.log
-  - cat /home/travis/build/OpenCTR/OpenCTR/build/toolchain/binutils/src/binutils-stamp/binutils-build-err.log
+  - for i in `find /home/travis/build/OpenCTR/OpenCTR/build/toolchain -iname "*.log"`; do echo "$i"; cat "$i"; done
