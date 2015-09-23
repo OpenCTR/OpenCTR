@@ -34,8 +34,6 @@ addons:
       - clang
       - cmake
       - cmake-data
-      - gcc-4.9
-      - g++-4.9
       - ninja-build
       - build-essential
       - libgmp-dev
@@ -52,13 +50,15 @@ addons:
       - texinfo
 
 env:
+  global:
+    - CMAKE_ARGS="-DENABLE_DOC=OFF -DENABLE_LIBCTRU=OFF -DENABLE_LIBCTRU=ON -DENABLE_LLVM=OFF -DENABLE_GCC=ON"
   matrix:
     - CMAKE_BUILD_TYPE="Release"
 
 before_script:
   - mkdir build
   - cd build
-  - cmake -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE -G Ninja ..
+  - cmake -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE $CMAKE_ARGS ..
 
 script:
   - cmake --build . --config $CMAKE_BUILD_TYPE --target gcc
