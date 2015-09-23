@@ -32,6 +32,8 @@ addons:
       - llvm-toolchain-precise-3.6
     packages:
       - clang
+      - gcc-4.9
+      - g++-4.9
       - cmake
       - cmake-data
       - ninja-build
