@@ -28,10 +28,10 @@ addons:
   apt:
     sources:
       - george-edison55-precise-backports
-      - llvm-toolchain-precise-3.6
       - ubuntu-toolchain-r-test
+      - llvm-toolchain-precise-3.6
     packages:
-      - clang-3.6
+      - clang
       - cmake
       - cmake-data
       - gcc-4.9
@@ -53,7 +53,7 @@ addons:
 
 env:
   matrix:
-    - CMAKE_CC="/usr/bin/clang-3.6" CMAKE_CXX="/usr/bin/clang++-3.6" CMAKE_BUILD_TYPE="Release"
+    - CMAKE_CC="/usr/bin/clang" CMAKE_CXX="/usr/bin/clang++" CMAKE_BUILD_TYPE="Release"
 
 before_script:
   - mkdir build
