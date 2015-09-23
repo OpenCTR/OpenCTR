@@ -53,15 +53,15 @@ addons:
 
 env:
   matrix:
-    - CMAKE_CC="/usr/bin/clang" CMAKE_CXX="/usr/bin/clang++" CMAKE_BUILD_TYPE="Release"
+    - CMAKE_BUILD_TYPE="Release"
 
 before_script:
   - mkdir build
   - cd build
-  - cmake -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE -DCMAKE_C_COMPILER=$CMAKE_CC -DCMAKE_CXX_COMPILER=$CMAKE_CXX -G Ninja ..
+  - cmake -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE -G Ninja ..
 
 script:
   - cmake --build . --config $CMAKE_BUILD_TYPE --target gcc
 
 after_failure:
-  - for i in `find /home/travis/build/OpenCTR/OpenCTR/build/toolchain -iname "*.log"`; do echo "$i"; cat "$i"; done
+  - for i in `find /home/travis/build/OpenCTR/OpenCTR/build/toolchain -iname "*-err.log"`; do echo "$i"; cat "$i"; done
