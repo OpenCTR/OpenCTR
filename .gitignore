@@ -10,4 +10,4 @@ cmake_install.cmake
 install/
 src/
 tmp/
-
+._*

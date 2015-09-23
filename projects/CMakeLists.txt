@@ -1,22 +1,22 @@
-####################################################################
-# OpenCTR - A free and open-source SDK for Nintendo 3DS homebrew. 
-# 
-# Copyright (C) 2015 The OpenCTR Project. 
-# 
-# This file is part of OpenCTR. 
-# 
-# OpenCTR is free software: you can redistribute it and/or modify 
-# it under the terms of the GNU General Public License version 3 as 
-# published by the Free Software Foundation.
-# 
-# OpenCTR is distributed in the hope that it will be useful, 
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License 
+################################################################################
+# OpenCTR - A free and open-source SDK for Nintendo 3DS homebrew.
+#
+# Copyright (C) 2015, OpenCTR Contributors.
+#
+# This file is part of OpenCTR.
+#
+# OpenCTR is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License version 3 as published by
+# the Free Software Foundation.
+#
+# OpenCTR is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+# more details.
+#
+# You should have received a copy of the GNU General Public License
 # along with OpenCTR. If not, see <http://www.gnu.org/licenses/>.
-####################################################################
+################################################################################
 
 include(ExternalProject)
 
@@ -31,7 +31,6 @@ if(ENABLE_LIBCTRU)
 			-DCMAKE_INSTALL_PREFIX=<INSTALL_DIR> 
 			-DCMAKE_PREFIX_PATH=${OPENCTR_ROOT} 
 			-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-			-DCMAKE_MODULE_PATH=${OpenCTR_BINARY_DIR}
 			-DOPENCTR_ROOT=${OPENCTR_ROOT}
 		LOG_DOWNLOAD TRUE
 		LOG_CONFIGURE TRUE
@@ -51,7 +50,6 @@ if(ENABLE_LIBCTR)
 			-DCMAKE_INSTALL_PREFIX=<INSTALL_DIR> 
 			-DCMAKE_PREFIX_PATH=${OPENCTR_ROOT} 
 			-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-			-DCMAKE_MODULE_PATH=${OpenCTR_BINARY_DIR}
 			-DOPENCTR_ROOT=${OPENCTR_ROOT}
 		LOG_DOWNLOAD TRUE
 		LOG_CONFIGURE TRUE

@@ -1,45 +1,37 @@
 #.rst:
-# OpenCTR-Macros.cmake
-# --------------------
+# CTRMacros
+# ---------
 #
 # CMake commands used in OpenCTR projects.
 
-####################################################################
-# OpenCTR - A free and open-source SDK for Nintendo 3DS homebrew. 
-# 
-# Copyright (C) 2015 The OpenCTR Project. 
-# 
-# This file is part of OpenCTR. 
-# 
-# OpenCTR is free software: you can redistribute it and/or modify 
-# it under the terms of the GNU General Public License version 3 as 
-# published by the Free Software Foundation.
-# 
-# OpenCTR is distributed in the hope that it will be useful, 
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License 
+################################################################################
+# OpenCTR - A free and open-source SDK for Nintendo 3DS homebrew.
+#
+# Copyright (C) 2015, OpenCTR Contributors.
+#
+# This file is part of OpenCTR.
+#
+# OpenCTR is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License version 3 as published by
+# the Free Software Foundation.
+#
+# OpenCTR is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+# more details.
+#
+# You should have received a copy of the GNU General Public License
 # along with OpenCTR. If not, see <http://www.gnu.org/licenses/>.
-####################################################################
+################################################################################
 
 cmake_minimum_required(VERSION 3.0.0)
 
 include(CMakeParseArguments)
 
-@PACKAGE_INIT@
+find_program(3DMOO_EXECUTABLE 3dmoo ${PACKAGE_PREFIX_DIR}/bin)
+find_program(CITRA_EXECUTABLE citra ${PACKAGE_PREFIX_DIR}/bin)
 
-find_program(3DMOO_EXECUTABLE 
-    NAMES 
-        3dmoo 
-        3dmoo.exe
-    PATHS
-        ${PACKAGE_PREFIX_DIR}/bin
-)
-
-
-macro(CTR_ADD_TEST TGT)
+function(CTR_ADD_TEST TGT)
     set(BOOLEAN_OPTIONS)
     set(SINGLE_OPTIONS GDB_PORT SDMC_PATH)
     set(MULTI_OPTIONS)
@@ -69,4 +61,4 @@ macro(CTR_ADD_TEST TGT)
         COMMAND ${3DMOO_EXECUTABLE} $<TARGET_FILE:${TGT}> ${SDMC_PARAM} ${GDB_PARAM} 
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     )
-endmacro()
+endfunction()

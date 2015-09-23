@@ -1,22 +1,22 @@
-####################################################################
-# OpenCTR - A free and open-source SDK for Nintendo 3DS homebrew. 
-# 
-# Copyright (C) 2015 The OpenCTR Project. 
-# 
-# This file is part of OpenCTR. 
-# 
-# OpenCTR is free software: you can redistribute it and/or modify 
-# it under the terms of the GNU General Public License version 3 as 
-# published by the Free Software Foundation.
-# 
-# OpenCTR is distributed in the hope that it will be useful, 
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License 
+################################################################################
+# OpenCTR - A free and open-source SDK for Nintendo 3DS homebrew.
+#
+# Copyright (C) 2015, OpenCTR Contributors.
+#
+# This file is part of OpenCTR.
+#
+# OpenCTR is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License version 3 as published by
+# the Free Software Foundation.
+#
+# OpenCTR is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+# more details.
+#
+# You should have received a copy of the GNU General Public License
 # along with OpenCTR. If not, see <http://www.gnu.org/licenses/>.
-####################################################################
+################################################################################
 
 include(ExternalProject)
 
@@ -27,7 +27,6 @@ ExternalProject_Add(gcc
     INSTALL_DIR ${OPENCTR_ROOT}
     URL "${GCC_URL}"
     URL_HASH "SHA256=${GCC_HASH}"
-    DOWNLOAD_NO_PROGRESS TRUE
     PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet --input=${GCC_PATCH} --directory=<SOURCE_DIR>
     CONFIGURE_COMMAND <SOURCE_DIR>/configure
         --prefix=<INSTALL_DIR>
@@ -42,14 +41,15 @@ ExternalProject_Add(gcc
         --disable-bootstrap
         --enable-interwork
         --enable-languages=c,c++
+        --with-endian=little
+        --with-arch=armv6k
         --enable-threads
         --disable-win32-registry
         --with-newlib
         --without-headers
         --enable-lto
         --enable-multilib
-        --with-endian=little
-        --with-arch=armv6k
+        --with-system-zlib
     BUILD_COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS}
     INSTALL_COMMAND ${MAKE_EXECUTABLE} install
     LOG_DOWNLOAD TRUE
@@ -62,10 +62,8 @@ ExternalProject_Add(gcc
 ExternalProject_Add(newlib
     PREFIX ${CMAKE_CURRENT_BINARY_DIR}
     INSTALL_DIR ${OPENCTR_ROOT}
-    EXCLUDE_FROM_ALL TRUE
     URL "${NEWLIB_URL}"
     URL_HASH "SHA256=${NEWLIB_HASH}"
-    DOWNLOAD_NO_PROGRESS TRUE
     PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet --input=${NEWLIB_PATCH} --directory=<SOURCE_DIR>
     CONFIGURE_COMMAND <SOURCE_DIR>/configure 
         --prefix=<INSTALL_DIR> 
@@ -83,6 +81,9 @@ ExternalProject_Add(newlib
     LOG_BUILD TRUE
     LOG_INSTALL TRUE
 )
+
+# Do not build newlib by default.
+set_property(TARGET newlib PROPERTY EXCLUDE_FROM_ALL TRUE)
 
 # Dependency Injection: Require "make all-gcc" after "configure"
 ExternalProject_Add_Step(gcc all-gcc
@@ -114,4 +115,3 @@ add_dependencies(toolchain gcc)
 # Cleanup
 set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "src")
 set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "tmp")
-

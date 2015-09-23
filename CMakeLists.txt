@@ -1,22 +1,22 @@
-####################################################################
-# OpenCTR - A free and open-source SDK for Nintendo 3DS homebrew. 
-# 
-# Copyright (C) 2015 The OpenCTR Project. 
-# 
-# This file is part of OpenCTR. 
-# 
-# OpenCTR is free software: you can redistribute it and/or modify 
-# it under the terms of the GNU General Public License version 3 as 
-# published by the Free Software Foundation.
-# 
-# OpenCTR is distributed in the hope that it will be useful, 
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License 
+################################################################################
+# OpenCTR - A free and open-source SDK for Nintendo 3DS homebrew.
+#
+# Copyright (C) 2015, OpenCTR Contributors.
+#
+# This file is part of OpenCTR.
+#
+# OpenCTR is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License version 3 as published by
+# the Free Software Foundation.
+#
+# OpenCTR is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+# more details.
+#
+# You should have received a copy of the GNU General Public License
 # along with OpenCTR. If not, see <http://www.gnu.org/licenses/>.
-####################################################################
+################################################################################
 
 cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
 cmake_policy(SET CMP0048 NEW)
@@ -36,36 +36,20 @@ option(ENABLE_LIBCTR "Build libctru." ON)
 option(ENABLE_GCC "Build the GCC toolchain." ON)
 option(ENABLE_LLVM "Build the LLVM/Clang toolchain." OFF)
 
-# Configure OpenCTR.cmake
+# Configure CTRConfig.cmake
 configure_package_config_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/CMake/OpenCTR.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/OpenCTR.cmake
-    INSTALL_DESTINATION ${CMAKE_ROOT}/Modules
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMake/CTRConfig.cmake.in
+    ${OPENCTR_ROOT}/lib/cmake/OpenCTR/CTRConfig.cmake
+    INSTALL_DESTINATION lib/cmake/CTR
 )
 
-# Configure openctr-config.cmake
-configure_package_config_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/CMake/openctr-config.cmake.in
-    ${OPENCTR_ROOT}/lib/cmake/OpenCTR/openctr-config.cmake
-    INSTALL_DESTINATION lib/cmake/OpenCTR
-    INSTALL_PREFIX ${OPENCTR_ROOT}
-)
+# Copy CTRMacros.cmake and CTRToolchain.cmake
+file(COPY CMake/CTRMacros.cmake CMake/CTRToolchain.cmake
+    DESTINATION ${OPENCTR_ROOT}/lib/cmake/CTR)
 
-# Configure openctr-macros.cmake
-configure_package_config_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/CMake/openctr-macros.cmake.in
-    ${OPENCTR_ROOT}/lib/cmake/OpenCTR/openctr-macros.cmake
-    INSTALL_DESTINATION lib/cmake/OpenCTR
-    INSTALL_PREFIX ${OPENCTR_ROOT}
-)
-
-# Copy OpenCTR-Toolchain.cmake
-file(COPY CMake/OpenCTR-Toolchain.cmake
-    DESTINATION ${OPENCTR_ROOT}/lib/cmake/OpenCTR)
-
-# Create openctr-config-version.cmake
+# Create CTRConfigVersion.cmake
 write_basic_package_version_file(
-    ${OPENCTR_ROOT}/lib/cmake/OpenCTR/openctr-config-version.cmake
+    ${OPENCTR_ROOT}/lib/cmake/CTR/CTRConfigVersion.cmake
     COMPATIBILITY AnyNewerVersion 
     VERSION ${PROJECT_VERSION}
 )
@@ -85,10 +69,6 @@ install(DIRECTORY ${OPENCTR_ROOT}/
     USE_SOURCE_PERMISSIONS
     PATTERN ".*" EXCLUDE
 )
-
-# Install OpenCTR.cmake
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/OpenCTR.cmake
-    DESTINATION ${CMAKE_ROOT}/Modules)
 
 # Cleanup
 set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "install")

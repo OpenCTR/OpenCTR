@@ -1,0 +1,108 @@
+#.rst:
+# CTRConfig
+# ---------
+#
+# :command:`find_package` module for OpenCTR.
+
+################################################################################
+# OpenCTR - A free and open-source SDK for Nintendo 3DS homebrew.
+#
+# Copyright (C) 2015, OpenCTR Contributors.
+#
+# This file is part of OpenCTR.
+#
+# OpenCTR is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License version 3 as published by
+# the Free Software Foundation.
+#
+# OpenCTR is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+# more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with OpenCTR. If not, see <http://www.gnu.org/licenses/>.
+################################################################################
+
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+
+include(${CMAKE_CURRENT_LIST_DIR}/CTRMacros.cmake)
+
+set(${CMAKE_FIND_PACKAGE_NAME}_VERSION @PROJECT_VERSION@)
+set(COMPONENTS artool 3dsxtool libctru libctr)
+
+# Make sure CMake 3.0.0 or later is used.
+if(CMAKE_VERSION VERSION_LESS 3.0.0)
+    set(_err "${_err}OpenCTR requires CMake 3.0.0 or later.")
+
+    set(${CMAKE_FIND_PACKAGE_NAME}_NOT_FOUND_MESSAGE "${_err}")
+    set(${CMAKE_FIND_PACKAGE_NAME}_FOUND FALSE)
+    return()
+endif()
+
+# Set ``CMAKE_TOOLCHAIN_FILE``.
+if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
+    # Note: ``set(CMAKE_TOOLCHAIN_FILE)`` will not work if C or C++ has already
+    #       been enabled. Return with an error if the CMake project has already
+    #       enabled any languages.
+    get_property(ENABLED_LANGS GLOBAL PROPERTY ENABLED_LANGUAGES)
+    list(LENGTH "${ENABLED_LANGS}" len)
+    if(len GREATER 0)
+        set(_err "${_err}find_package(CTR) MUST be called before any ")
+        set(_err "${_err}languages have been enabled.\n")
+        set(_err "${_err}\n")
+        set(_err "${_err}Use:\n")
+        set(_err "${_err}   project(<NAME> NONE)\n")
+        set(_err "${_err}\n")
+
+        set(${CMAKE_FIND_PACKAGE_NAME}_NOT_FOUND_MESSAGE "${_err}")
+        set(${CMAKE_FIND_PACKAGE_NAME}_FOUND FALSE)
+        return()
+    endif()
+
+    # Define ``CMAKE_TOOLCHAIN_FILE``.
+    set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_LIST_DIR}/CTRToolchain.cmake")
+
+    # Register the new ``CMAKE_TOOLCHAIN_FILE`` with CMake.
+    include(CMakeDetermineSystem)
+
+    # Enable C/C++ (because they shouldn't be enabled by this point).
+    enable_language(C)
+    enable_language(CXX)
+endif()
+
+# Find which components are needed.
+# If no components are given by user, search for all known components.
+list(LENGTH ${CMAKE_FIND_PACKAGE_NAME}_FIND_COMPONENTS len)
+if((len EQUAL 0) OR (NOT ${CMAKE_FIND_PACKAGE_NAME}_FIND_COMPONENTS))
+    set(_components ${COMPONENTS})
+else()
+    set(_components ${${CMAKE_FIND_PACKAGE_NAME}_FIND_COMPONENTS})
+endif()
+
+# Search for each requested component.
+foreach(_comp ${_components})
+    # Make sure the component is a recognized component of OpenCTR.
+    list(FIND COMPONENTS ${_comp} IDX)
+    if(IDX EQUAL -1)
+        set(_err "${_err}Unsupported component: ${_comp}")
+
+        set(${CMAKE_FIND_PACKAGE_NAME}_NOT_FOUND_MESSAGE "${_err}")
+        set(${CMAKE_FIND_PACKAGE_NAME}_FOUND FALSE)
+        break()
+    endif()
+
+    # Find the component
+    find_dependency(${_comp})
+
+    # Check if the component was found.
+    string(TOUPPER "${_comp}" COMP_NAME)
+    if(${${COMP_NAME}_FOUND})
+        set(${CMAKE_FIND_PACKAGE_NAME}_${_comp}_FOUND TRUE)
+    endif()
+
+endforeach()
+
+check_required_components(${CMAKE_FIND_PACKAGE_NAME})

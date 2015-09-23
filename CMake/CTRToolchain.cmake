@@ -1,37 +1,44 @@
 #.rst:
-# OpenCTR-Toolchain.cmake
-# -----------------------
+# CTRToolchain
+# ------------
 #
 # :variable:`CMAKE_TOOLCHAIN_FILE` for OpenCTR.
 #
 # Note
 # ~~~~
 #
-# The user does **not** need to specify ``CMAKE_TOOLCHAIN_FILE``
-# if ``OpenCTR.cmake`` was included in the root ``CMakeLists.txt``
-# file.
+# The user does **not** need to specify ``CMAKE_TOOLCHAIN_FILE``, as long as
+# ``find_package(CTR)`` was called.
+#
+# For this to work, the CMakeLists.txt file must contain
+# ``project(<NAME> NONE)``, because setting ``CMAKE_TOOLCHAIN_FILE`` after any
+# languages have been enabled will have no effect.
 
-####################################################################
-# OpenCTR - A free and open-source SDK for Nintendo 3DS homebrew. 
-# 
-# Copyright (C) 2015 The OpenCTR Project. 
-# 
-# This file is part of OpenCTR. 
-# 
-# OpenCTR is free software: you can redistribute it and/or modify 
-# it under the terms of the GNU General Public License version 3 as 
-# published by the Free Software Foundation.
-# 
-# OpenCTR is distributed in the hope that it will be useful, 
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License 
+################################################################################
+# OpenCTR - A free and open-source SDK for Nintendo 3DS homebrew.
+#
+# Copyright (C) 2015, OpenCTR Contributors.
+#
+# This file is part of OpenCTR.
+#
+# OpenCTR is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License version 3 as published by
+# the Free Software Foundation.
+#
+# OpenCTR is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+# more details.
+#
+# You should have received a copy of the GNU General Public License
 # along with OpenCTR. If not, see <http://www.gnu.org/licenses/>.
-####################################################################
+################################################################################
 
-####################################################################
+################################################################################
+
+#
+# Find required components.
+#
 
 if(NOT OPENCTR_ROOT)
     get_filename_component(PWD "${CMAKE_CURRENT_LIST_FILE}" DIRECTORY)
@@ -48,22 +55,16 @@ find_program(ARM_EABI_RANLIB arm-none-eabi-ranlib ${OPENCTR_ROOT}/bin
     NO_DEFAULT_PATH)
 
 if(NOT ARM_EABI_GCC)
-    set(OpenCTR_FOUND FALSE)
-    set(OpenCTR_NOTFOUND_MESSAGE "Could not locate arm-none-eabi-gcc")
-    return()
+    message(FATAL_ERROR "Could not locate arm-none-eabi-gcc")
 elseif(NOT ARM_EABI_GXX)
-    set(OpenCTR_FOUND FALSE)
-    set(OpenCTR_NOTFOUND_MESSAGE "Could not locate arm-none-eabi-g++")
-    return()
+    message(FATAL_ERROR "Could not locate arm-none-eabi-g++")
 elseif(NOT ARM_EABI_AR)
-    set(OpenCTR_FOUND FALSE)
-    set(OpenCTR_NOTFOUND_MESSAGE "Could not locate arm-none-eabi-ar")
-    return()
+    message(FATAL_ERROR "Could not locate arm-none-eabi-ar")
 elseif(NOT ARM_EABI_RANLIB)
-    set(OpenCTR_FOUND FALSE)
-    set(OpenCTR_NOTFOUND_MESSAGE "Could not locate arm-none-eabi-ranlib")
-    return()
+    message(FATAL_ERROR "Could not locate arm-none-eabi-ranlib")
 endif()
+
+################################################################################
 
 set(CMAKE_SYSTEM_NAME "Generic")
 set(CMAKE_SYSTEM_VERSION 1)
@@ -97,7 +98,7 @@ set(CMAKE_C_OUTPUT_EXTENSION ".o")
 set(CMAKE_CXX_OUTPUT_EXTENSION ".o")
 set(CMAKE_ASM_OUTPUT_EXTENSION ".o")
 
-####################################################################
+################################################################################
 
 # 
 # ASM Flags
@@ -110,7 +111,7 @@ set(CMAKE_ASM_FLAGS "-mtune=mpcore ${CMAKE_ASM_FLAGS}")
 # Hardware Floating Point.
 set(CMAKE_ASM_FLAGS "-mfloat-abi=hard ${CMAKE_ASM_FLAGS}")
 
-####################################################################
+################################################################################
 
 # 
 # General C/C++ Flags
@@ -149,7 +150,7 @@ set(CMAKE_CXX_FLAGS "-fno-rtti ${CMAKE_CXX_FLAGS}")
 # Disable Exception Handling.
 set(CMAKE_CXX_FLAGS "-fno-exceptions ${CMAKE_CXX_FLAGS}")
 
-####################################################################
+################################################################################
 
 # 
 # C/C++ Debug Flags.
@@ -170,7 +171,7 @@ set(CMAKE_C_FLAGS_DEBUG "-ftrapv ${CMAKE_C_FLAGS_DEBUG}")
 # Provides best GDB integration
 set(CMAKE_C_FLAGS_DEBUG "-fvar-tracking-assignments ${CMAKE_C_FLAGS_DEBUG}")
 
-####################################################################
+################################################################################
 
 # 
 # C/C++ Release Flags.
@@ -201,19 +202,24 @@ set(CMAKE_C_FLAGS_RELEASE "-fdiagnostics-color=always ${CMAKE_C_FLAGS_RELEASE}")
 # Generate stack to unwind execution thread
 set(CMAKE_C_FLAGS_RELEASE "-funwind-tables ${CMAKE_C_FLAGS_RELEASE}")
 
-####################################################################
+################################################################################
 
 # 
 # Copy all CMAKE_C_FLAGS into CMAKE_CXX_FLAGS
 # 
 
-set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} ${CMAKE_CXX_FLAGS}")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} ${CMAKE_CXX_FLAGS_DEBUG}")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} ${CMAKE_CXX_FLAGS_RELEASE}")
-set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO} ${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
-set(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_C_FLAGS_MINSIZEREL} ${CMAKE_CXX_FLAGS_MINSIZEREL}")
+set(CMAKE_CXX_FLAGS
+    "${CMAKE_C_FLAGS} ${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS_DEBUG
+    "${CMAKE_C_FLAGS_DEBUG} ${CMAKE_CXX_FLAGS_DEBUG}")
+set(CMAKE_CXX_FLAGS_RELEASE
+    "${CMAKE_C_FLAGS_RELEASE} ${CMAKE_CXX_FLAGS_RELEASE}")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO
+    "${CMAKE_C_FLAGS_RELWITHDEBINFO} ${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
+set(CMAKE_CXX_FLAGS_MINSIZEREL
+    "${CMAKE_C_FLAGS_MINSIZEREL} ${CMAKE_CXX_FLAGS_MINSIZEREL}")
 
-####################################################################
+################################################################################
 
 # 
 # C/C++ Standards
@@ -224,7 +230,7 @@ set(CMAKE_C_FLAGS "-std=gnu11 ${CMAKE_C_FLAGS}")
 # Use C++11 (w/GNU Extensions)
 set(CMAKE_CXX_FLAGS "-std=gnu++11 ${CMAKE_CXX_FLAGS}")
 
-####################################################################
+################################################################################
 
 # 
 # CMake utils
@@ -235,7 +241,7 @@ set(CMAKE_AR "${ARM_EABI_AR}")
 # CMake ranlib
 set(CMAKE_RANLIB "${ARM_EABI_RANLIB}")
 
-####################################################################
+################################################################################
 
 # 
 # OpenCTR Linker script
@@ -263,12 +269,12 @@ set(CMAKE_EXE_LINKER_FLAGS "-Wl,--use-blx ${CMAKE_EXE_LINKER_FLAGS}")
 # 3DSX Linker Script.
 set(CMAKE_EXE_LINKER_FLAGS "--specs=3dsx.specs ${CMAKE_EXE_LINKER_FLAGS}")
 
-####################################################################
+################################################################################
 
 # Disable shared-library support.
 set_property(GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS FALSE)
 
-####################################################################
+################################################################################
 
 # 
 # Target properties
@@ -278,4 +284,6 @@ set(UNIX TRUE)
 set(APPLE FALSE)
 set(WIN32 FALSE)
 set(CYGWIN FALSE)
+
+################################################################################
 
