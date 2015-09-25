@@ -17,7 +17,7 @@
 ################################################################################
 # OpenCTR - A free and open-source SDK for Nintendo 3DS homebrew.
 #
-# Copyright (C) 2015, OpenCTR Contributors.
+# Copyright (C) 2015 The OpenCTR Project.
 #
 # This file is part of OpenCTR.
 #
@@ -40,6 +40,14 @@
 # Find required components.
 #
 
+option(GOLD "Use Binutils GoLD linker" OFF)
+
+if(GOLD)
+    set(LD "ld.gold")
+else()
+    set(LD "ld.bfd")
+endif()
+
 if(NOT OPENCTR_ROOT)
     get_filename_component(PWD "${CMAKE_CURRENT_LIST_FILE}" DIRECTORY)
     get_filename_component(OPENCTR_ROOT "${PWD}/../../.." ABSOLUTE)
@@ -53,6 +61,8 @@ find_program(ARM_EABI_AR arm-none-eabi-ar ${OPENCTR_ROOT}/bin
     NO_DEFAULT_PATH)
 find_program(ARM_EABI_RANLIB arm-none-eabi-ranlib ${OPENCTR_ROOT}/bin
     NO_DEFAULT_PATH)
+find_program(ARM_EABI_LD arm-none-eabi-${LD} ${OPENCTR_ROOT}/bin
+    NO_DEFAULT_PATH)
 
 if(NOT ARM_EABI_GCC)
     message(FATAL_ERROR "Could not locate arm-none-eabi-gcc")
@@ -62,6 +72,8 @@ elseif(NOT ARM_EABI_AR)
     message(FATAL_ERROR "Could not locate arm-none-eabi-ar")
 elseif(NOT ARM_EABI_RANLIB)
     message(FATAL_ERROR "Could not locate arm-none-eabi-ranlib")
+elseif(NOT ARM_EABI_LD)
+    message(FATAL_ERROR "Could not locate arm-none-eabi-${LD}")
 endif()
 
 ################################################################################
@@ -236,10 +248,14 @@ set(CMAKE_CXX_FLAGS "-std=gnu++11 ${CMAKE_CXX_FLAGS}")
 # CMake utils
 # 
 
+set(_CMAKE_TOOLCHAIN_PREFIX ${OPENCTR_ROOT}/bin/arm-none-eabi)
+
 # CMake ar
-set(CMAKE_AR "${ARM_EABI_AR}")
+set(CMAKE_AR "${ARM_EABI_AR}" CACHE INTERNAL "Archive tool" FORCE)
 # CMake ranlib
-set(CMAKE_RANLIB "${ARM_EABI_RANLIB}")
+set(CMAKE_RANLIB "${ARM_EABI_RANLIB}" CACHE INTERNAL "Library tool" FORCE)
+# CMake ld
+set(CMAKE_LINKER "${ARM_EABI_LD}" CACHE INTERNAL "Linker" FORCE)
 
 ################################################################################
 

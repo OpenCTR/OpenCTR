@@ -1,7 +1,7 @@
 ################################################################################
 # OpenCTR - A free and open-source SDK for Nintendo 3DS homebrew.
 #
-# Copyright (C) 2015, OpenCTR Contributors.
+# Copyright (C) 2015 The OpenCTR Project.
 #
 # This file is part of OpenCTR.
 #
@@ -39,7 +39,7 @@ option(ENABLE_LLVM "Build the LLVM/Clang toolchain." OFF)
 # Configure CTRConfig.cmake
 configure_package_config_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/CMake/CTRConfig.cmake.in
-    ${OPENCTR_ROOT}/lib/cmake/OpenCTR/CTRConfig.cmake
+    ${OPENCTR_ROOT}/lib/cmake/CTR/CTRConfig.cmake
     INSTALL_DESTINATION lib/cmake/CTR
 )
 
@@ -63,6 +63,28 @@ add_subdirectory(tools)
 add_subdirectory(projects)
 add_subdirectory(crt0)
 
+add_custom_target(OpenCTR ALL)
+
+add_dependencies(OpenCTR binutils)
+add_dependencies(OpenCTR tools)
+add_dependencies(OpenCTR crt0)
+
+if(ENABLE_GCC)
+    add_dependencies(OpenCTR gcc)
+endif()
+if(ENABLE_LLVM)
+    add_dependencies(OpenCTR clang)
+endif()
+if(ENABLE_LIBCTRU)
+    add_dependencies(OpenCTR libctru)
+endif()
+if(ENABLE_LIBCTRU)
+    add_dependencies(OpenCTR libctr)
+endif()
+if(ENABLE_DOC)
+    add_dependencies(OpenCTR doc)
+endif()
+
 # Install OpenCTR
 install(DIRECTORY ${OPENCTR_ROOT}/
     DESTINATION OpenCTR
@@ -78,7 +100,7 @@ set(PROJECT_CONTACT "https://github.com/OpenCTR")
 set(PROJECT_DESCRIPTION "Free SDK for the Nintendo 3DS")
 set(PROJECT_VENDOR "OpenCTR")
 set(PROJECT_README ${CMAKE_CURRENT_SOURCE_DIR}/README.rst)
-set(PROJECT_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt)
+set(PROJECT_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/COPYING.txt)
 set(PROJECT_LICENSE_NAME "GPLv3")
 set(PROJECT_HOMEPAGE "https://github.com/OpenCTR")
 set(PROJECT_VERSION ${PROJECT_VERSION})

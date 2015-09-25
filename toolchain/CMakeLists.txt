@@ -1,7 +1,7 @@
 ################################################################################
 # OpenCTR - A free and open-source SDK for Nintendo 3DS homebrew.
 #
-# Copyright (C) 2015, OpenCTR Contributors.
+# Copyright (C) 2015 The OpenCTR Project.
 #
 # This file is part of OpenCTR.
 #
@@ -64,9 +64,6 @@ set(LLVM_HASH "b39a69e501b49e8f73ff75c9ad72313681ee58d6f430bfad4d81846fe92eb9ce"
 # Clang settings
 set(CLANG_URL "http://llvm.org/releases/3.6.0/cfe-3.6.0.src.tar.xz")
 set(CLANG_HASH "be0e69378119fe26f0f2f74cffe82b7c26da840c9733fe522ed3c1b66b11082d")
-
-# Create a toolchain CMake target
-add_custom_target(toolchain ALL)
 
 # Add binutils target
 add_subdirectory(binutils)

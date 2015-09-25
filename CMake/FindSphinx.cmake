@@ -17,7 +17,7 @@
 ################################################################################
 # OpenCTR - A free and open-source SDK for Nintendo 3DS homebrew.
 #
-# Copyright (C) 2015, OpenCTR Contributors.
+# Copyright (C) 2015 The OpenCTR Project.
 #
 # This file is part of OpenCTR.
 #

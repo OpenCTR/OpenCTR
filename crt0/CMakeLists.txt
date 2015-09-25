@@ -1,7 +1,7 @@
 ################################################################################
 # OpenCTR - A free and open-source SDK for Nintendo 3DS homebrew.
 #
-# Copyright (C) 2015, OpenCTR Contributors.
+# Copyright (C) 2015 The OpenCTR Project.
 #
 # This file is part of OpenCTR.
 #
@@ -18,6 +18,14 @@
 # along with OpenCTR. If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
+set(DEPENDS "tools")
+if(ENABLE_GCC)
+	list(APPEND DEPENDS "gcc")
+endif()
+if(ENABLE_LLVM)
+	list(APPEND DEPENDS "clang")
+endif()
+
 # Generate 3dsx_crt0.o
 add_custom_command(
 	OUTPUT ${OPENCTR_ROOT}/arm-none-eabi/lib/3dsx_crt0.o
@@ -27,7 +35,7 @@ add_custom_command(
 		-c ${CMAKE_CURRENT_SOURCE_DIR}/3dsx_crt0.s
 	COMMENT "3dsx_crt0.s"
 	MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/3dsx_crt0.s
-	DEPENDS toolchain
+	DEPENDS ${DEPENDS}
 )
 
 # Mark 3dsx_crt0.o as generated

@@ -1,7 +1,7 @@
 ################################################################################
 # OpenCTR - A free and open-source SDK for Nintendo 3DS homebrew.
 #
-# Copyright (C) 2015, OpenCTR Contributors.
+# Copyright (C) 2015 The OpenCTR Project.
 #
 # This file is part of OpenCTR.
 #
@@ -20,42 +20,53 @@
 
 include(ExternalProject)
 
+set(DEPENDS "tools")
+if(ENABLE_GCC)
+    list(APPEND DEPENDS "gcc")
+endif()
+if(ENABLE_LLVM)
+    list(APPEND DEPENDS "clang")
+endif()
+
 if(ENABLE_LIBCTRU)
-	ExternalProject_Add(libctru
-		DEPENDS tools toolchain
-		PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-		INSTALL_DIR ${OPENCTR_ROOT}/arm-none-eabi
-		GIT_REPOSITORY "https://github.com/OpenCTR/libctru"
-		GIT_TAG "master"
-		CMAKE_ARGS 
-			-DCMAKE_INSTALL_PREFIX=<INSTALL_DIR> 
-			-DCMAKE_PREFIX_PATH=${OPENCTR_ROOT} 
-			-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-			-DOPENCTR_ROOT=${OPENCTR_ROOT}
-		LOG_DOWNLOAD TRUE
-		LOG_CONFIGURE TRUE
-		LOG_BUILD TRUE
-		LOG_INSTALL TRUE
-	)
+    ExternalProject_Add(libctru
+        DEPENDS ${DEPENDS}
+        PREFIX ${CMAKE_CURRENT_BINARY_DIR}
+        INSTALL_DIR ${OPENCTR_ROOT}/arm-none-eabi
+        GIT_REPOSITORY "https://github.com/OpenCTR/libctru"
+        GIT_TAG "master"
+        CMAKE_ARGS 
+            -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR> 
+            -DCMAKE_PREFIX_PATH=${OPENCTR_ROOT} 
+            -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+            -DOPENCTR_ROOT=${OPENCTR_ROOT}
+        LOG_DOWNLOAD TRUE
+        LOG_CONFIGURE TRUE
+        LOG_BUILD TRUE
+        LOG_INSTALL TRUE
+    )
 endif()
 
 if(ENABLE_LIBCTR)
-	ExternalProject_Add(libctr
-		DEPENDS tools toolchain
-		PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-		INSTALL_DIR ${OPENCTR_ROOT}/arm-none-eabi
-		GIT_REPOSITORY "https://github.com/OpenCTR/libctr"
-		GIT_TAG "master"
-		CMAKE_ARGS 
-			-DCMAKE_INSTALL_PREFIX=<INSTALL_DIR> 
-			-DCMAKE_PREFIX_PATH=${OPENCTR_ROOT} 
-			-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-			-DOPENCTR_ROOT=${OPENCTR_ROOT}
-		LOG_DOWNLOAD TRUE
-		LOG_CONFIGURE TRUE
-		LOG_BUILD TRUE
-		LOG_INSTALL TRUE
-	)
+    ExternalProject_Add(libctr
+        DEPENDS ${DEPENDS}
+        PREFIX ${CMAKE_CURRENT_BINARY_DIR}
+        INSTALL_DIR ${OPENCTR_ROOT}/arm-none-eabi
+        GIT_REPOSITORY "https://github.com/OpenCTR/libctr"
+        GIT_TAG "master"
+        CMAKE_ARGS 
+            -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR> 
+            -DCMAKE_PREFIX_PATH=${OPENCTR_ROOT} 
+            -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+            -DOPENCTR_ROOT=${OPENCTR_ROOT}
+
+        BUILD_COMMAND make VERBOSE=1
+
+        LOG_DOWNLOAD TRUE
+        LOG_CONFIGURE TRUE
+        LOG_BUILD TRUE
+        LOG_INSTALL TRUE
+    )
 endif()
 
 # Cleanup

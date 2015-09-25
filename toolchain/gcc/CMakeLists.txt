@@ -1,7 +1,7 @@
 ################################################################################
 # OpenCTR - A free and open-source SDK for Nintendo 3DS homebrew.
 #
-# Copyright (C) 2015, OpenCTR Contributors.
+# Copyright (C) 2015 The OpenCTR Project.
 #
 # This file is part of OpenCTR.
 #
@@ -108,9 +108,6 @@ ExternalProject_Add_Step(gcc newlib
     DEPENDERS build
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 )
-
-# Add GCC to the toolchain targets
-add_dependencies(toolchain gcc)
 
 # Cleanup
 set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "src")
