@@ -1,13 +1,186 @@
+# Build directory
+# ===============
 build/
+
+# Distribution directory
+# ======================
 dist/
-.DS_Store
+
+# Temporary data
+# ==============
+tmp/
+
+# Generated documentation files
+# =============================
+.buildinfo
+.doctrees
+html/
+upload/
+objects.inv
+searchindex.js
+conf.py
+
+# Generated files
+# ===============
+papyrus_config.h
+
+# CMake Cache
+# ===========
 CMakeCache.txt
-CMakeFiles
-CPackConfig.cmake
-CPackSourceConfig.cmake
+CMakeFiles/
 Makefile
 cmake_install.cmake
-install/
-src/
-tmp/
+cmake_uninstall.cmake
+install_manifest.txt
+
+# Windows Metadata
+# ================
+ehthumbs.*
+Icon?
+Thumbs.*
+*.db
+Desktop.ini
+
+# OSX Files
+# =========
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
 ._*
+.Spotlight-V100
+.Trashes
+
+# Linux metadata
+# ==============
+.directory
+*~
+
+# Node.js Files
+# =============
+.nodemonignore
+npm-debug.log
+node_modules/
+
+# SASS Files
+# ==========
+.sass-cache/
+
+# Bower Files
+# ===========
+.bower-*/
+bower_components
+public/lib/
+
+# Logs
+# ====
+logs/
+*.log
+npm-debug.log*
+
+# Runtime data
+# ============
+pids
+*.pid
+*.seed
+
+# Code Coverage
+# =============
+lib-cov
+coverage
+app/tests/coverage/
+test/coverage/
+
+# GulpJS intermediate storage
+# ===========================
+.gulp
+.build
+
+# GitHub Pages
+# ============
+_site/
+
+# Output formats
+# ==============
+*.exe
+*.dll
+*.dylib
+*.so
+*.a
+*.msi
+*.dmg
+*.pkg
+*.deb
+*.rpm
+*.tgz
+*.tar.gz
+*.tbz2
+*.tar.bz2
+*.zip
+*.app
+*.pdb
+
+# IDE Projects
+# ============
+.project
+.cproject
+*.vcproj.*.*.user
+*.xcodeproj/
+build.ninja
+rules.ninja
+*.cbp
+*.project
+*.workspace
+*.kdevelop
+*.kdevelop.filelist
+*.kdevelop*
+*.kdevses
+*.kateproject
+.kateproject
+.sublime-project
+*.sublime-project
+*.sublime-workspace
+*.sln
+*.vcxproj.user
+*.obj
+*.ntvs*
+*.njsproj
+obj/
+*.opensdf
+*.sdf
+*.suo
+*.dir
+*.vcxproj*
+Win32
+x64
+*.iml
+*.ipr
+*.iws
+.idea/
+.settings/
+.*.md.html
+nbproject/private/
+nbbuild/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+.metadata
+*~.nib
+local.properties
+.c9/
+data/
+mongod
+
+# General
+# =======
+*.log
+*.csv
+*.dat
+*.out
+*.pid
+*.gz
+*.tmp
+*.bak
+*.swp
+*.pem
+
