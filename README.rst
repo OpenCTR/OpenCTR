@@ -35,7 +35,7 @@ Also, the documentation can be manually generated from source, by passing
 License
 -------
 
-**OpenCTR** is licensed under the `GNU General Public License`_. 
+**OpenCTR** is licensed under version 3 of the `GNU General Public License`_.
 See `COPYING`_ for terms.
 
 Acknowledgments
