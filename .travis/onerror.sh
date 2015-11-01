@@ -23,6 +23,14 @@ printerror() {
 }
 
 
+printerror "${BUILD_DIR}/projects/src/libctr-stamp/libctr-install-err.log"
+printerror "${BUILD_DIR}/projects/src/libctr-stamp/libctr-build-err.log"
+printerror "${BUILD_DIR}/projects/src/libctr-stamp/libctr-configure-err.log"
+printerror "${BUILD_DIR}/projects/src/libctr-stamp/libctr-download-err.log"
+printerror "${BUILD_DIR}/projects/src/libctr-stamp/libctru-install-err.log"
+printerror "${BUILD_DIR}/projects/src/libctr-stamp/libctru-build-err.log"
+printerror "${BUILD_DIR}/projects/src/libctr-stamp/libctru-configure-err.log"
+printerror "${BUILD_DIR}/projects/src/libctr-stamp/libctru-download-err.log"
 printerror "${BUILD_DIR}/toolchain/gcc/src/gcc-stamp/gcc-install-err.log"
 printerror "${BUILD_DIR}/toolchain/gcc/src/gcc-stamp/gcc-build-err.log"
 printerror "${BUILD_DIR}/toolchain/gcc/src/newlib-stamp/newlib-install-err.log"
