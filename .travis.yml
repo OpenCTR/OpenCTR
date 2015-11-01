@@ -56,10 +56,10 @@ env:
     - CMAKE_BUILD_TYPE="Release" CPACK_GENERATOR="TBZ2"
 
 script:
-  - ./travis/build.sh
+  - ./.travis/build.sh
 
 after_failure:
-  - ./travis/onerror.sh
+  - ./.travis/onerror.sh
 
 deploy:
   provider: s3
