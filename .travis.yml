@@ -52,25 +52,14 @@ addons:
       - texinfo
 
 env:
-  global:
-    - CMAKE_ARGS="-DENABLE_DOC=OFF -DENABLE_LIBCTRU=OFF -DENABLE_LIBCTR=ON
-      -DENABLE_LLVM=OFF -DENABLE_GCC=ON"
   matrix:
     - CMAKE_BUILD_TYPE="Release" CPACK_GENERATOR="TBZ2"
 
-before_script:
-  - mkdir build
-  - cd build
-  - cmake -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE
-    -DCPACK_GENERATOR=$CPACK_GENERATOR $CMAKE_ARGS ..
-
 script:
-  - cmake --build . --config $CMAKE_BUILD_TYPE --target OpenCTR
-  - cmake --build . --config $CMAKE_BUILD_TYPE --target package
+  - ./travis/build.sh
 
 after_failure:
-  - for i in `find /home/travis/build/OpenCTR/OpenCTR/build -iname "*-err.log"`;
-    do echo "$i"; cat "$i"; done
+  - ./travis/onerror.sh
 
 deploy:
   provider: s3
