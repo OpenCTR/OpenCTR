@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 export SOURCE_DIR=${PWD}
 export BUILD_DIR=${SOURCE_DIR}/build
 
@@ -22,12 +24,6 @@ ${CMAKE} .. \
   -DENABLE_LLVM=OFF \
   -DENABLE_GCC=ON
 
-if [ $? -ne 0 ]
-then
-    exit 1
-fi
-
-
 ${CMAKE} --build . --config ${CMAKE_BUILD_TYPE} --target OpenCTR
 
-# ${CMAKE} --build . --config ${CMAKE_BUILD_TYPE} --target package
+${CMAKE} --build . --config ${CMAKE_BUILD_TYPE} --target package

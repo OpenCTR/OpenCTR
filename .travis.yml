@@ -50,6 +50,7 @@ addons:
       - binutils-dev
       - gawk
       - texinfo
+      - s3cmd
 
 env:
   matrix:
