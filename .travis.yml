@@ -1,4 +1,3 @@
-
 language: c
 
 sudo: false
@@ -54,17 +53,30 @@ addons:
 
 env:
   global:
-    - CMAKE_ARGS="-DENABLE_DOC=OFF -DENABLE_LIBCTRU=OFF -DENABLE_LIBCTR=ON -DENABLE_LLVM=OFF -DENABLE_GCC=ON"
+    - CMAKE_ARGS="-DENABLE_DOC=OFF -DENABLE_LIBCTRU=OFF -DENABLE_LIBCTR=ON
+      -DENABLE_LLVM=OFF -DENABLE_GCC=ON"
   matrix:
-    - CMAKE_BUILD_TYPE="Release"
+    - CMAKE_BUILD_TYPE="Release" CPACK_GENERATOR="TBZ2"
 
 before_script:
   - mkdir build
   - cd build
-  - cmake -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE $CMAKE_ARGS ..
+  - cmake -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE
+    -DCPACK_GENERATOR=$CPACK_GENERATOR $CMAKE_ARGS ..
 
 script:
   - cmake --build . --config $CMAKE_BUILD_TYPE --target OpenCTR
+  - cmake --build . --config $CMAKE_BUILD_TYPE --target package
 
 after_failure:
-  - for i in `find /home/travis/build/OpenCTR/OpenCTR/build -iname "*-err.log"`; do echo "$i"; cat "$i"; done
+  - for i in `find /home/travis/build/OpenCTR/OpenCTR/build -iname "*-err.log"`;
+    do echo "$i"; cat "$i"; done
+
+deploy:
+  provider: s3
+  access_key_id: AKIAJCZVPF7JVCZ3HLUA
+  secret_access_key:
+    secure: iEZgq0bcBASItBQ2XuLjGvMw5ebuiqAuLeOkwODAYzxTWw9swq+qRwzI0RhwceN4JYfx/eluXVtF2+Zoi/bPOwQEAX9Nsh+wutYepA3/KCxGMBfaaCc1Oe3xba0JZVg49gsjrpCHDv0SRpYnq8NSotsQHbV6S8002y+o6FxMum0=
+  bucket: openctr-upload-test
+  local-dir: dist
+  acl: private
