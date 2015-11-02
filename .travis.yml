@@ -8,18 +8,6 @@ os:
 compiler:
   - clang
 
-notifications:
-  email:
-    recipients:
-      - alex.shaw.as@gmail.com
-    on_success: change
-    on_failure: always
-    on_start: never
-
-branches:
-  only:
-    - master
-
 cache:
   - apt
 
@@ -53,6 +41,9 @@ addons:
       - s3cmd
 
 env:
+  global:
+    - secure: "bqSyuIxvBz9ORiSanVzcLaxhChcZb7ia2zUVYQZT+GUEShZgbxDdSFLEJceIa58iWThUobGMRAJtv+u4Jn3Fzcbh0hZvEMOu1/T4/xq56shneZxfWrO0udOr3AIe+65ZakrSIq2jPS4EkMw+lFPM7XkQQs1HxmC74DUnsEJRKw8="
+    - secure: "nGx9wzUK9ox/+v4JIVrtyV3DCwyeUUEaJ5a319NgioKSVxz1NvH3+US+bE4/CQNvfieNsNIOK3co2N9cHMGKqYeVeYZ9kWyLw3EtM2S/QUfyLta9zpHH5TKFfnJT8vXoJVGcRYfac80RcfnPdRiTq6TPml12ehXYkFFDYnMrPeo="
   matrix:
     - CMAKE_BUILD_TYPE="Release" CPACK_GENERATOR="TBZ2"
 
@@ -61,12 +52,3 @@ script:
 
 after_failure:
   - ./.travis/onerror.sh
-
-deploy:
-  provider: s3
-  access_key_id: AKIAJCZVPF7JVCZ3HLUA
-  secret_access_key:
-    secure: iEZgq0bcBASItBQ2XuLjGvMw5ebuiqAuLeOkwODAYzxTWw9swq+qRwzI0RhwceN4JYfx/eluXVtF2+Zoi/bPOwQEAX9Nsh+wutYepA3/KCxGMBfaaCc1Oe3xba0JZVg49gsjrpCHDv0SRpYnq8NSotsQHbV6S8002y+o6FxMum0=
-  bucket: openctr-upload-test
-  local-dir: dist
-  acl: private
