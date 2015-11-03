@@ -11,7 +11,7 @@ export BUILD_DIR="/home/travis/build/OpenCTR/OpenCTR/build"
 export TARBALL_DIR="/home/travis/build/OpenCTR/OpenCTR/openctr-logs"
 export TARBALL_NAME="openctr-logs-$(date +%m.%d.%Y)"
 
-LOGPRINT="0"
+LOGPRINT=0
 
 copyfile() {
     local FILENAME
@@ -35,10 +35,10 @@ copyfile() {
             fi
         fi
 
-        if [ "${LOGPRINT}" == "0" ]
+        if [ ${LOGPRINT} -eq 0 ]
         then
             cat "$1"
-            LOGPRINT="1"
+            LOGPRINT=1
         fi
 
         cp "$1" "${TARBALL_DIR}/${FILENAME}"
@@ -90,6 +90,9 @@ REQUEST="PUT\n\n${CONTENT_TYPE}\n${DATE}\n/${BUCKET}/${FILE}"
 
 S3_SIGNATURE=$(echo -en ${REQUEST} | \
   openssl sha1 -hmac ${S3_SECRET_KEY} -binary | base64)
+
+echo "REQUEST=${REQUEST}"
+echo "SIGNATURE=${S3_SIGNATURE}"
 
 ${CURL} \
   -X PUT \
