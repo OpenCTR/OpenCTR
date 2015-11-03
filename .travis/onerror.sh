@@ -11,6 +11,8 @@ export BUILD_DIR="/home/travis/build/OpenCTR/OpenCTR/build"
 export TARBALL_DIR="/home/travis/build/OpenCTR/OpenCTR/openctr-logs"
 export TARBALL_NAME="openctr-logs-$(date +%m.%d.%Y)"
 
+LOGPRINT="0"
+
 copyfile() {
     local FILENAME
 
@@ -31,6 +33,12 @@ copyfile() {
                 echo "mkdir error"
                 exit 1
             fi
+        fi
+
+        if [ "${LOGPRINT}" == "0" ]
+        then
+            cat "$1"
+            LOGPRINT="1"
         fi
 
         cp "$1" "${TARBALL_DIR}/${FILENAME}"
@@ -83,21 +91,18 @@ REQUEST="PUT\n\n${CONTENT_TYPE}\n${DATE}\n/${BUCKET}/${FILE}"
 S3_SIGNATURE=$(echo -en ${REQUEST} | \
   openssl sha1 -hmac ${S3_SECRET_KEY} -binary | base64)
 
-OUTPUT=$(\
-  ${CURL} \
+${CURL} \
   -X PUT \
   -T "${FILE}" \
   -H "Host: ${BUCKET}.s3.amazonaws.com" \
   -H "Date: ${DATE}" \
   -H "Content-Type: ${CONTENT_TYPE}" \
   -H "Authorization: AWS ${S3_ACCESS_KEY}:${S3_SIGNATURE}" \
-  https://${BUCKET}.s3.amazonaws.com/${FILE} \
-)
+  "https://${BUCKET}.s3.amazonaws.com/${FILE}"
 
 if [ $? -ne 0 ]
 then
-    echo "  Error uploading to Amazon S3:"
-    echo "${OUTPUT}"
+    echo "Error uploading to Amazon S3"
     exit 1
 fi
 
