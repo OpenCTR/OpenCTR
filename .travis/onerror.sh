@@ -1,7 +1,7 @@
 #!/bin/sh
 
 CURL=$(which curl)
-if [ -z "${S3}" ]
+if [ -z "${CURL}" ]
 then
     echo "cURL is NOT installed"
     exit 1
