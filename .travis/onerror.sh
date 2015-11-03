@@ -1,9 +1,9 @@
 #!/bin/sh
 
-S3=$(which s3cmd)
+CURL=$(which curl)
 if [ -z "${S3}" ]
 then
-    echo "s3cmd is NOT installed"
+    echo "cURL is NOT installed"
     exit 1
 fi
 
@@ -64,27 +64,40 @@ copyfile "${BUILD_DIR}/tools/src/tools-stamp/tools-build-err.log"
 copyfile "${BUILD_DIR}/tools/src/tools-stamp/tools-configure-err.log"
 copyfile "${BUILD_DIR}/tools/src/tools-stamp/tools-download-err.log"
 
-tar -cjf "${TARBALL_NAME}.tar.bz2" "${TARBALL_DIR}"
+OUTPUT=$(tar -cjf "${TARBALL_NAME}.tar.bz2" "${TARBALL_DIR}")
 if [ $? -ne 0 ]
 then
-    echo "Error running tar"
+    echo "  Error running tar:"
+    echo "${OUTPUT}"
     exit 1
 fi
 
-${S3} \
-  --access_key=${S3_ACCESS_KEY} \
-  --secret_key=${S3_SECRET_KEY} \
-  --ssl \
-  --check-md5 \
-  --acl-private \
-  --server-side-encryption \
-  --encoding="UTF-8" \
-  --default-mime-type="binary/octet-stream" \
-  --guess-mime-type \
-  --human-readable-sizes \
-  --no-progress \
-  --quiet \
-  --check-certificate \
-  put \
-  "${TARBALL_NAME}.tar.bz2" \
-  s3://openctr-upload-test
+DATE=$(date -R)
+BUCKET="openctr-upload-test"
+FILE="${TARBALL_NAME}.tar.bz2"
+
+CONTENT_TYPE=$(file --mime-type "${FILE}" | awk '{print $2}')
+
+REQUEST="PUT\n\n${CONTENT_TYPE}\n${DATE}\n/${BUCKET}/${FILE}"
+
+S3_SIGNATURE=$(echo -en ${REQUEST} | \
+  openssl sha1 -hmac ${S3_SECRET_KEY} -binary | base64)
+
+OUTPUT=$(\
+  ${CURL} \
+  -X PUT \
+  -T "${FILE}" \
+  -H "Host: ${BUCKET}.s3.amazonaws.com" \
+  -H "Date: ${DATE}" \
+  -H "Content-Type: ${CONTENT_TYPE}" \
+  -H "Authorization: AWS ${S3_ACCESS_KEY}:${S3_SIGNATURE}" \
+  https://${BUCKET}.s3.amazonaws.com/${FILE} \
+)
+
+if [ $? -ne 0 ]
+then
+    echo "  Error uploading to Amazon S3:"
+    echo "${OUTPUT}"
+    exit 1
+fi
+

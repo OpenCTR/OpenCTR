@@ -38,7 +38,10 @@ addons:
       - binutils-dev
       - gawk
       - texinfo
-      - s3cmd
+      - curl
+      - openssl
+      - coreutils
+      - file
 
 env:
   global:
