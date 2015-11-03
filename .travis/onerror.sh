@@ -84,7 +84,8 @@ DATE=$(date -R)
 BUCKET="openctr-upload-test"
 FILE="${TARBALL_NAME}.tar.bz2"
 
-CONTENT_TYPE=$(file --mime-type "${FILE}" | awk '{print $2}')
+# CONTENT_TYPE=$(file --mime-type "${FILE}" | awk '{print $2}')
+CONTENT_TYPE="application/x-compressed-tar"
 
 REQUEST="PUT\n\n${CONTENT_TYPE}\n${DATE}\n/${BUCKET}/${FILE}"
 
@@ -94,18 +95,21 @@ S3_SIGNATURE=$(echo -en ${REQUEST} | \
 echo "REQUEST=${REQUEST}"
 echo "SIGNATURE=${S3_SIGNATURE}"
 
-${CURL} \
+OUTPUT=$(
+  ${CURL} \
   -X PUT \
   -T "${FILE}" \
   -H "Host: ${BUCKET}.s3.amazonaws.com" \
   -H "Date: ${DATE}" \
   -H "Content-Type: ${CONTENT_TYPE}" \
   -H "Authorization: AWS ${S3_ACCESS_KEY}:${S3_SIGNATURE}" \
-  "https://${BUCKET}.s3.amazonaws.com/${FILE}"
+  "https://${BUCKET}.s3.amazonaws.com/${FILE}" \
+)
 
 if [ $? -ne 0 ]
 then
-    echo "Error uploading to Amazon S3"
+    echo "  Error uploading to Amazon S3:"
+    echo "${OUTPUT}"
     exit 1
 fi
 
