@@ -1,16 +1,8 @@
 #!/bin/sh
 
-CURL=$(which curl)
-if [ -z "${CURL}" ]
-then
-    echo "cURL is NOT installed"
-    exit 1
-fi
-
 export BUILD_DIR="/home/travis/build/OpenCTR/OpenCTR/build"
 export TARBALL_DIR="/home/travis/build/OpenCTR/OpenCTR/openctr-logs"
-#export TARBALL_NAME="openctr-logs-$(date +%m.%d.%Y)"
-export TARBALL_NAME="openctr-logs-$(date +%m.%d.%Y)-${$TRAVIS_JOB_NUMBER}"
+export TARBALL_NAME="openctr-logs-${TRAVIS_JOB_NUMBER}"
 
 LOGPRINT=0
 
