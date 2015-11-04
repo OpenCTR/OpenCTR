@@ -72,11 +72,9 @@ copyfile "${BUILD_DIR}/tools/src/tools-stamp/tools-build-err.log"
 copyfile "${BUILD_DIR}/tools/src/tools-stamp/tools-configure-err.log"
 copyfile "${BUILD_DIR}/tools/src/tools-stamp/tools-download-err.log"
 
-OUTPUT=$(tar -cjf "${TARBALL_NAME}.tar.bz2" "${TARBALL_DIR}")
+tar -cjf "${TARBALL_NAME}.tar.bz2" "${TARBALL_DIR}"
 if [ $? -ne 0 ]
 then
-    echo "  Error running tar:"
-    echo "${OUTPUT}"
     exit 1
 fi
 
@@ -95,21 +93,17 @@ S3_SIGNATURE=$(echo -en ${REQUEST} | \
 echo "REQUEST=${REQUEST}"
 echo "SIGNATURE=${S3_SIGNATURE}"
 
-OUTPUT=$(
-  ${CURL} \
+${CURL} \
   -X PUT \
   -T "${FILE}" \
   -H "Host: ${BUCKET}.s3.amazonaws.com" \
   -H "Date: ${DATE}" \
   -H "Content-Type: ${CONTENT_TYPE}" \
   -H "Authorization: AWS ${S3_ACCESS_KEY}:${S3_SIGNATURE}" \
-  "https://${BUCKET}.s3.amazonaws.com/${FILE}" \
-)
+  "https://${BUCKET}.s3.amazonaws.com/${FILE}"
 
 if [ $? -ne 0 ]
 then
-    echo "  Error uploading to Amazon S3:"
-    echo "${OUTPUT}"
     exit 1
 fi
 
