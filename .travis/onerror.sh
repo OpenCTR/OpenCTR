@@ -9,7 +9,8 @@ fi
 
 export BUILD_DIR="/home/travis/build/OpenCTR/OpenCTR/build"
 export TARBALL_DIR="/home/travis/build/OpenCTR/OpenCTR/openctr-logs"
-export TARBALL_NAME="openctr-logs-$(date +%m.%d.%Y)"
+#export TARBALL_NAME="openctr-logs-$(date +%m.%d.%Y)"
+export TARBALL_NAME="openctr-logs-$(date +%m.%d.%Y)-${$TRAVIS_JOB_NUMBER}"
 
 LOGPRINT=0
 
@@ -78,32 +79,15 @@ then
     exit 1
 fi
 
-DATE=$(date -R)
-BUCKET="openctr-upload-test"
-FILE="${TARBALL_NAME}.tar.bz2"
+cat <<EOF > /home/travis/build/OpenCTR/OpenCTR/build/s3cfg
+[default]
+access_key = ${S3_ACCESS_KEY}
+secret_key = ${S3_SECRET_KEY}
+EOF
 
-# CONTENT_TYPE=$(file --mime-type "${FILE}" | awk '{print $2}')
-CONTENT_TYPE="application/x-compressed-tar"
-
-REQUEST="PUT\n\n${CONTENT_TYPE}\n${DATE}\n/${BUCKET}/${FILE}"
-
-S3_SIGNATURE=$(echo -en ${REQUEST} | \
-  openssl sha1 -hmac ${S3_SECRET_KEY} -binary | base64)
-
-echo "REQUEST=${REQUEST}"
-echo "SIGNATURE=${S3_SIGNATURE}"
-
-${CURL} \
-  -X PUT \
-  -T "${FILE}" \
-  -H "Host: ${BUCKET}.s3.amazonaws.com" \
-  -H "Date: ${DATE}" \
-  -H "Content-Type: ${CONTENT_TYPE}" \
-  -H "Authorization: AWS ${S3_ACCESS_KEY}:${S3_SIGNATURE}" \
-  "https://${BUCKET}.s3.amazonaws.com/${FILE}"
-
-if [ $? -ne 0 ]
-then
-    exit 1
-fi
-
+s3cmd \
+  put \
+  --guess-mime-type \
+  --config=/home/travis/build/OpenCTR/OpenCTR/build/s3cfg \
+  "${TARBALL_NAME}.tar.bz2" \
+  "s3://openctr-upload-test/${TARBALL_NAME}.tar.bz2"
