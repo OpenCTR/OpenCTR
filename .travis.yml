@@ -73,4 +73,4 @@ deploy:
   secret_access_key: "${S3_SECRET_KEY}"
   bucket: "openctr-upload-test"
   skip_cleanup: true
-  local-dir: /home/travis/build/OpenCTR/OpenCTR/dist
+  local-dir: $(ls /home/travis/build/OpenCTR/OpenCTR/dist*.tar.bz2 | tr "\n" ":")
