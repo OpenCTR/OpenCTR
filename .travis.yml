@@ -38,10 +38,6 @@ addons:
       - binutils-dev
       - gawk
       - texinfo
-      - curl
-      - openssl
-      - coreutils
-      - file
       - s3cmd
 
 env:
@@ -51,6 +47,13 @@ env:
   matrix:
     - CMAKE_BUILD_TYPE="Release" CPACK_GENERATOR="TBZ2"
 
+before_script:
+  - mkdir /home/travis/build/OpenCTR/OpenCTR/build
+  - cd /home/travis/build/OpenCTR/OpenCTR/build
+  - echo cmake
+    -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+    -DCPACK_GENERATOR=${CPACK_GENERATOR}
+    
 script:
   - ./.travis/build.sh
 
