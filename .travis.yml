@@ -50,12 +50,27 @@ env:
 before_script:
   - mkdir /home/travis/build/OpenCTR/OpenCTR/build
   - cd /home/travis/build/OpenCTR/OpenCTR/build
-  - echo cmake
+  - cmake ..
     -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
     -DCPACK_GENERATOR=${CPACK_GENERATOR}
-    
+    -DENABLE_DOC=OFF
+    -DENABLE_LIBCTRU=OFF
+    -DENABLE_LIBCTR=ON
+    -DENABLE_LLVM=OFF
+    -DENABLE_GCC=ON
+
+
 script:
-  - ./.travis/build.sh
+  - cmake --build . --config ${CMAKE_BUILD_TYPE} --target OpenCTR
+  - cmake --build . --config ${CMAKE_BUILD_TYPE} --target package
 
 after_failure:
   - ./.travis/onerror.sh
+
+deploy:
+  provider: s3
+  access_key_id: "${S3_ACCESS_KEY}"
+  secret_access_key: "${S3_SECRET_KEY}"
+  bucket: "openctr-test-upload"
+  skip_cleanup: true
+  local-dir: /home/travis/build/OpenCTR/OpenCTR/dist
