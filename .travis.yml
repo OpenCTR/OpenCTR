@@ -46,6 +46,7 @@ env:
     - secure: "nGx9wzUK9ox/+v4JIVrtyV3DCwyeUUEaJ5a319NgioKSVxz1NvH3+US+bE4/CQNvfieNsNIOK3co2N9cHMGKqYeVeYZ9kWyLw3EtM2S/QUfyLta9zpHH5TKFfnJT8vXoJVGcRYfac80RcfnPdRiTq6TPml12ehXYkFFDYnMrPeo="
     - SOURCE_DIR=/home/travis/build/OpenCTR/OpenCTR
     - BUILD_DIR=/home/travis/build/OpenCTR/OpenCTR/build
+    - DIST_DIR=/home/travis/build/OpenCTR/OpenCTR/dist
   matrix:
     - CMAKE_BUILD_TYPE="Release" CPACK_GENERATOR="TBZ2"
 
@@ -64,10 +65,15 @@ before_script:
 
 script:
   - cmake --build ${BUILD_DIR} --config ${CMAKE_BUILD_TYPE} --target OpenCTR
+
+after_success:
   - cmake --build ${BUILD_DIR} --config ${CMAKE_BUILD_TYPE} --target package
 
 after_failure:
   - ${SOURCE_DIR}/.travis/onerror.sh
+
+before_deploy:
+  - rm -rf ${DIST_DIR}/_CPack_Packages
 
 deploy:
   provider: s3
@@ -75,5 +81,4 @@ deploy:
   secret_access_key: "${S3_SECRET_KEY}"
   bucket: "openctr-upload-test"
   skip_cleanup: true
-  local-dir:
-    - /home/travis/build/OpenCTR/OpenCTR/dist/OpenCTR-0.0.1-linux.tar.bz2
+  local-dir: "${DIST_DIR}"
