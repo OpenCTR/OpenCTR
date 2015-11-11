@@ -33,6 +33,7 @@ if(ENABLE_LIBCTRU)
         DEPENDS ${DEPENDS}
         PREFIX ${CMAKE_CURRENT_BINARY_DIR}
         INSTALL_DIR ${OPENCTR_ROOT}/arm-none-eabi
+        STAMP_DIR "${STAMP_DIR}"
         GIT_REPOSITORY "https://github.com/OpenCTR/libctru"
         GIT_TAG "master"
         CMAKE_ARGS 
@@ -52,6 +53,7 @@ if(ENABLE_LIBCTR)
         DEPENDS ${DEPENDS}
         PREFIX ${CMAKE_CURRENT_BINARY_DIR}
         INSTALL_DIR ${OPENCTR_ROOT}/arm-none-eabi
+        STAMP_DIR "${STAMP_DIR}"
         GIT_REPOSITORY "https://github.com/OpenCTR/libctr"
         GIT_TAG "master"
         CMAKE_ARGS 
@@ -59,9 +61,6 @@ if(ENABLE_LIBCTR)
             -DCMAKE_PREFIX_PATH=${OPENCTR_ROOT} 
             -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
             -DOPENCTR_ROOT=${OPENCTR_ROOT}
-
-        BUILD_COMMAND make VERBOSE=1
-
         LOG_DOWNLOAD TRUE
         LOG_CONFIGURE TRUE
         LOG_BUILD TRUE

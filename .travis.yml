@@ -12,6 +12,8 @@ cache:
   - apt
 
 addons:
+  artifacts: true
+  s3_region: "us-east-1"
   apt:
     sources:
       - george-edison55-precise-backports
@@ -47,6 +49,11 @@ env:
     - SOURCE_DIR=/home/travis/build/OpenCTR/OpenCTR
     - BUILD_DIR=/home/travis/build/OpenCTR/OpenCTR/build
     - DIST_DIR=/home/travis/build/OpenCTR/OpenCTR/dist
+    - LOG_DIR=${BUILD_DIR}/logs
+    - ARTIFACTS_KEY="${S3_ACCESS_KEY}"
+    - ARTIFACTS_SECRET="${S3_SECRET_KEY}"
+    - ARTIFACTS_BUCKET="openctr-upload-test/logs"
+    - ARTIFACTS_PATHS=${LOG_DIR}
   matrix:
     - CMAKE_BUILD_TYPE="Release" CPACK_GENERATOR="TBZ2"
 
@@ -67,10 +74,7 @@ script:
   - cmake --build ${BUILD_DIR} --config ${CMAKE_BUILD_TYPE} --target OpenCTR
 
 after_success:
-  - cmake --build ${BUILD_DIR} --config ${CMAKE_BUILD_TYPE} --target package
-
-after_failure:
-  - ${SOURCE_DIR}/.travis/onerror.sh
+  - cpack
 
 before_deploy:
   - rm -rf ${DIST_DIR}/_CPack_Packages
