@@ -24,10 +24,10 @@ include(ExternalProject)
 ExternalProject_Add(binutils
     PREFIX ${CMAKE_CURRENT_BINARY_DIR}
     INSTALL_DIR ${OPENCTR_ROOT}
-    STAMP_DIR "${STAMP_DIR}"
     URL "${BINUTILS_URL}"
     URL_HASH "SHA256=${BINUTILS_HASH}"
-    PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet --input=${BINUTILS_PATCH} --directory=<SOURCE_DIR> 
+    PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet
+        --input=${BINUTILS_PATCH} --directory=<SOURCE_DIR> 
     CONFIGURE_COMMAND <SOURCE_DIR>/configure
         --prefix=<INSTALL_DIR>
         --target=arm-none-eabi

@@ -39,22 +39,17 @@ add_custom_command(
 )
 
 # Mark 3dsx_crt0.o as generated
-set_source_files_properties(
-	${OPENCTR_ROOT}/arm-none-eabi/lib/3dsx_crt0.o 
-	PROPERTIES GENERATED 1
-)
+set_source_files_properties(${OPENCTR_ROOT}/arm-none-eabi/lib/3dsx_crt0.o 
+	PROPERTIES GENERATED 1)
 
 # CRT0 target
-add_custom_target(crt0 ALL 
-	DEPENDS ${OPENCTR_ROOT}/arm-none-eabi/lib/3dsx_crt0.o 
-)
+add_custom_target(crt0 ALL
+    DEPENDS ${OPENCTR_ROOT}/arm-none-eabi/lib/3dsx_crt0.o)
 
 # Copy 3dsx.ld into OPENCTR_ROOT
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/3dsx.ld 
-	DESTINATION ${OPENCTR_ROOT}/arm-none-eabi/lib
-)
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/3dsx.ld
+	DESTINATION ${OPENCTR_ROOT}/arm-none-eabi/lib)
 
 # Copy 3dsx.specs into OPENCTR_ROOT
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/3dsx.specs 
-	DESTINATION ${OPENCTR_ROOT}/arm-none-eabi/lib
-)
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/3dsx.specs
+	DESTINATION ${OPENCTR_ROOT}/arm-none-eabi/lib)

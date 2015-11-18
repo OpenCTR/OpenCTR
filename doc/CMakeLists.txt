@@ -61,7 +61,8 @@ if(ENABLE_UPLOAD)
 		# Remove the existing upload directory.
 		COMMAND ${CMAKE_COMMAND} -E remove_directory ${UPLOAD_PATH}
 		# Clone the GitHub Pages repo
-		COMMAND ${GIT_EXECUTABLE} clone --quiet https://github.com/OpenCTR/OpenCTR.github.io ${UPLOAD_PATH}
+		COMMAND ${GIT_EXECUTABLE} clone --quiet
+            https://github.com/OpenCTR/OpenCTR.github.io ${UPLOAD_PATH}
 		# Remove all existing files
 		COMMAND ${GIT_EXECUTABLE} -C ${UPLOAD_PATH} rm -rf --quiet .
 		# Copy the HTML files into the git repository
@@ -71,7 +72,8 @@ if(ENABLE_UPLOAD)
 		# Add the newly copied files into Git
 		COMMAND ${GIT_EXECUTABLE} -C ${UPLOAD_PATH} add .
 		# Commit the new files
-		COMMAND ${GIT_EXECUTABLE} -C ${UPLOAD_PATH} commit --quiet -m "Updated HTML documentation"
+		COMMAND ${GIT_EXECUTABLE} -C ${UPLOAD_PATH} commit --quiet -m
+            "Updated HTML documentation"
 		# Push the new files into GitHub
 		COMMAND ${GIT_EXECUTABLE} -C ${UPLOAD_PATH} push --quiet origin master
 	)
