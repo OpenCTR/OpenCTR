@@ -24,6 +24,7 @@ include(ExternalProject)
 ExternalProject_Add(tools
 	PREFIX ${CMAKE_CURRENT_BINARY_DIR}
 	INSTALL_DIR ${OPENCTR_ROOT}
+    STAMP_DIR "${STAMP_DIR}"
 	GIT_REPOSITORY "https://github.com/OpenCTR/OpenCTR-Tools"
 	GIT_TAG "master"
 	CMAKE_ARGS 

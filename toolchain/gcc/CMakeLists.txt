@@ -25,6 +25,7 @@ ExternalProject_Add(gcc
     DEPENDS binutils
     PREFIX ${CMAKE_CURRENT_BINARY_DIR}
     INSTALL_DIR ${OPENCTR_ROOT}
+    STAMP_DIR "${STAMP_DIR}"
     URL "${GCC_URL}"
     URL_HASH "SHA256=${GCC_HASH}"
     PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet --input=${GCC_PATCH} --directory=<SOURCE_DIR>
@@ -62,6 +63,7 @@ ExternalProject_Add(gcc
 ExternalProject_Add(newlib
     PREFIX ${CMAKE_CURRENT_BINARY_DIR}
     INSTALL_DIR ${OPENCTR_ROOT}
+    STAMP_DIR "${STAMP_DIR}"
     URL "${NEWLIB_URL}"
     URL_HASH "SHA256=${NEWLIB_HASH}"
     PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet --input=${NEWLIB_PATCH} --directory=<SOURCE_DIR>

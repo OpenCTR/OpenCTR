@@ -33,6 +33,7 @@ if(ENABLE_LIBCTRU)
         DEPENDS ${DEPENDS}
         PREFIX ${CMAKE_CURRENT_BINARY_DIR}
         INSTALL_DIR ${OPENCTR_ROOT}/arm-none-eabi
+        STAMP_DIR "${STAMP_DIR}"
         GIT_REPOSITORY "https://github.com/OpenCTR/libctru"
         GIT_TAG "master"
         CMAKE_ARGS 
@@ -52,6 +53,7 @@ if(ENABLE_LIBCTR)
         DEPENDS ${DEPENDS}
         PREFIX ${CMAKE_CURRENT_BINARY_DIR}
         INSTALL_DIR ${OPENCTR_ROOT}/arm-none-eabi
+        STAMP_DIR "${STAMP_DIR}"
         GIT_REPOSITORY "https://github.com/OpenCTR/libctr"
         GIT_TAG "master"
         CMAKE_ARGS 
