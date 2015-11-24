@@ -69,12 +69,11 @@ before_script:
     -DENABLE_LLVM=OFF
     -DENABLE_GCC=ON
 
-
 script:
   - cmake --build ${BUILD_DIR} --config ${CMAKE_BUILD_TYPE} --target OpenCTR
 
 after_success:
-  - cmake --build ${BUILD_DIR} --config ${CMAKE_BUILD_TYPE} --target package
+  - cpack
 
 after_failure:
   - ${SOURCE_DIR}/.travis/onerror.sh
