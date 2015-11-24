@@ -91,7 +91,10 @@ script:
   - cmake --build ${BUILD_DIR} --config ${CMAKE_BUILD_TYPE} --target OpenCTR
 
 after_success:
-  - cpack
+  - cmake --build ${BUILD_DIR} --config ${CMAKE_BUILD_TYPE} --target package
+
+after_failure:
+  - ${SOURCE_DIR}/.travis/onerror.sh
 
 before_deploy:
   - rm -rf ${DIST_DIR}/_CPack_Packages
