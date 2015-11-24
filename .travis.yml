@@ -41,10 +41,8 @@ addons:
       - clang
       - gcc-5
       - g++-5
-      - gcc-mingw-w64-i686
-      - gcc-mingw-w64-x86-64
-      - g++-mingw-w64-i686
-      - g++-mingw-w64-x86-64
+      - g++-mingw-w64
+      - gcc-mingw-w64
       - cmake
       - cmake-data
       - ninja-build
