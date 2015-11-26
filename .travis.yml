@@ -40,7 +40,12 @@ addons:
       - binutils-dev
       - gawk
       - texinfo
-      - s3cmd
+      - binutils-mingw-w64-i686
+      - binutils-mingw-w64-x86-64
+      - g++-mingw-w64-i686
+      - g++-mingw-w64-x86-64
+      - gcc-mingw-w64-i686
+      - gcc-mingw-w64-x86-64
 
 env:
   global:
@@ -49,11 +54,6 @@ env:
     - SOURCE_DIR=/home/travis/build/OpenCTR/OpenCTR
     - BUILD_DIR=/home/travis/build/OpenCTR/OpenCTR/build
     - DIST_DIR=/home/travis/build/OpenCTR/OpenCTR/dist
-    - LOG_DIR=${BUILD_DIR}/logs
-    - ARTIFACTS_KEY="${S3_ACCESS_KEY}"
-    - ARTIFACTS_SECRET="${S3_SECRET_KEY}"
-    - ARTIFACTS_BUCKET="openctr-upload-test/logs"
-    - ARTIFACTS_PATHS=${LOG_DIR}
   matrix:
     - CMAKE_BUILD_TYPE="Release" CPACK_GENERATOR="TBZ2"
 
@@ -74,9 +74,6 @@ script:
 
 after_success:
   - cpack
-
-after_failure:
-  - ${SOURCE_DIR}/.travis/onerror.sh
 
 before_deploy:
   - rm -rf ${DIST_DIR}/_CPack_Packages

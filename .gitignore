@@ -1,17 +1,13 @@
 # Build directory
-# ===============
 build/
 
 # Distribution directory
-# ======================
 dist/
 
 # Temporary data
-# ==============
 tmp/
 
 # Generated documentation files
-# =============================
 .buildinfo
 .doctrees
 html/
@@ -21,11 +17,9 @@ searchindex.js
 conf.py
 
 # Generated files
-# ===============
 papyrus_config.h
 
 # CMake Cache
-# ===========
 CMakeCache.txt
 CMakeFiles/
 Makefile
@@ -34,7 +28,6 @@ cmake_uninstall.cmake
 install_manifest.txt
 
 # Windows Metadata
-# ================
 ehthumbs.*
 Icon?
 Thumbs.*
@@ -42,7 +35,6 @@ Thumbs.*
 Desktop.ini
 
 # OSX Files
-# =========
 .DS_Store
 .AppleDouble
 .LSOverride
@@ -52,56 +44,46 @@ Icon
 .Trashes
 
 # Linux metadata
-# ==============
 .directory
 *~
 
 # Node.js Files
-# =============
 .nodemonignore
 npm-debug.log
 node_modules/
 
 # SASS Files
-# ==========
 .sass-cache/
 
 # Bower Files
-# ===========
 .bower-*/
 bower_components
 public/lib/
 
 # Logs
-# ====
 logs/
 *.log
 npm-debug.log*
 
 # Runtime data
-# ============
 pids
 *.pid
 *.seed
 
 # Code Coverage
-# =============
 lib-cov
 coverage
 app/tests/coverage/
 test/coverage/
 
 # GulpJS intermediate storage
-# ===========================
 .gulp
 .build
 
 # GitHub Pages
-# ============
 _site/
 
 # Output formats
-# ==============
 *.exe
 *.dll
 *.dylib
@@ -121,7 +103,6 @@ _site/
 *.pdb
 
 # IDE Projects
-# ============
 .project
 .cproject
 *.vcproj.*.*.user
@@ -172,7 +153,6 @@ data/
 mongod
 
 # General
-# =======
 *.log
 *.csv
 *.dat
@@ -183,4 +163,3 @@ mongod
 *.bak
 *.swp
 *.pem
-
