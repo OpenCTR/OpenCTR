@@ -27,6 +27,7 @@ set(CMAKE_INSTALL_MESSAGE "NEVER")
 set(OPENCTR_ROOT "${CMAKE_CURRENT_BINARY_DIR}/install")
 set(STAMP_DIR "${CMAKE_CURRENT_BINARY_DIR}/logs")
 
+include(CTRHost)
 include(CMakePackageConfigHelpers)
 
 project(OpenCTR LANGUAGES NONE VERSION 0.0.1)
