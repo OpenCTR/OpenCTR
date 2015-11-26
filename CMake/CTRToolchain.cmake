@@ -112,9 +112,9 @@ set(CMAKE_ASM_OUTPUT_EXTENSION ".o")
 
 ################################################################################
 
-# 
+#
 # ASM Flags
-# 
+#
 
 # ARMv6 Architecture.
 set(CMAKE_ASM_FLAGS "-march=armv6k ${CMAKE_ASM_FLAGS}")
@@ -125,9 +125,9 @@ set(CMAKE_ASM_FLAGS "-mfloat-abi=hard ${CMAKE_ASM_FLAGS}")
 
 ################################################################################
 
-# 
+#
 # General C/C++ Flags
-# 
+#
 
 # Use pipes instead of temp files, for faster compiling.
 set(CMAKE_C_FLAGS "-pipe ${CMAKE_C_FLAGS}")
@@ -164,9 +164,9 @@ set(CMAKE_CXX_FLAGS "-fno-exceptions ${CMAKE_CXX_FLAGS}")
 
 ################################################################################
 
-# 
+#
 # C/C++ Debug Flags.
-# 
+#
 
 # Optimize for best debugging experience.
 set(CMAKE_C_FLAGS_DEBUG "-Og ${CMAKE_C_FLAGS_DEBUG}")
@@ -185,9 +185,9 @@ set(CMAKE_C_FLAGS_DEBUG "-fvar-tracking-assignments ${CMAKE_C_FLAGS_DEBUG}")
 
 ################################################################################
 
-# 
+#
 # C/C++ Release Flags.
-# 
+#
 
 # Maximum optimization settings
 set(CMAKE_C_FLAGS_RELEASE "-O3 ${CMAKE_C_FLAGS_RELEASE}")
@@ -216,9 +216,9 @@ set(CMAKE_C_FLAGS_RELEASE "-funwind-tables ${CMAKE_C_FLAGS_RELEASE}")
 
 ################################################################################
 
-# 
+#
 # Copy all CMAKE_C_FLAGS into CMAKE_CXX_FLAGS
-# 
+#
 
 set(CMAKE_CXX_FLAGS
     "${CMAKE_C_FLAGS} ${CMAKE_CXX_FLAGS}")
@@ -233,9 +233,9 @@ set(CMAKE_CXX_FLAGS_MINSIZEREL
 
 ################################################################################
 
-# 
+#
 # C/C++ Standards
-# 
+#
 
 # Use C11 (w/GNU Extensions)
 set(CMAKE_C_FLAGS "-std=gnu11 ${CMAKE_C_FLAGS}")
@@ -244,9 +244,9 @@ set(CMAKE_CXX_FLAGS "-std=gnu++11 ${CMAKE_CXX_FLAGS}")
 
 ################################################################################
 
-# 
+#
 # CMake utils
-# 
+#
 
 set(_CMAKE_TOOLCHAIN_PREFIX ${OPENCTR_ROOT}/bin/arm-none-eabi)
 
@@ -259,9 +259,9 @@ set(CMAKE_LINKER "${ARM_EABI_LD}" CACHE INTERNAL "Linker" FORCE)
 
 ################################################################################
 
-# 
+#
 # OpenCTR Linker script
-# 
+#
 
 # Garbage collection of unused code.
 # set(CMAKE_EXE_LINKER_FLAGS "-Wl,--gc-sections ${CMAKE_EXE_LINKER_FLAGS}")
@@ -292,9 +292,9 @@ set_property(GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS FALSE)
 
 ################################################################################
 
-# 
+#
 # Target properties
-# 
+#
 
 set(UNIX TRUE)
 set(APPLE FALSE)

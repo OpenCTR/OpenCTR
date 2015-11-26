@@ -51,27 +51,19 @@ env:
     - secure: "nGx9wzUK9ox/+v4JIVrtyV3DCwyeUUEaJ5a319NgioKSVxz1NvH3+US+bE4/CQNvfieNsNIOK3co2N9cHMGKqYeVeYZ9kWyLw3EtM2S/QUfyLta9zpHH5TKFfnJT8vXoJVGcRYfac80RcfnPdRiTq6TPml12ehXYkFFDYnMrPeo="
     - SOURCE_DIR=/home/travis/build/OpenCTR/OpenCTR
     - BUILD_DIR=/home/travis/build/OpenCTR/OpenCTR/build
-    - DIST_DIR=/home/travis/build/OpenCTR/OpenCTR/dist
+    - DIST_DIR=${SOURCE_DIR}/dist
+    - TRAVIS_DIR=${SOURCE_DIR}/.travis
   matrix:
-    - CMAKE_BUILD_TYPE="Release" CPACK_GENERATOR="TBZ2"
+    - OS=${TRAVIS_OS_NAME}
 
 before_script:
-  - mkdir -p ${BUILD_DIR}
-  - cd ${BUILD_DIR}
-  - cmake ${SOURCE_DIR}
-    -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-    -DCPACK_GENERATOR=${CPACK_GENERATOR}
-    -DENABLE_DOC=OFF
-    -DENABLE_LIBCTRU=OFF
-    -DENABLE_LIBCTR=ON
-    -DENABLE_LLVM=OFF
-    -DENABLE_GCC=ON
+  - ${TRAVIS_DIR}/setup.sh
 
 script:
   - cmake --build ${BUILD_DIR} --config ${CMAKE_BUILD_TYPE} --target OpenCTR
 
 after_failure:
-  - ${SOURCE_DIR}/.travis/onerror.sh
+  - ${TRAVIS_DIR}/onerror.sh
 
 after_success:
   - cpack

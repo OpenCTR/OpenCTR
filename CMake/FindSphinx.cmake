@@ -76,8 +76,10 @@ if(NOT SPHINX_VERSION)
             OUTPUT_STRIP_TRAILING_WHITESPACE
         )
         if(${result} EQUAL 0)
-            if("${output}" MATCHES "^Sphinx \\(sphinx-build\\) ([0-9]+\\.[0-9]+\\.[0-9]+)$")
-                string(REGEX REPLACE "^Sphinx \\(sphinx-build\\) ([0-9]+\\.[0-9]+\\.[0-9]+)$" "\\1" _SPHINX_VERSION "${output}")
+            set(REGEX "^Sphinx \\(sphinx-build\\) ([0-9]+\\.[0-9]+\\.[0-9]+)$")
+            if("${output}" MATCHES "${REGEX}")
+                string(REGEX REPLACE "${REGEX}" "\\1" _SPHINX_VERSION
+                    "${output}")
             endif()
         endif()
     endif()
@@ -86,4 +88,5 @@ if(NOT SPHINX_VERSION)
 endif()
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(Sphinx REQUIRED_VARS SPHINX_EXECUTABLE VERSION_VAR SPHINX_VERSION)
+find_package_handle_standard_args(Sphinx REQUIRED_VARS SPHINX_EXECUTABLE
+    VERSION_VAR SPHINX_VERSION)

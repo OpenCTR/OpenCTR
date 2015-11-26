@@ -25,4 +25,3 @@
 
 *startfile:
 3dsx_crt0%O%s crti%O%s crtbegin%O%s
-
