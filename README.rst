@@ -35,13 +35,13 @@ Also, the documentation can be manually generated from source, by passing
 License
 -------
 
-**OpenCTR** is licensed under version 3 of the `GNU General Public License`_.
-See `COPYING`_ for terms.
+OpenCTR is licensed under version 3 of the `GNU General Public License`_.
+See `COPYING.txt`_ for terms.
 
 Acknowledgments
 ---------------
 
-See `CREDITS`_ for a complete list of acknowledgments.
+See `CREDITS.rst`_ for a complete list of acknowledgments.
 
 .. |Logo| image:: https://openctr.github.io/_static/logo.svg
    :alt: OpenCTR Logo
@@ -64,7 +64,7 @@ See `CREDITS`_ for a complete list of acknowledgments.
 
 .. _GNU General Public License: http://www.gnu.org/licenses/gpl-3.0.html
 
-.. _COPYING: ./COPYING.txt: 
+.. _COPYING.txt: ./COPYING.txt: 
 
-.. _CREDITS: ./CREDITS.rst
+.. _CREDITS.rst: ./CREDITS.rst
 

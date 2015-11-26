@@ -16,9 +16,6 @@ objects.inv
 searchindex.js
 conf.py
 
-# Generated files
-papyrus_config.h
-
 # CMake Cache
 CMakeCache.txt
 CMakeFiles/
@@ -34,7 +31,7 @@ Thumbs.*
 *.db
 Desktop.ini
 
-# OSX Files
+# OSX Metadata
 .DS_Store
 .AppleDouble
 .LSOverride
@@ -43,27 +40,13 @@ Icon
 .Spotlight-V100
 .Trashes
 
-# Linux metadata
+# Linux Metadata
 .directory
 *~
 
-# Node.js Files
-.nodemonignore
-npm-debug.log
-node_modules/
-
-# SASS Files
-.sass-cache/
-
-# Bower Files
-.bower-*/
-bower_components
-public/lib/
-
 # Logs
 logs/
-*.log
-npm-debug.log*
+*.log*
 
 # Runtime data
 pids
@@ -75,10 +58,6 @@ lib-cov
 coverage
 app/tests/coverage/
 test/coverage/
-
-# GulpJS intermediate storage
-.gulp
-.build
 
 # GitHub Pages
 _site/
@@ -149,11 +128,9 @@ nb-configuration.xml
 *~.nib
 local.properties
 .c9/
-data/
-mongod
+.build
 
 # General
-*.log
 *.csv
 *.dat
 *.out
