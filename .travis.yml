@@ -60,7 +60,7 @@ env:
 before_script:
   - mkdir -p ${BUILD_DIR}
   - cd ${BUILD_DIR}
-  - cmake ..
+  - cmake ${SOURCE_DIR}
     -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
     -DCPACK_GENERATOR=${CPACK_GENERATOR}
     -DENABLE_DOC=OFF
@@ -71,6 +71,9 @@ before_script:
 
 script:
   - cmake --build ${BUILD_DIR} --config ${CMAKE_BUILD_TYPE} --target OpenCTR
+
+after_failure:
+  - ${SOURCE_DIR}/.travis/onerror.sh
 
 after_success:
   - cpack
