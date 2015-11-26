@@ -25,30 +25,28 @@
 # along with OpenCTR. If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
-if(NOT OPENCTR_HOST)
-    if(WIN32)
-        set(OPENCTR_HOST "Win32")
-    elseif(APPLE)
-        set(OPENCTR_HOST "OSX")
-    elseif(UNIX)
-        set(OPENCTR_HOST "Linux")
-    endif()
+if(NOT DEFINED OPENCTR_HOST)
+    return()
 endif()
 
-if(NOT OPENCTR_HOST MATCHES "(Win32|OSX|Linux)")
+if(NOT OPENCTR_HOST MATCHES "(Windows|OSX|Linux)")
     message(FATAL_ERROR "Unrecognized OPENCTR_HOST: ${OPENCTR_HOST}")
 endif()
 
 string(TOUPPER "${OPENCTR_HOST}" OPENCTR_HOST_NAME)
 string(COMPARE EQUAL "${OPENCTR_HOST_NAME}" "LINUX" OPENCTR_HOST_LINUX)
 string(COMPARE EQUAL "${OPENCTR_HOST_NAME}" "OSX" OPENCTR_HOST_OSX)
-string(COMPARE EQUAL "${OPENCTR_HOST_NAME}" "WIN32" OPENCTR_HOST_WIN32)
+string(COMPARE EQUAL "${OPENCTR_HOST_NAME}" "WINDOWS" OPENCTR_HOST_WINDOWS)
 
 if(OPENCTR_HOST_LINUX)
-    set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_LIST_DIR}/Toolchain/Linux.cmake")
+    set(TOOLCHAIN "${CMAKE_CURRENT_LIST_DIR}/Toolchain/Linux.cmake")
+    list(APPEND AUTOTOOLS_FLAGS "--host=x86_64-linux-gnu")
 elseif(OPENCTR_HOST_OSX)
-    set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_LIST_DIR}/Toolchain/OSX.cmake")
-elseif(OPENCTR_HOST_WIN32)
-    set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_LIST_DIR}/Toolchain/Win32.cmake")
+    set(TOOLCHAIN "${CMAKE_CURRENT_LIST_DIR}/Toolchain/OSX.cmake")
+    list(APPEND AUTOTOOLS_FLAGS "--host=x86_64-apple-darwin")
+elseif(OPENCTR_HOST_WINDOWS)
+    set(TOOLCHAIN "${CMAKE_CURRENT_LIST_DIR}/Toolchain/Windows.cmake")
+    list(APPEND AUTOTOOLS_FLAGS "--host=x86_64-w64-mingw32")
 endif()
 
+list(APPEND CMAKE_FLAGS "-DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN}")
