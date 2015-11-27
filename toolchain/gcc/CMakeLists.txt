@@ -50,6 +50,7 @@ ExternalProject_Add(gcc
         --enable-lto
         --enable-multilib
         --with-system-zlib
+        ${AUTOTOOLS_FLAGS}
     BUILD_COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS}
     INSTALL_COMMAND ${MAKE_EXECUTABLE} install
     LOG_DOWNLOAD TRUE
@@ -71,6 +72,7 @@ ExternalProject_Add(newlib
         --disable-newlib-supplied-syscalls 
         --enable-newlib-mb 
         --enable-multilib
+        ${AUTOTOOLS_FLAGS}
         "PATH=<INSTALL_DIR>/bin:$ENV{PATH}"
     BUILD_COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS}
         PATH=<INSTALL_DIR>/bin:$ENV{PATH}

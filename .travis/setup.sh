@@ -41,7 +41,7 @@ mingw)
     fi
 
     CPACK_GENERATOR="ZIP"
-    OPENCTR_HOST="Win32"
+    OPENCTR_HOST="Windows"
     ;;
 *)
     echo "Unrecognized OS: ${OS}"

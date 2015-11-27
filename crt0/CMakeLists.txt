@@ -18,6 +18,9 @@
 # along with OpenCTR. If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
+# TODO: Use current-host clang for compiling crt0. local GCC or local clang
+# will error when using triple-cross.
+
 set(DEPENDS "tools")
 if(ENABLE_GCC)
 	list(APPEND DEPENDS "gcc")
