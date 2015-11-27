@@ -23,7 +23,7 @@ osx)
     brew outdated mpfr || brew upgrade mpfr
     brew outdated libmpc || brew upgrade libmpc
     brew outdated libtool || brew upgrade libtool
-    brew outdated binutils || brew upgrade binutils
+    brew outdated binutils || brew install binutils
     brew outdated ninja || brew install ninja
     brew outdated libelf || brew install libelf
     brew outdated bison || brew install bison
