@@ -20,9 +20,9 @@ osx)
     brew outdated autoconf || brew upgrade autoconf
     brew outdated automake || brew upgrade automake
     brew outdated ninja || brew install ninja
-    brew outdated gmp || brew install gmp
-    brew outdated mpfr || brew install mpfr
-    brew outdated libmpc || brew install libmpc
+    brew outdated gmp || brew upgrade gmp
+    brew outdated mpfr || brew upgrade mpfr
+    brew outdated libmpc || brew upgrade libmpc
     brew outdated libelf || brew install libelf
     brew outdated bison || brew install bison
     brew outdated flex || brew install flex
