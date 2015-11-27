@@ -16,14 +16,14 @@ osx)
     CPACK_GENERATOR="TBZ2"
 
     brew update
-    brew install cmake
+    brew outdated cmake || brew upgrade cmake
+    brew outdated autoconf || brew upgrade autoconf
+    brew outdated automake || brew upgrade automake
     brew install ninja
     brew install gmp
     brew install mpfr
     brew install libmpc
     brew install libelf
-    brew install autoconf
-    brew install automake
     brew install bison
     brew install flex
     brew install libtool

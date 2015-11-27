@@ -6,9 +6,6 @@ os:
   - linux
   - osx
 
-compiler:
-  - clang
-
 cache:
   - apt
 
@@ -56,6 +53,10 @@ env:
     - TRAVIS_DIR=${SOURCE_DIR}/.travis
   matrix:
     - OS=${TRAVIS_OS_NAME}
+
+matrix:
+  allow_failures:
+    - os: osx
 
 before_script:
   - ${TRAVIS_DIR}/setup.sh

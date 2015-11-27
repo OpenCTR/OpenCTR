@@ -25,10 +25,10 @@ if((NOT ENABLE_GCC) AND (NOT ENABLE_LLVM))
 endif()
 
 # Identify the number of cores we can use.
-ProcessorCount(N)
-if(NOT N EQUAL 0)
-	set(JOB_FLAGS -j${N})
-endif()
+# ProcessorCount(N)
+# if(NOT N EQUAL 0)
+# 	set(JOB_FLAGS -j${N})
+# endif()
 
 # Require GNU Make for building Autotools projects
 find_program(MAKE_EXECUTABLE make)

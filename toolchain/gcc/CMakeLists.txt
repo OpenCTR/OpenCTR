@@ -27,7 +27,8 @@ ExternalProject_Add(gcc
     INSTALL_DIR ${OPENCTR_ROOT}
     URL "${GCC_URL}"
     URL_HASH "SHA256=${GCC_HASH}"
-    PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet --input=${GCC_PATCH} --directory=<SOURCE_DIR>
+    PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet --input=${GCC_PATCH}
+        --directory=<SOURCE_DIR>
     CONFIGURE_COMMAND <SOURCE_DIR>/configure
         --prefix=<INSTALL_DIR>
         --target=arm-none-eabi
@@ -50,8 +51,7 @@ ExternalProject_Add(gcc
         --enable-lto
         --enable-multilib
         --with-system-zlib
-        ${AUTOTOOLS_FLAGS}
-    BUILD_COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS}
+    BUILD_COMMAND ${MAKE_EXECUTABLE}
     INSTALL_COMMAND ${MAKE_EXECUTABLE} install
     LOG_DOWNLOAD TRUE
     LOG_CONFIGURE TRUE
@@ -65,16 +65,16 @@ ExternalProject_Add(newlib
     INSTALL_DIR ${OPENCTR_ROOT}
     URL "${NEWLIB_URL}"
     URL_HASH "SHA256=${NEWLIB_HASH}"
-    PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet --input=${NEWLIB_PATCH} --directory=<SOURCE_DIR>
-    CONFIGURE_COMMAND <SOURCE_DIR>/configure 
-        --prefix=<INSTALL_DIR> 
-        --target=arm-none-eabi 
-        --disable-newlib-supplied-syscalls 
-        --enable-newlib-mb 
+    PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet --input=${NEWLIB_PATCH}
+        --directory=<SOURCE_DIR>
+    CONFIGURE_COMMAND <SOURCE_DIR>/configure
+        --prefix=<INSTALL_DIR>
+        --target=arm-none-eabi
+        --disable-newlib-supplied-syscalls
+        --enable-newlib-mb
         --enable-multilib
-        ${AUTOTOOLS_FLAGS}
         "PATH=<INSTALL_DIR>/bin:$ENV{PATH}"
-    BUILD_COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS}
+    BUILD_COMMAND ${MAKE_EXECUTABLE}
         PATH=<INSTALL_DIR>/bin:$ENV{PATH}
     INSTALL_COMMAND ${MAKE_EXECUTABLE} install
         PATH=<INSTALL_DIR>/bin:$ENV{PATH}
