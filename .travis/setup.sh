@@ -11,11 +11,9 @@ fi
 case "${OS}" in
 linux)
     CPACK_GENERATOR="TBZ2"
-    OPENCTR_HOST="Linux"
     ;;
 osx)
     CPACK_GENERATOR="TBZ2"
-    OPENCTR_HOST="OSX"
 
     brew update
     brew install cmake
@@ -41,7 +39,6 @@ mingw)
     fi
 
     CPACK_GENERATOR="ZIP"
-    OPENCTR_HOST="Windows"
     ;;
 *)
     echo "Unrecognized OS: ${OS}"
@@ -60,6 +57,5 @@ cmake \
   -DENABLE_LIBCTR=ON \
   -DENABLE_LLVM=OFF \
   -DENABLE_GCC=ON \
-  -DOPENCTR_HOST=${OPENCTR_HOST} \
   ${SOURCE_DIR}
 

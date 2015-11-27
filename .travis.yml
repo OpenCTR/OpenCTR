@@ -50,8 +50,8 @@ env:
   global:
     - secure: "bqSyuIxvBz9ORiSanVzcLaxhChcZb7ia2zUVYQZT+GUEShZgbxDdSFLEJceIa58iWThUobGMRAJtv+u4Jn3Fzcbh0hZvEMOu1/T4/xq56shneZxfWrO0udOr3AIe+65ZakrSIq2jPS4EkMw+lFPM7XkQQs1HxmC74DUnsEJRKw8="
     - secure: "nGx9wzUK9ox/+v4JIVrtyV3DCwyeUUEaJ5a319NgioKSVxz1NvH3+US+bE4/CQNvfieNsNIOK3co2N9cHMGKqYeVeYZ9kWyLw3EtM2S/QUfyLta9zpHH5TKFfnJT8vXoJVGcRYfac80RcfnPdRiTq6TPml12ehXYkFFDYnMrPeo="
-    - SOURCE_DIR=/home/travis/build/OpenCTR/OpenCTR
-    - BUILD_DIR=/home/travis/build/OpenCTR/OpenCTR/build
+    - SOURCE_DIR=${PWD}
+    - BUILD_DIR=${SOURCE_DIR}/build
     - DIST_DIR=${SOURCE_DIR}/dist
     - TRAVIS_DIR=${SOURCE_DIR}/.travis
   matrix:
