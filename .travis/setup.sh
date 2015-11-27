@@ -19,15 +19,15 @@ osx)
     brew outdated cmake || brew upgrade cmake
     brew outdated autoconf || brew upgrade autoconf
     brew outdated automake || brew upgrade automake
-    brew outdated ninja || brew install ninja
     brew outdated gmp || brew upgrade gmp
     brew outdated mpfr || brew upgrade mpfr
     brew outdated libmpc || brew upgrade libmpc
+    brew outdated libtool || brew upgrade libtool
+    brew outdated binutils || brew upgrade binutils
+    brew outdated ninja || brew install ninja
     brew outdated libelf || brew install libelf
     brew outdated bison || brew install bison
     brew outdated flex || brew install flex
-    brew outdated libtool || brew install libtool
-    brew outdated binutils || brew install binutils
     brew outdated gawk || brew install gawk
     brew outdated texinfo || brew install texinfo
     ;;
