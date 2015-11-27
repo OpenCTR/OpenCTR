@@ -19,17 +19,17 @@ osx)
     brew outdated cmake || brew upgrade cmake
     brew outdated autoconf || brew upgrade autoconf
     brew outdated automake || brew upgrade automake
-    brew install ninja
-    brew install gmp
-    brew install mpfr
-    brew install libmpc
-    brew install libelf
-    brew install bison
-    brew install flex
-    brew install libtool
-    brew install binutils
-    brew install gawk
-    brew install texinfo
+    brew outdated ninja || brew install ninja
+    brew outdated gmp || brew install gmp
+    brew outdated mpfr || brew install mpfr
+    brew outdated libmpc || brew install libmpc
+    brew outdated libelf || brew install libelf
+    brew outdated bison || brew install bison
+    brew outdated flex || brew install flex
+    brew outdated libtool || brew install libtool
+    brew outdated binutils || brew install binutils
+    brew outdated gawk || brew install gawk
+    brew outdated texinfo || brew install texinfo
     ;;
 mingw)
     if [ "${TRAVIS_OS_NAME}" == "osx" ]
