@@ -30,6 +30,7 @@ osx)
     brew outdated flex || brew install flex
     brew outdated gawk || brew install gawk
     brew outdated texinfo || brew install texinfo
+    brew outdated libelf | brew install libelf
     ;;
 mingw)
     if [ "${TRAVIS_OS_NAME}" == "osx" ]
