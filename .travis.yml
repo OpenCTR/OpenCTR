@@ -2,6 +2,9 @@ language: c
 
 sudo: false
 
+compiler:
+  - gcc
+
 os:
   - linux
   - osx
@@ -16,7 +19,6 @@ addons:
       - ubuntu-toolchain-r-test
       - llvm-toolchain-precise-3.6
     packages:
-      - clang
       - gcc-5
       - g++-5
       - cmake
