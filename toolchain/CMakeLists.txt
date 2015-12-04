@@ -43,14 +43,14 @@ if(NOT PATCH_EXECUTABLE)
 endif()
 
 # Binutils settings
-set(BINUTILS_PATCH "${CMAKE_CURRENT_SOURCE_DIR}/patches/binutils-2.25.patch")
-set(BINUTILS_URL "ftp://ftp.gnu.org/gnu/binutils/binutils-2.25.tar.bz2")
-set(BINUTILS_HASH "22defc65cfa3ef2a3395faaea75d6331c6e62ea5dfacfed3e2ec17b08c882923")
+set(BINUTILS_PATCH "${CMAKE_CURRENT_SOURCE_DIR}/patches/binutils-2.25.1.patch")
+set(BINUTILS_URL "ftp://ftp.gnu.org/gnu/binutils/binutils-2.25.1.tar.bz2")
+set(BINUTILS_HASH "b5b14added7d78a8d1ca70b5cb75fef57ce2197264f4f5835326b0df22ac9f22")
 
 # GCC settings
-set(GCC_URL "ftp://ftp.gnu.org/gnu/gcc/gcc-4.9.2/gcc-4.9.2.tar.bz2")
-set(GCC_HASH "2020c98295856aa13fda0f2f3a4794490757fc24bcca918d52cc8b4917b972dd")
-set(GCC_PATCH "${CMAKE_CURRENT_SOURCE_DIR}/patches/gcc-4.9.2.patch")
+set(GCC_URL "ftp://ftp.gnu.org/gnu/gcc/gcc-5.2.0/gcc-5.2.0.tar.bz2")
+set(GCC_HASH "5f835b04b5f7dd4f4d2dc96190ec1621b8d89f2dc6f638f9f8bc1b1014ba8cad")
+set(GCC_PATCH "${CMAKE_CURRENT_SOURCE_DIR}/patches/gcc-5.2.0.patch")
 
 # Newlib settings
 set(NEWLIB_URL "ftp://sourceware.org/pub/newlib/newlib-2.2.0.tar.gz")
