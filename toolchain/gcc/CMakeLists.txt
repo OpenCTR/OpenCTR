@@ -53,10 +53,10 @@ ExternalProject_Add(gcc
         --with-system-zlib
     BUILD_COMMAND ${MAKE_EXECUTABLE}
     INSTALL_COMMAND ${MAKE_EXECUTABLE} install
-    LOG_DOWNLOAD TRUE
-    LOG_CONFIGURE TRUE
-    LOG_BUILD TRUE
-    LOG_INSTALL TRUE
+    LOG_DOWNLOAD ${ENABLE_LOG}
+    LOG_CONFIGURE ${ENABLE_LOG}
+    LOG_BUILD ${ENABLE_LOG}
+    LOG_INSTALL ${ENABLE_LOG}
 )
 
 # Newlib target
@@ -78,10 +78,10 @@ ExternalProject_Add(newlib
         PATH=<INSTALL_DIR>/bin:$ENV{PATH}
     INSTALL_COMMAND ${MAKE_EXECUTABLE} install
         PATH=<INSTALL_DIR>/bin:$ENV{PATH}
-    LOG_DOWNLOAD TRUE
-    LOG_CONFIGURE TRUE
-    LOG_BUILD TRUE
-    LOG_INSTALL TRUE
+    LOG_DOWNLOAD ${ENABLE_LOG}
+    LOG_CONFIGURE ${ENABLE_LOG}
+    LOG_BUILD ${ENABLE_LOG}
+    LOG_INSTALL ${ENABLE_LOG}
 )
 
 # Do not build newlib by default.
@@ -92,7 +92,7 @@ ExternalProject_Add_Step(gcc all-gcc
     COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS} all-gcc
     DEPENDEES configure
     WORKING_DIRECTORY <BINARY_DIR>
-    LOG TRUE
+    LOG ${ENABLE_LOG}
 )
 
 # Dependency Injection: Require "make install-gcc" after "all-gcc"
@@ -100,7 +100,7 @@ ExternalProject_Add_Step(gcc install-gcc
     COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS} install-gcc
     DEPENDEES all-gcc
     WORKING_DIRECTORY <BINARY_DIR>
-    LOG TRUE
+    LOG ${ENABLE_LOG}
 )
 
 # Dependency Injection: Make GCC 'build' stage depend on Newlib

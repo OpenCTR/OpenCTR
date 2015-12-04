@@ -64,10 +64,10 @@ before_script:
   - ${TRAVIS_DIR}/setup.sh
 
 script:
-  - travis_wait cmake --build ${BUILD_DIR} --target OpenCTR
+  - cmake --build ${BUILD_DIR} --target OpenCTR
 
 after_success:
-  - travis_wait cmake --build ${BUILD_DIR} --target package
+  - cmake --build ${BUILD_DIR} --target package
 
 after_failure:
   - ${TRAVIS_DIR}/onerror.sh

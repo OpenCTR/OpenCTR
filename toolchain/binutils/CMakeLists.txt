@@ -26,7 +26,8 @@ ExternalProject_Add(binutils
     INSTALL_DIR ${OPENCTR_ROOT}
     URL "${BINUTILS_URL}"
     URL_HASH "SHA256=${BINUTILS_HASH}"
-    PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet --input=${BINUTILS_PATCH} --directory=<SOURCE_DIR> 
+    PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet
+        --input=${BINUTILS_PATCH} --directory=<SOURCE_DIR> 
     CONFIGURE_COMMAND <SOURCE_DIR>/configure
         --prefix=<INSTALL_DIR>
         --target=arm-none-eabi
@@ -49,10 +50,10 @@ ExternalProject_Add(binutils
         ${AUTOTOOLS_FLAGS}
     BUILD_COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS}
     INSTALL_COMMAND ${MAKE_EXECUTABLE} install
-    LOG_DOWNLOAD TRUE
-    LOG_CONFIGURE TRUE
-    LOG_BUILD TRUE
-    LOG_INSTALL TRUE
+    LOG_DOWNLOAD ${ENABLE_LOG}
+    LOG_CONFIGURE ${ENABLE_LOG}
+    LOG_BUILD ${ENABLE_LOG}
+    LOG_INSTALL ${ENABLE_LOG}
 )
 
 # Cleanup

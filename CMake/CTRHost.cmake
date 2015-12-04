@@ -25,6 +25,12 @@
 # along with OpenCTR. If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
+if($ENV{CI} STREQUAL "true")
+    set(ENABLE_LOG FALSE)
+else()
+    set(ENABLE_LOG TRUE)
+endif()
+
 if(NOT DEFINED OPENCTR_HOST)
     return()
 endif()
