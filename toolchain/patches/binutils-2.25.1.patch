@@ -35,7 +35,7 @@ diff -burN binutils-2.25.1/gold/binary.cc binutils-2.25.1-ctr/gold/binary.cc
 +    if (!isalnum(*p))
 +#else
      if (!ISALNUM(*p))
-++#endif
++#endif
        *p = '_';
    mangled_name = "_binary_" + mangled_name;
    std::string start_symbol_name = mangled_name + "_start";
