@@ -27,13 +27,13 @@
 
 if($ENV{CI} STREQUAL "true")
     set(ENABLE_LOG FALSE)
+
+    if(APPLE)
+        list(APPEND EXTRA_ARGS "CC=/usr/local/bin/gcc-5")
+        list(APPEND EXTRA_ARGS "CXX=/usr/local/bin/g++-5")
+    endif()
 else()
     set(ENABLE_LOG TRUE)
-endif()
-
-if(APPLE)
-    list(APPEND EXTRA_ARGS "CC=/usr/local/bin/gcc")
-    list(APPEND EXTRA_ARGS "CXX=/usr/local/bin/g++")
 endif()
 
 if(NOT DEFINED OPENCTR_HOST)
