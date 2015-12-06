@@ -31,6 +31,7 @@ osx)
     brew outdated gawk || brew install gawk
     brew outdated texinfo || brew install texinfo
     brew outdated libelf | brew install libelf
+    brew outdated gcc || brew install gcc
     ;;
 mingw)
     if [ "${TRAVIS_OS_NAME}" == "osx" ]

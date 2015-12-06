@@ -51,6 +51,7 @@ ExternalProject_Add(gcc
         --enable-lto
         --enable-multilib
         --with-system-zlib
+        ${EXTRA_ARGS}
     BUILD_COMMAND ${MAKE_EXECUTABLE}
     INSTALL_COMMAND ${MAKE_EXECUTABLE} install
     LOG_DOWNLOAD ${ENABLE_LOG}
@@ -74,6 +75,7 @@ ExternalProject_Add(newlib
         --enable-newlib-mb
         --enable-multilib
         "PATH=<INSTALL_DIR>/bin:$ENV{PATH}"
+        ${EXTRA_ARGS}
     BUILD_COMMAND ${MAKE_EXECUTABLE}
         PATH=<INSTALL_DIR>/bin:$ENV{PATH}
     INSTALL_COMMAND ${MAKE_EXECUTABLE} install

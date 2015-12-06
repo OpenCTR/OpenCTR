@@ -31,6 +31,11 @@ else()
     set(ENABLE_LOG TRUE)
 endif()
 
+if(APPLE)
+    list(APPEND EXTRA_ARGS "CC=/usr/local/bin/gcc")
+    list(APPEND EXTRA_ARGS "CXX=/usr/local/bin/g++")
+endif()
+
 if(NOT DEFINED OPENCTR_HOST)
     return()
 endif()

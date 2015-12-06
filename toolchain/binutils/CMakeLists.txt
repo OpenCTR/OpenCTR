@@ -47,7 +47,7 @@ ExternalProject_Add(binutils
         --enable-build-with-cxx
         --enable-interworks
         --enable-nlsi=no
-        ${AUTOTOOLS_FLAGS}
+        ${EXTRA_ARGS}
     BUILD_COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS}
     INSTALL_COMMAND ${MAKE_EXECUTABLE} install
     LOG_DOWNLOAD ${ENABLE_LOG}
