@@ -8,7 +8,7 @@ then
     exit 1
 fi
 
-case "${OS}" in
+case "${TRAVIS_OS_NAME}" in
 linux)
     CPACK_GENERATOR="TBZ2"
     ;;
