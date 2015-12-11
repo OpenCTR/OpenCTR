@@ -48,8 +48,8 @@ ExternalProject_Add(binutils
         --enable-interworks
         --enable-nlsi=no
         ${EXTRA_ARGS}
-    BUILD_COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS}
-    INSTALL_COMMAND ${MAKE_EXECUTABLE} install
+    BUILD_COMMAND ${TRAVIS_WAIT} ${MAKE_EXECUTABLE} ${JOB_FLAGS}
+    INSTALL_COMMAND ${TRAVIS_WAIT} ${MAKE_EXECUTABLE} install
     LOG_DOWNLOAD ${ENABLE_LOG}
     LOG_CONFIGURE ${ENABLE_LOG}
     LOG_BUILD ${ENABLE_LOG}
