@@ -1,6 +1,6 @@
 diff -burN gcc-5.2.0/config.sub gcc-5.2.0-ctr/config.sub
 --- gcc-5.2.0/config.sub	2015-01-02 03:30:21.000000000 -0600
-+++ gcc-5.2.0-ctr/config.sub	2015-12-04 08:38:50.178633165 -0600
++++ gcc-5.2.0-ctr/config.sub	2015-12-11 14:28:39.829710484 -0600
 @@ -600,6 +600,10 @@
  		basic_machine=crx-unknown
  		os=-elf
@@ -14,7 +14,7 @@ diff -burN gcc-5.2.0/config.sub gcc-5.2.0-ctr/config.sub
  		;;
 diff -burN gcc-5.2.0/gcc/config/arm/t-arm-elf gcc-5.2.0-ctr/gcc/config/arm/t-arm-elf
 --- gcc-5.2.0/gcc/config/arm/t-arm-elf	2015-01-05 06:33:28.000000000 -0600
-+++ gcc-5.2.0-ctr/gcc/config/arm/t-arm-elf	2015-12-04 08:38:50.178633165 -0600
++++ gcc-5.2.0-ctr/gcc/config/arm/t-arm-elf	2015-12-11 14:28:39.829710484 -0600
 @@ -16,11 +16,19 @@
  # along with GCC; see the file COPYING3.  If not see
  # <http://www.gnu.org/licenses/>.
@@ -52,7 +52,7 @@ diff -burN gcc-5.2.0/gcc/config/arm/t-arm-elf gcc-5.2.0-ctr/gcc/config/arm/t-arm
  
 diff -burN gcc-5.2.0/gcc/config/arm/unknown-elf.h gcc-5.2.0-ctr/gcc/config/arm/unknown-elf.h
 --- gcc-5.2.0/gcc/config/arm/unknown-elf.h	2015-01-05 06:33:28.000000000 -0600
-+++ gcc-5.2.0-ctr/gcc/config/arm/unknown-elf.h	2015-12-04 08:38:50.178633165 -0600
++++ gcc-5.2.0-ctr/gcc/config/arm/unknown-elf.h	2015-12-11 14:28:39.833710202 -0600
 @@ -93,4 +93,4 @@
     udivmoddi4, which will depend on the exception unwind routines,
     which will depend on abort, which is defined in libc.  */ 
@@ -61,7 +61,7 @@ diff -burN gcc-5.2.0/gcc/config/arm/unknown-elf.h gcc-5.2.0-ctr/gcc/config/arm/u
 +#define LINK_GCC_C_SEQUENCE_SPEC "--start-group %G %L %(libgloss) --end-group"
 diff -burN gcc-5.2.0/gcc/gcc.c gcc-5.2.0-ctr/gcc/gcc.c
 --- gcc-5.2.0/gcc/gcc.c	2015-03-10 04:37:41.000000000 -0500
-+++ gcc-5.2.0-ctr/gcc/gcc.c	2015-12-04 08:38:50.178633165 -0600
++++ gcc-5.2.0-ctr/gcc/gcc.c	2015-12-11 14:28:39.833710202 -0600
 @@ -647,6 +647,11 @@
  #endif
  #endif
@@ -90,9 +90,20 @@ diff -burN gcc-5.2.0/gcc/gcc.c gcc-5.2.0-ctr/gcc/gcc.c
    INIT_STATIC_SPEC ("startfile",		&startfile_spec),
    INIT_STATIC_SPEC ("cross_compile",		&cross_compile),
    INIT_STATIC_SPEC ("version",			&compiler_version),
+diff -burN gcc-5.2.0/gcc/graphite.c gcc-5.2.0-ctr/gcc/graphite.c
+--- gcc-5.2.0/gcc/graphite.c	2015-01-09 14:18:42.000000000 -0600
++++ gcc-5.2.0-ctr/gcc/graphite.c	2015-12-11 14:26:40.195402023 -0600
+@@ -39,6 +39,7 @@
+ #include <isl/map.h>
+ #include <isl/options.h>
+ #include <isl/union_map.h>
++#include <isl/constraint.h>
+ #endif
+ 
+ #include "system.h"
 diff -burN gcc-5.2.0/gcc/Makefile.in gcc-5.2.0-ctr/gcc/Makefile.in
 --- gcc-5.2.0/gcc/Makefile.in	2015-05-04 05:46:32.000000000 -0500
-+++ gcc-5.2.0-ctr/gcc/Makefile.in	2015-12-04 08:38:50.178633165 -0600
++++ gcc-5.2.0-ctr/gcc/Makefile.in	2015-12-11 14:28:39.833710202 -0600
 @@ -1053,8 +1053,8 @@
  # things like the go/%.o rule work properly; but we use $(*F) for the
  # file part, as we just want the file part of the stem, not the entire
@@ -106,7 +117,7 @@ diff -burN gcc-5.2.0/gcc/Makefile.in gcc-5.2.0-ctr/gcc/Makefile.in
      DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) $(COMPILE.base)
 diff -burN gcc-5.2.0/libcpp/Makefile.in gcc-5.2.0-ctr/libcpp/Makefile.in
 --- gcc-5.2.0/libcpp/Makefile.in	2015-07-16 04:16:25.000000000 -0500
-+++ gcc-5.2.0-ctr/libcpp/Makefile.in	2015-12-04 08:38:50.178633165 -0600
++++ gcc-5.2.0-ctr/libcpp/Makefile.in	2015-12-11 14:28:39.833710202 -0600
 @@ -208,8 +208,7 @@
  # Note that we put the dependencies into a .Tpo file, then move them
  # into place if the compile succeeds.  We need this because gcc does
@@ -119,7 +130,7 @@ diff -burN gcc-5.2.0/libcpp/Makefile.in gcc-5.2.0-ctr/libcpp/Makefile.in
  	  $(depcomp) $(COMPILE.base)
 diff -burN gcc-5.2.0/libgcc/config/arm/t-bpabi gcc-5.2.0-ctr/libgcc/config/arm/t-bpabi
 --- gcc-5.2.0/libgcc/config/arm/t-bpabi	2012-08-17 10:06:06.000000000 -0500
-+++ gcc-5.2.0-ctr/libgcc/config/arm/t-bpabi	2015-12-04 08:38:50.182633199 -0600
++++ gcc-5.2.0-ctr/libgcc/config/arm/t-bpabi	2015-12-11 14:28:39.833710202 -0600
 @@ -17,4 +17,4 @@
  # On ARM, specifying -fnon-call-exceptions will needlessly pull in
  # the unwinder in simple programs which use 64-bit division.  Omitting
@@ -128,7 +139,7 @@ diff -burN gcc-5.2.0/libgcc/config/arm/t-bpabi gcc-5.2.0-ctr/libgcc/config/arm/t
 +LIB2_DIVMOD_EXCEPTION_FLAGS := -fno-exceptions
 diff -burN gcc-5.2.0/libgcc/crtstuff.c gcc-5.2.0-ctr/libgcc/crtstuff.c
 --- gcc-5.2.0/libgcc/crtstuff.c	2015-01-05 06:33:28.000000000 -0600
-+++ gcc-5.2.0-ctr/libgcc/crtstuff.c	2015-12-04 08:38:50.182633199 -0600
++++ gcc-5.2.0-ctr/libgcc/crtstuff.c	2015-12-11 14:28:39.833710202 -0600
 @@ -47,7 +47,7 @@
  
  /* Target machine header files require this define. */
@@ -140,7 +151,7 @@ diff -burN gcc-5.2.0/libgcc/crtstuff.c gcc-5.2.0-ctr/libgcc/crtstuff.c
     this will have to do.  */
 diff -burN gcc-5.2.0/libgcc/Makefile.in gcc-5.2.0-ctr/libgcc/Makefile.in
 --- gcc-5.2.0/libgcc/Makefile.in	2015-01-29 02:03:56.000000000 -0600
-+++ gcc-5.2.0-ctr/libgcc/Makefile.in	2015-12-04 08:38:50.182633199 -0600
++++ gcc-5.2.0-ctr/libgcc/Makefile.in	2015-12-11 14:28:39.833710202 -0600
 @@ -819,7 +819,7 @@
  # libgcc_eh.a, only LIB2ADDEH matters.  If we do, only LIB2ADDEHSTATIC and
  # LIB2ADDEHSHARED matter.  (Usually all three are identical.)
