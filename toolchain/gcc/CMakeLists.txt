@@ -52,6 +52,7 @@ ExternalProject_Add(gcc
         --enable-multilib
         --with-system-zlib
         ${EXTRA_ARGS}
+        ${GCC_EXTRA_ARGS}
     BUILD_COMMAND ${MAKE_EXECUTABLE}
     INSTALL_COMMAND ${MAKE_EXECUTABLE} install
     LOG_DOWNLOAD ${ENABLE_LOG}
