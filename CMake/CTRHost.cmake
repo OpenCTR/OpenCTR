@@ -32,8 +32,6 @@ if($ENV{CI} STREQUAL "true")
         list(APPEND EXTRA_ARGS "CC=/usr/local/bin/gcc-5")
         list(APPEND EXTRA_ARGS "CXX=/usr/local/bin/g++-5")
         list(APPEND GCC_EXTRA_ARGS "--without-isl")
-
-        set(TRAVIS_WAIT travis_wait)
     endif()
 else()
     set(ENABLE_LOG TRUE)
