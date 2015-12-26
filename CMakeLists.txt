@@ -62,13 +62,13 @@ endif()
 add_subdirectory(toolchain)
 add_subdirectory(tools)
 add_subdirectory(projects)
-add_subdirectory(crt0)
+#add_subdirectory(crt0)
 
 add_custom_target(OpenCTR ALL)
 
 add_dependencies(OpenCTR binutils)
 add_dependencies(OpenCTR tools)
-add_dependencies(OpenCTR crt0)
+#add_dependencies(OpenCTR crt0)
 
 if(ENABLE_GCC)
     add_dependencies(OpenCTR gcc)
