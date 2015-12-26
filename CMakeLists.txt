@@ -64,28 +64,6 @@ add_subdirectory(tools)
 add_subdirectory(projects)
 #add_subdirectory(crt0)
 
-add_custom_target(OpenCTR ALL)
-
-add_dependencies(OpenCTR binutils)
-add_dependencies(OpenCTR tools)
-#add_dependencies(OpenCTR crt0)
-
-if(ENABLE_GCC)
-    add_dependencies(OpenCTR gcc)
-endif()
-if(ENABLE_LLVM)
-    add_dependencies(OpenCTR clang)
-endif()
-if(ENABLE_LIBCTRU)
-    add_dependencies(OpenCTR libctru)
-endif()
-if(ENABLE_LIBCTRU)
-    add_dependencies(OpenCTR libctr)
-endif()
-if(ENABLE_DOC)
-    add_dependencies(OpenCTR doc)
-endif()
-
 # Install OpenCTR
 install(DIRECTORY ${OPENCTR_ROOT}/
     DESTINATION OpenCTR

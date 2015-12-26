@@ -24,6 +24,7 @@ addons:
       - cmake
       - cmake-data
       - ninja-build
+      - clang-3.6
       - build-essential
       - libgmp-dev
       - libmpfr-dev
@@ -38,12 +39,6 @@ addons:
       - binutils-dev
       - gawk
       - texinfo
-      - binutils-mingw-w64-i686
-      - binutils-mingw-w64-x86-64
-      - g++-mingw-w64-i686
-      - g++-mingw-w64-x86-64
-      - gcc-mingw-w64-i686
-      - gcc-mingw-w64-x86-64
 
 env:
   global:
@@ -62,7 +57,7 @@ before_script:
   - ${TRAVIS_DIR}/setup.sh
 
 script:
-  - cmake --build ${BUILD_DIR} --target OpenCTR
+  - cmake --build ${BUILD_DIR} --target all
 
 after_success:
   - cmake --build ${BUILD_DIR} --target package
