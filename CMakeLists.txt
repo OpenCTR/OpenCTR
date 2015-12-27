@@ -26,7 +26,6 @@ set(CMAKE_BUILD_TYPE_INIT "Debug")
 set(CMAKE_INSTALL_MESSAGE "NEVER")
 set(OPENCTR_ROOT "${CMAKE_CURRENT_BINARY_DIR}/install")
 
-include(CTRHost)
 include(CMakePackageConfigHelpers)
 
 project(OpenCTR LANGUAGES NONE VERSION 0.0.1)
@@ -35,6 +34,21 @@ option(ENABLE_DOC "Build Sphinx documentation" OFF)
 option(ENABLE_TOOLCHAIN "Build the LLVM/Clang toolchain" ON)
 option(ENABLE_TOOLS "Build the OpenCTR tools" ON)
 option(ENABLE_LIBCTR "Build libctru" ON)
+
+set(ENABLE_LOG ON)
+
+if($ENV{TRAVIS} STREQUAL "true")
+    set(ENABLE_LOG OFF)
+
+    if(APPLE)
+        list(APPEND CMAKE_ARGS "-DCMAKE_C_COMPILER=/usr/bin/clang")
+        list(APPEND CMAKE_ARGS "-DCMAKE_CXX_COMPILER=/usr/bin/clang++")
+    elseif(UNIX)
+        list(APPEND CMAKE_ARGS "-DCMAKE_C_COMPILER=/usr/bin/clang-3.6")
+        list(APPEND CMAKE_ARGS "-DCMAKE_CXX_COMPILER=/usr/bin/clang++-3.6")
+    endif()
+endif()
+
 
 # Configure CTRConfig.cmake
 configure_package_config_file(
