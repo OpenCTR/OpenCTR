@@ -20,10 +20,10 @@ osx)
     brew outdated gmp || brew upgrade gmp
     brew outdated mpfr || brew upgrade mpfr
     brew outdated libmpc || brew upgrade libmpc
+    brew outdated isl | brew upgrade isl
     brew outdated binutils || brew install binutils
     brew outdated ninja || brew install ninja
     brew outdated libelf | brew install libelf
-    brew outdated isl | brew install isl
     ;;
 *)
     echo "Unrecognized OS: ${TRAVIS_OS_NAME}"
