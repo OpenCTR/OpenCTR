@@ -17,19 +17,12 @@ osx)
 
     brew update
     brew outdated cmake || brew upgrade cmake
-    brew outdated autoconf || brew upgrade autoconf
-    brew outdated automake || brew upgrade automake
     brew outdated gcc || brew upgrade gcc
     brew outdated gmp || brew upgrade gmp
     brew outdated mpfr || brew upgrade mpfr
     brew outdated libmpc || brew upgrade libmpc
-    brew outdated libtool || brew upgrade libtool
     brew outdated binutils || brew install binutils
     brew outdated ninja || brew install ninja
-    brew outdated bison || brew install bison
-    brew outdated flex || brew install flex
-    brew outdated gawk || brew install gawk
-    brew outdated texinfo || brew install texinfo
     brew outdated libelf | brew install libelf
     brew outdated isl | brew install isl
     ;;
@@ -46,9 +39,7 @@ cmake \
   -DCMAKE_BUILD_TYPE="Release" \
   -DCPACK_GENERATOR=${CPACK_GENERATOR} \
   -DENABLE_DOC=OFF \
-  -DENABLE_LIBCTRU=OFF \
+  -DENABLE_TOOLCHAIN=ON \
+  -DENABLE_TOOLS=ON
   -DENABLE_LIBCTR=OFF \
-  -DENABLE_LLVM=ON \
-  -DENABLE_GCC=OFF \
   ${SOURCE_DIR}
-

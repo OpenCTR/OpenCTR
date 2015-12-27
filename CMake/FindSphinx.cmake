@@ -1,9 +1,9 @@
 #.rst:
 # FindSphinx
 # ----------
-# 
-# Locate Sphinx - The official python documentation generator
-# 
+#
+# Locate Sphinx - The official python documentation generator.
+#
 # Result Variables
 # ~~~~~~~~~~~~~~~~
 # 
@@ -70,9 +70,9 @@ if(NOT SPHINX_VERSION)
     if(SPHINX_EXECUTABLE)
         execute_process(
             COMMAND ${SPHINX_EXECUTABLE} --version
-            RESULT_VARIABLE result 
-            OUTPUT_VARIABLE output 
-            ERROR_VARIABLE error 
+            RESULT_VARIABLE result
+            OUTPUT_VARIABLE output
+            ERROR_VARIABLE error
             OUTPUT_STRIP_TRAILING_WHITESPACE
         )
         if(${result} EQUAL 0)

@@ -20,42 +20,9 @@
 
 include(ProcessorCount)
 
-if((NOT ENABLE_GCC) AND (NOT ENABLE_LLVM))
-	message(SEND_ERROR "ENABLE_GCC and/or ENABLE_LLVM must be enabled.")
-endif()
-
-# Identify the number of cores we can use.
-# ProcessorCount(N)
-# if(NOT N EQUAL 0)
-# 	set(JOB_FLAGS -j${N})
-# endif()
-
-# Require GNU Make for building Autotools projects
-find_program(MAKE_EXECUTABLE make)
-if(NOT MAKE_EXECUTABLE)
-	message(SEND_ERROR "GNU Make not found")
-endif()
-
-# Require GNU Patch for patching downloaded sources
-find_program(PATCH_EXECUTABLE patch)
-if(NOT PATCH_EXECUTABLE)
-	message(SEND_ERROR "GNU Patch not found")
-endif()
-
-# Binutils settings
-set(BINUTILS_PATCH "${CMAKE_CURRENT_SOURCE_DIR}/patches/binutils-2.25.1.patch")
-set(BINUTILS_URL "ftp://ftp.gnu.org/gnu/binutils/binutils-2.25.1.tar.bz2")
-set(BINUTILS_HASH "b5b14added7d78a8d1ca70b5cb75fef57ce2197264f4f5835326b0df22ac9f22")
-
-# GCC settings
-set(GCC_URL "ftp://ftp.gnu.org/gnu/gcc/gcc-5.2.0/gcc-5.2.0.tar.bz2")
-set(GCC_HASH "5f835b04b5f7dd4f4d2dc96190ec1621b8d89f2dc6f638f9f8bc1b1014ba8cad")
-set(GCC_PATCH "${CMAKE_CURRENT_SOURCE_DIR}/patches/gcc-5.2.0.patch")
-
-# Newlib settings
-set(NEWLIB_URL "ftp://sourceware.org/pub/newlib/newlib-2.2.0.tar.gz")
-set(NEWLIB_HASH "f8add263b0737591aff451b12a00c262c2efac4fa87d741fa1c318fc3bb335be")
-set(NEWLIB_PATCH "${CMAKE_CURRENT_SOURCE_DIR}/patches/newlib-2.2.0.patch")
+# Set the number of parallel jobs to use.
+ProcessorCount(LLVM_PARALLEL_COMPILE_JOBS)
+ProcessorCount(LLVM_PARALLEL_LINK_JOBS)
 
 # LLVM settings
 set(LLVM_URL "http://llvm.org/releases/3.6.0/llvm-3.6.0.src.tar.xz")
@@ -65,15 +32,69 @@ set(LLVM_HASH "b39a69e501b49e8f73ff75c9ad72313681ee58d6f430bfad4d81846fe92eb9ce"
 set(CLANG_URL "http://llvm.org/releases/3.6.0/cfe-3.6.0.src.tar.xz")
 set(CLANG_HASH "be0e69378119fe26f0f2f74cffe82b7c26da840c9733fe522ed3c1b66b11082d")
 
-# Add binutils target
-add_subdirectory(binutils)
+# LLVM target
+ExternalProject_Add(llvm
+	PREFIX ${CMAKE_CURRENT_BINARY_DIR}
+	INSTALL_DIR ${OPENCTR_ROOT}
+	URL "${LLVM_URL}"
+	URL_HASH "SHA256=${LLVM_HASH}"
+	CMAKE_ARGS 
+		-DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
+		-DCMAKE_BUILD_TYPE="Release"
+        -DCMAKE_JOB_POOL_COMPILE=${LLVM_PARALLEL_COMPILE_JOBS}
+        -DCMAKE_JOB_POOL_LINK=${LLVM_PARALLEL_LINK_JOBS}
+		-DBUILD_SHARED_LIBS=OFF
+		-DLLVM_DEFAULT_TARGET_TRIPLE=arm-none-eabi
+		-DLLVM_TARGETS_TO_BUILD=ARM
+        -DLLVM_TARGET_ARCH=ARM
+        -DLLVM_BUILD_TOOLS=ON
+		-DLLVM_BUILD_RUNTIME=OFF
+		-DLLVM_BUILD_EXAMPLES=OFF
+		-DLLVM_BUILD_TESTS=OFF
+        -DLLVM_BUILD_DOCS=OFF
+		-DLLVM_PARALLEL_COMPILE_JOBS=${LLVM_PARALLEL_COMPILE_JOBS}
+		-DLLVM_PARALLEL_LINK_JOBS=${LLVM_PARALLEL_LINK_JOBS}
+		-DLLVM_INSTALL_TOOLCHAIN_ONLY=ON
+        ${CMAKE_ARGS}
+	LOG_DOWNLOAD ${ENABLE_LOG}
+	LOG_CONFIGURE ${ENABLE_LOG}
+	LOG_BUILD ${ENABLE_LOG}
+	LOG_INSTALL ${ENABLE_LOG}
+)
 
-# Add GCC target
-if(ENABLE_GCC)
-	add_subdirectory(gcc)
-endif()
+ExternalProject_Get_Property(llvm binary_dir)
+set(LLVM_CONFIG_EXECUTABLE ${binary_dir}/bin/llvm-config)
 
-# Add LLVM target
-if(ENABLE_LLVM)
-	add_subdirectory(llvm)
-endif()
+# Clang target
+ExternalProject_Add(clang
+	DEPENDS llvm
+	PREFIX ${CMAKE_CURRENT_BINARY_DIR}
+	INSTALL_DIR ${OPENCTR_ROOT}
+    URL "${CLANG_URL}"
+	URL_HASH "SHA256=${CLANG_HASH}"
+	CMAKE_ARGS
+		-DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
+		-DCMAKE_BUILD_TYPE="Release"
+		-DCMAKE_PREFIX_PATH=<INSTALL_DIR>
+		-DCMAKE_PROGRAM_PATH=<INSTALL_DIR>/bin
+        -DCMAKE_JOB_POOL_COMPILE=${LLVM_PARALLEL_COMPILE_JOBS}
+        -DCMAKE_JOB_POOL_LINK=${LLVM_PARALLEL_LINK_JOBS}
+		-DGCC_INSTALL_PREFIX=<INSTALL_DIR>
+		-DLLVM_INCLUDE_TESTS=OFF
+		-DLLVM_INCLUDE_DOCS=OFF
+		-DLLVM_INSTALL_TOOLCHAIN_ONLY=ON
+		-DCLANG_PLUGIN_SUPPORT=ON
+		-DCLANG_BUILD_EXAMPLES=OFF
+		-DCLANG_ENABLE_STATIC_ANALYZER=OFF
+		-DCLANG_ENABLE_ARCMT=OFF
+		-DLLVM_CONFIG=${LLVM_CONFIG_EXECUTABLE}
+        ${CMAKE_ARGS}
+	LOG_DOWNLOAD ${ENABLE_LOG}
+	LOG_CONFIGURE ${ENABLE_LOG}
+	LOG_BUILD ${ENABLE_LOG}
+	LOG_INSTALL ${ENABLE_LOG}
+)
+
+# Cleanup
+set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "src")
+set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "tmp")

@@ -31,11 +31,10 @@ include(CMakePackageConfigHelpers)
 
 project(OpenCTR LANGUAGES NONE VERSION 0.0.1)
 
-option(ENABLE_DOC "Build Sphinx documentation." OFF)
-option(ENABLE_LIBCTRU "Build libctru." ON)
-option(ENABLE_LIBCTR "Build libctru." ON)
-option(ENABLE_GCC "Build the GCC toolchain." ON)
-option(ENABLE_LLVM "Build the LLVM/Clang toolchain." OFF)
+option(ENABLE_DOC "Build Sphinx documentation" OFF)
+option(ENABLE_TOOLCHAIN "Build the LLVM/Clang toolchain" ON)
+option(ENABLE_TOOLS "Build the OpenCTR tools" ON)
+option(ENABLE_LIBCTR "Build libctru" ON)
 
 # Configure CTRConfig.cmake
 configure_package_config_file(
@@ -59,9 +58,18 @@ if(ENABLE_DOC)
     add_subdirectory(doc)
 endif()
 
-add_subdirectory(toolchain)
-add_subdirectory(tools)
-add_subdirectory(projects)
+if(ENABLE_TOOLCHAIN)
+    add_subdirectory(toolchain)
+endif()
+
+if(ENABLE_TOOLS)
+    add_subdirectory(tools)
+endif()
+
+if(ENABLE_LIBCTR)
+    add_subdirectory(projects)
+endif()
+
 #add_subdirectory(crt0)
 
 # Install OpenCTR
