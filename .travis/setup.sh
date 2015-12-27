@@ -17,7 +17,6 @@ osx)
 
     brew update
     brew outdated cmake || brew upgrade cmake
-    brew outdated gcc || brew upgrade gcc
     brew outdated gmp || brew upgrade gmp
     brew outdated mpfr || brew upgrade mpfr
     brew outdated libmpc || brew upgrade libmpc
