@@ -18,6 +18,7 @@
 # along with OpenCTR. If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
+include(ExternalProject)
 include(ProcessorCount)
 
 # Set the number of parallel jobs to use.
