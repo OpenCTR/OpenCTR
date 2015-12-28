@@ -40,6 +40,12 @@ set(ENABLE_LOG ON)
 if($ENV{TRAVIS} STREQUAL "true")
     set(ENABLE_LOG OFF)
 
+    if(CMAKE_GENERATOR MATCHES "Ninja")
+        # Make Ninja verbose so builds do not time out.
+        set(VERBOSE_COMMAND BUILD_COMMAND ${CMAKE_MAKE_PROGRAM} -v)
+    endif()
+endif()
+
     if(APPLE)
         list(APPEND CMAKE_ARGS "-DCMAKE_C_COMPILER=/usr/bin/clang")
         list(APPEND CMAKE_ARGS "-DCMAKE_CXX_COMPILER=/usr/bin/clang++")
