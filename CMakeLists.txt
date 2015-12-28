@@ -44,7 +44,6 @@ if($ENV{TRAVIS} STREQUAL "true")
         # Make Ninja verbose so builds do not time out.
         set(VERBOSE_COMMAND BUILD_COMMAND ${CMAKE_MAKE_PROGRAM} -v)
     endif()
-endif()
 
     if(APPLE)
         list(APPEND CMAKE_ARGS "-DCMAKE_C_COMPILER=/usr/bin/clang")
