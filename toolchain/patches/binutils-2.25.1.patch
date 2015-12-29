@@ -1,0 +1,74 @@
+diff -burN binutils-2.25.1/config.sub binutils-2.25.1-ctr/config.sub
+--- binutils-2.25.1/config.sub	2014-10-14 02:32:02.000000000 -0500
++++ binutils-2.25.1-ctr/config.sub	2015-12-04 08:31:39.318974314 -0600
+@@ -594,6 +594,10 @@
+ 		basic_machine=crx-unknown
+ 		os=-elf
+ 		;;
++	ctr)
++		basic_machine=arm-none
++		os=-eabi
++		;;
+ 	da30 | da30-*)
+ 		basic_machine=m68k-da30
+ 		;;
+diff -burN binutils-2.25.1/gold/binary.cc binutils-2.25.1-ctr/gold/binary.cc
+--- binutils-2.25.1/gold/binary.cc	2014-10-14 02:32:04.000000000 -0500
++++ binutils-2.25.1-ctr/gold/binary.cc	2015-12-04 08:29:54.890087513 -0600
+@@ -24,7 +24,11 @@
+ 
+ #include <cerrno>
+ #include <cstring>
++#ifdef __APPLE__
++#include <ctype.h>
++#else
+ #include "safe-ctype.h"
++#endif
+ 
+ #include "elfcpp.h"
+ #include "stringpool.h"
+@@ -153,7 +157,11 @@
+   for (std::string::iterator p = mangled_name.begin();
+        p != mangled_name.end();
+        ++p)
++#ifdef __APPLE__
++    if (!isalnum(*p))
++#else
+     if (!ISALNUM(*p))
++#endif
+       *p = '_';
+   mangled_name = "_binary_" + mangled_name;
+   std::string start_symbol_name = mangled_name + "_start";
+diff -burN binutils-2.25.1/gold/system.h binutils-2.25.1-ctr/gold/system.h
+--- binutils-2.25.1/gold/system.h	2014-10-14 02:32:04.000000000 -0500
++++ binutils-2.25.1-ctr/gold/system.h	2015-12-04 08:30:46.634526922 -0600
+@@ -110,6 +110,8 @@
+ #define Unordered_map __gnu_cxx::hash_map
+ #define Unordered_multimap __gnu_cxx::hash_multimap
+ 
++/* Clang libc++ support */
++#if !defined(_LIBCPP_VERSION)
+ namespace __gnu_cxx
+ {
+ 
+@@ -130,6 +132,7 @@
+ };
+ 
+ }
++#endif /* !defined(_LIBCPP_VERSION) */
+ 
+ #define reserve_unordered_map(map, n) ((map)->resize(n))
+ 
+diff -burN binutils-2.25.1/include/opcode/arm.h binutils-2.25.1-ctr/include/opcode/arm.h
+--- binutils-2.25.1/include/opcode/arm.h	2014-10-14 02:32:04.000000000 -0500
++++ binutils-2.25.1-ctr/include/opcode/arm.h	2015-12-04 08:25:17.451731546 -0600
+@@ -114,7 +114,8 @@
+ #define ARM_AEXT_V6KT2  (ARM_AEXT_V6T2 | ARM_EXT_V6K)
+ #define ARM_AEXT_V6ZT2  (ARM_AEXT_V6T2 | ARM_EXT_SEC)
+ #define ARM_AEXT_V6ZKT2 (ARM_AEXT_V6T2 | ARM_EXT_V6K | ARM_EXT_SEC)
+-#define ARM_AEXT_V7_ARM	(ARM_AEXT_V6KT2 | ARM_EXT_V7 | ARM_EXT_BARRIER)
++#define ARM_AEXT_V7_ARM	(ARM_AEXT_V6KT2 | ARM_EXT_V7 | ARM_EXT_BARRIER \
++    | ARM_EXT_OS )
+ #define ARM_AEXT_V7A	(ARM_AEXT_V7_ARM | ARM_EXT_V7A)
+ #define ARM_AEXT_V7VE	(ARM_AEXT_V7A  | ARM_EXT_DIV | ARM_EXT_ADIV \
+     | ARM_EXT_VIRT | ARM_EXT_SEC | ARM_EXT_MP)

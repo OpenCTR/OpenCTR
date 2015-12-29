@@ -25,6 +25,17 @@ include(ProcessorCount)
 ProcessorCount(LLVM_PARALLEL_COMPILE_JOBS)
 ProcessorCount(LLVM_PARALLEL_LINK_JOBS)
 
+# Identify the number of cores we can use.
+ProcessorCount(N)
+if(NOT N EQUAL 0)
+    set(JOB_FLAGS -j${N})
+endif()
+
+# Binutils settings
+set(BINUTILS_URL "ftp://ftp.gnu.org/gnu/binutils/binutils-2.25.1.tar.bz2")
+set(BINUTILS_HASH "b5b14added7d78a8d1ca70b5cb75fef57ce2197264f4f5835326b0df22ac9f22")
+set(BINUTILS_PATCH "${CMAKE_CURRENT_SOURCE_DIR}/patches/binutils-2.25.1.patch")
+
 # LLVM settings
 set(LLVM_URL "http://llvm.org/releases/3.6.0/llvm-3.6.0.src.tar.xz")
 set(LLVM_HASH "b39a69e501b49e8f73ff75c9ad72313681ee58d6f430bfad4d81846fe92eb9ce")
@@ -35,13 +46,56 @@ set(CLANG_URL "http://llvm.org/releases/3.6.0/cfe-3.6.0.src.tar.xz")
 set(CLANG_HASH "be0e69378119fe26f0f2f74cffe82b7c26da840c9733fe522ed3c1b66b11082d")
 set(CLANG_PATCH "${CMAKE_CURRENT_SOURCE_DIR}/patches/clang-3.6.0.patch")
 
+# Require GNU Make for building Autotools projects
+find_program(MAKE_EXECUTABLE make gmake)
+if(NOT MAKE_EXECUTABLE)
+	message(SEND_ERROR "GNU Make not found")
+endif()
+
+# Require GNU Patch for patching downloaded sources
 find_program(PATCH_EXECUTABLE patch gpatch)
 if(NOT PATCH_EXECUTABLE)
-    message(FATAL_ERROR "GNU Patch not found")
+	message(SEND_ERROR "GNU Patch not found")
 endif()
+
+# Binutils target
+ExternalProject_Add(binutils
+    PREFIX ${CMAKE_CURRENT_BINARY_DIR}
+    INSTALL_DIR ${OPENCTR_ROOT}
+    URL "${BINUTILS_URL}"
+    URL_HASH "SHA256=${BINUTILS_HASH}"
+    PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet
+        --input=${BINUTILS_PATCH} --directory=<SOURCE_DIR> 
+    CONFIGURE_COMMAND <SOURCE_DIR>/configure
+        --prefix=<INSTALL_DIR>
+        --target=arm-none-eabi
+        --disable-nls
+        --disable-shared
+        --disable-debug
+        --disable-dependency-tracking
+        --disable-werror
+        --disable-bootstrap
+        --enable-checking=release
+        --enable-lto
+        --enable-plugins
+        --enable-gold=yes
+        --enable-ld=default
+        --enable-poison-system-directories
+        --enable-install-libbfd
+        --enable-build-with-cxx
+        --enable-interworks
+        --enable-nlsi=no
+    BUILD_COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS}
+    INSTALL_COMMAND ${MAKE_EXECUTABLE} install
+    LOG_DOWNLOAD ${ENABLE_LOG}
+    LOG_CONFIGURE ${ENABLE_LOG}
+    LOG_BUILD ${ENABLE_LOG}
+    LOG_INSTALL ${ENABLE_LOG}
+)
 
 # LLVM target
 ExternalProject_Add(llvm
+    DEPENDS binutils
 	PREFIX ${CMAKE_CURRENT_BINARY_DIR}
 	INSTALL_DIR ${OPENCTR_ROOT}
 	URL "${LLVM_URL}"
