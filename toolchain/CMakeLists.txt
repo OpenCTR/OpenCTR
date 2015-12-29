@@ -36,6 +36,11 @@ set(BINUTILS_URL "ftp://ftp.gnu.org/gnu/binutils/binutils-2.25.1.tar.bz2")
 set(BINUTILS_HASH "b5b14added7d78a8d1ca70b5cb75fef57ce2197264f4f5835326b0df22ac9f22")
 set(BINUTILS_PATCH "${CMAKE_CURRENT_SOURCE_DIR}/patches/binutils-2.25.1.patch")
 
+# Newlib settings
+set(NEWLIB_URL "ftp://sourceware.org/pub/newlib/newlib-2.2.0.tar.gz")
+set(NEWLIB_HASH "f8add263b0737591aff451b12a00c262c2efac4fa87d741fa1c318fc3bb335be")
+set(NEWLIB_PATCH "${CMAKE_CURRENT_SOURCE_DIR}/patches/newlib-2.2.0.patch")
+
 # LLVM settings
 set(LLVM_URL "http://llvm.org/releases/3.6.0/llvm-3.6.0.src.tar.xz")
 set(LLVM_HASH "b39a69e501b49e8f73ff75c9ad72313681ee58d6f430bfad4d81846fe92eb9ce")
@@ -127,9 +132,6 @@ ExternalProject_Add(llvm
 	LOG_INSTALL ${ENABLE_LOG}
 )
 
-ExternalProject_Get_Property(llvm binary_dir)
-set(LLVM_CONFIG_EXECUTABLE ${binary_dir}/bin/llvm-config)
-
 # Clang target
 ExternalProject_Add(clang
 	DEPENDS llvm
@@ -153,7 +155,7 @@ ExternalProject_Add(clang
         -DCLANG_ENABLE_DIAGTOOL=OFF
         -DCLANG_ENABLE_CLANGFORMAT=OFF
         -DCLANG_ENABLE_CINDEXTEST=OFF
-		-DLLVM_CONFIG=${LLVM_CONFIG_EXECUTABLE}
+		-DLLVM_CONFIG=<INSTALL_DIR>/bin/llvm-config
 		-DLLVM_INCLUDE_TESTS=OFF
 		-DLLVM_INCLUDE_DOCS=OFF
 		-DLLVM_INSTALL_TOOLCHAIN_ONLY=ON
@@ -163,6 +165,38 @@ ExternalProject_Add(clang
 	LOG_CONFIGURE ${ENABLE_LOG}
 	LOG_BUILD ${ENABLE_LOG}
 	LOG_INSTALL ${ENABLE_LOG}
+)
+
+# Newlib target
+ExternalProject_Add(newlib
+    DEPENDS clang
+    PREFIX ${CMAKE_CURRENT_BINARY_DIR}
+    INSTALL_DIR ${OPENCTR_ROOT}
+    URL "${NEWLIB_URL}"
+    URL_HASH "SHA256=${NEWLIB_HASH}"
+    PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet
+        --input=${NEWLIB_PATCH} --directory=<SOURCE_DIR>
+    CONFIGURE_COMMAND <SOURCE_DIR>/configure
+        --prefix=<INSTALL_DIR>
+        --target=arm-none-eabi
+        --disable-newlib-supplied-syscalls
+        --enable-newlib-mb
+        --enable-multilib
+        "PATH=<INSTALL_DIR>/bin:$ENV{PATH}"
+        "AR_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-ar"
+        "AS_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-as"
+        "LD_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-ld"
+        "RANLIB_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-ranlib"
+        "CC_FOR_TARGET=<INSTALL_DIR>/bin/clang"
+        "CXX_FOR_TARGET=<INSTALL_DIR>/bin/clang++"
+    BUILD_COMMAND ${MAKE_EXECUTABLE}
+        PATH=<INSTALL_DIR>/bin:$ENV{PATH}
+    INSTALL_COMMAND ${MAKE_EXECUTABLE} install
+        PATH=<INSTALL_DIR>/bin:$ENV{PATH}
+    LOG_DOWNLOAD ${ENABLE_LOG}
+    LOG_CONFIGURE ${ENABLE_LOG}
+    LOG_BUILD ${ENABLE_LOG}
+    LOG_INSTALL ${ENABLE_LOG}
 )
 
 # Cleanup
