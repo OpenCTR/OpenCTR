@@ -67,6 +67,9 @@ script:
 after_success:
   - cmake --build ${BUILD_DIR} --target package
 
+after_failure:
+  - cat ${BUILD_DIR}/toolchain/src/newlib-build/config.log
+
 before_deploy:
   - rm -rf ${DIST_DIR}/_CPack_Packages
 

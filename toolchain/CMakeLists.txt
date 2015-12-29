@@ -193,6 +193,7 @@ ExternalProject_Add(newlib
         "RANLIB_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-ranlib"
         "CC_FOR_TARGET=<INSTALL_DIR>/bin/clang"
         "CXX_FOR_TARGET=<INSTALL_DIR>/bin/clang++"
+        ${AUTOCONF_ARGS}
     BUILD_COMMAND ${MAKE_EXECUTABLE}
         PATH=<INSTALL_DIR>/bin:$ENV{PATH}
     INSTALL_COMMAND ${MAKE_EXECUTABLE} install

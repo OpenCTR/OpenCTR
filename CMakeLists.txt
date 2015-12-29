@@ -37,7 +37,7 @@ option(ENABLE_LIBCTR "Build libctru" ON)
 
 set(ENABLE_LOG ON)
 
-if($ENV{TRAVIS} STREQUAL "true")
+if("$ENV{TRAVIS}" STREQUAL "true")
     set(ENABLE_LOG OFF)
 
     if(APPLE)
