@@ -90,6 +90,7 @@ ExternalProject_Add(binutils
         --enable-build-with-cxx
         --enable-interworks
         --enable-nlsi=no
+        ${AUTOCONF_ARGS}
     BUILD_COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS}
     INSTALL_COMMAND ${MAKE_EXECUTABLE} install
     LOG_DOWNLOAD ${ENABLE_LOG}
@@ -132,6 +133,9 @@ ExternalProject_Add(llvm
 	LOG_INSTALL ${ENABLE_LOG}
 )
 
+ExternalProject_Get_Property(llvm binary_dir)		
+set(LLVM_CONFIG_EXECUTABLE ${binary_dir}/bin/llvm-config)
+
 # Clang target
 ExternalProject_Add(clang
 	DEPENDS llvm
@@ -155,7 +159,7 @@ ExternalProject_Add(clang
         -DCLANG_ENABLE_DIAGTOOL=OFF
         -DCLANG_ENABLE_CLANGFORMAT=OFF
         -DCLANG_ENABLE_CINDEXTEST=OFF
-		-DLLVM_CONFIG=<INSTALL_DIR>/bin/llvm-config
+		-DLLVM_CONFIG=${LLVM_CONFIG_EXECUTABLE}
 		-DLLVM_INCLUDE_TESTS=OFF
 		-DLLVM_INCLUDE_DOCS=OFF
 		-DLLVM_INSTALL_TOOLCHAIN_ONLY=ON

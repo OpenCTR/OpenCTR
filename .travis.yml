@@ -39,8 +39,6 @@ addons:
       - ubuntu-toolchain-r-test
       - llvm-toolchain-precise-3.6
     packages:
-      - gcc-5
-      - g++-5
       - cmake
       - cmake-data
       - ninja-build
