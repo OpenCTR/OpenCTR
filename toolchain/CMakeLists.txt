@@ -84,14 +84,16 @@ list(APPEND NEWLIB_ARGS "CC_FOR_TARGET=<INSTALL_DIR>/bin/clang")
 list(APPEND NEWLIB_ARGS "CXX_FOR_TARGET=<INSTALL_DIR>/bin/clang++")
 list(APPEND NEWLIB_ARGS "CFLAGS_FOR_TARGET=\"${CLANG_PARAMS}\"")
 list(APPEND NEWLIB_ARGS "CXXFLAGS_FOR_TARGET=\"${CLANG_PARAMS}\"")
+list(APPEND NEWLIB_ARGS "CC=<INSTALL_DIR>/bin/clang")
+list(APPEND NEWLIB_ARGS "CXX=<INSTALL_DIR>/bin/clang++")
+list(APPEND NEWLIB_ARGS "CFLAGS=\"${CLANG_PARAMS}\"")
+list(APPEND NEWLIB_ARGS "CXXFLAGS=\"${CLANG_PARAMS}\"")
 
 #list(APPEND NEWLIB_ARGS "CC_FOR_TARGET=<INSTALL_DIR>/bin/clang -ffreestanding -fno-integrated-as")
 #list(APPEND NEWLIB_ARGS "CXX_FOR_TARGET=<INSTALL_DIR>/bin/clang++ -ffreestanding -fno-integrated-as")
 #list(APPEND NEWLIB_ARGS "CC=<INSTALL_DIR>/bin/clang -ffreestanding -fno-integrated-as")
 #list(APPEND NEWLIB_ARGS "CXX=<INSTALL_DIR>/bin/clang++ -ffreestanding -fno-integrated-as")
 #list(APPEND NEWLIB_ARGS "AS=<INSTALL_DIR>/bin/arm-none-eabi-as")
-
-
 
 # Binutils target
 ExternalProject_Add(binutils
