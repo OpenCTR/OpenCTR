@@ -63,6 +63,36 @@ if(NOT PATCH_EXECUTABLE)
 	message(SEND_ERROR "GNU Patch not found")
 endif()
 
+# Clang arguments when building Newlib.
+list(APPEND CLANG_PARAMS "-gcc-toolchain <INSTALL_DIR>")
+list(APPEND CLANG_PARAMS "-ffreestanding")
+list(APPEND CLANG_PARAMS "-fno-integrated-as")
+list(APPEND CLANG_PARAMS "-target arm-none-eabi")
+list(APPEND CLANG_PARAMS "-march=armv7-a")
+list(APPEND CLANG_PARAMS "-mcpu=cortex-a8")
+list(APPEND CLANG_PARAMS "-mtune=cortex-a8")
+list(APPEND CLANG_PARAMS "-mfpu=neon")
+list(APPEND CLANG_PARAMS "-marm")
+string(REPLACE ";" " " CLANG_PARAMS "${CLANG_PARAMS}")
+
+list(APPEND NEWLIB_ARGS "PATH=<INSTALL_DIR>/bin:$ENV{PATH}")
+list(APPEND NEWLIB_ARGS "AR_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-ar")
+list(APPEND NEWLIB_ARGS "AS_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-as")
+list(APPEND NEWLIB_ARGS "LD_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-ld")
+list(APPEND NEWLIB_ARGS "RANLIB_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-ranlib")
+list(APPEND NEWLIB_ARGS "CC_FOR_TARGET=<INSTALL_DIR>/bin/clang")
+list(APPEND NEWLIB_ARGS "CXX_FOR_TARGET=<INSTALL_DIR>/bin/clang++")
+list(APPEND NEWLIB_ARGS "CFLAGS_FOR_TARGET=\"${CLANG_PARAMS}\"")
+list(APPEND NEWLIB_ARGS "CXXFLAGS_FOR_TARGET=\"${CLANG_PARAMS}\"")
+
+#list(APPEND NEWLIB_ARGS "CC_FOR_TARGET=<INSTALL_DIR>/bin/clang -ffreestanding -fno-integrated-as")
+#list(APPEND NEWLIB_ARGS "CXX_FOR_TARGET=<INSTALL_DIR>/bin/clang++ -ffreestanding -fno-integrated-as")
+#list(APPEND NEWLIB_ARGS "CC=<INSTALL_DIR>/bin/clang -ffreestanding -fno-integrated-as")
+#list(APPEND NEWLIB_ARGS "CXX=<INSTALL_DIR>/bin/clang++ -ffreestanding -fno-integrated-as")
+#list(APPEND NEWLIB_ARGS "AS=<INSTALL_DIR>/bin/arm-none-eabi-as")
+
+
+
 # Binutils target
 ExternalProject_Add(binutils
     PREFIX ${CMAKE_CURRENT_BINARY_DIR}
@@ -186,20 +216,9 @@ ExternalProject_Add(newlib
         --disable-newlib-supplied-syscalls
         --enable-newlib-mb
         --enable-multilib
-        "PATH=<INSTALL_DIR>/bin:$ENV{PATH}"
-        "AR_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-ar"
-        "AS_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-as"
-        "LD_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-ld"
-        "RANLIB_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-ranlib"
-        "CC_FOR_TARGET=<INSTALL_DIR>/bin/clang -ffreestanding -fno-integrated-as"
-        "CXX_FOR_TARGET=<INSTALL_DIR>/bin/clang++ -ffreestanding -fno-integrated-as"
-        "CC=<INSTALL_DIR>/bin/clang -ffreestanding -fno-integrated-as"
-        "CXX=<INSTALL_DIR>/bin/clang++ -ffreestanding -fno-integrated-as"
-        "AS=<INSTALL_DIR>/bin/arm-none-eabi-as"
+        ${NEWLIB_ARGS}
     BUILD_COMMAND ${MAKE_EXECUTABLE}
-        PATH=<INSTALL_DIR>/bin:$ENV{PATH}
     INSTALL_COMMAND ${MAKE_EXECUTABLE} install
-        PATH=<INSTALL_DIR>/bin:$ENV{PATH}
     LOG_DOWNLOAD ${ENABLE_LOG}
     LOG_CONFIGURE ${ENABLE_LOG}
     LOG_BUILD ${ENABLE_LOG}
