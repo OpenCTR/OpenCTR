@@ -191,9 +191,11 @@ ExternalProject_Add(newlib
         "AS_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-as"
         "LD_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-ld"
         "RANLIB_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-ranlib"
-        "CC_FOR_TARGET=<INSTALL_DIR>/bin/clang -ffreestanding"
-        "CXX_FOR_TARGET=<INSTALL_DIR>/bin/clang++ -ffreestanding"
-        ${AUTOCONF_ARGS}
+        "CC_FOR_TARGET=<INSTALL_DIR>/bin/clang -ffreestanding -fno-integrated-as"
+        "CXX_FOR_TARGET=<INSTALL_DIR>/bin/clang++ -ffreestanding -fno-integrated-as"
+        "CC=<INSTALL_DIR>/bin/clang -ffreestanding -fno-integrated-as"
+        "CXX=<INSTALL_DIR>/bin/clang++ -ffreestanding -fno-integrated-as"
+        "AS=<INSTALL_DIR>/bin/arm-none-eabi-as"
     BUILD_COMMAND ${MAKE_EXECUTABLE}
         PATH=<INSTALL_DIR>/bin:$ENV{PATH}
     INSTALL_COMMAND ${MAKE_EXECUTABLE} install
