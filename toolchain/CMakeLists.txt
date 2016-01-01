@@ -73,7 +73,7 @@ list(APPEND CLANG_PARAMS "-mcpu=cortex-a8")
 list(APPEND CLANG_PARAMS "-mtune=cortex-a8")
 list(APPEND CLANG_PARAMS "-mfpu=neon")
 list(APPEND CLANG_PARAMS "-marm")
-string(REPLACE ";" " " CLANG_PARAMS "${CLANG_PARAMS}")
+string(REPLACE ";" " " CLANG_PARAMS ${CLANG_PARAMS})
 
 list(APPEND NEWLIB_ARGS "PATH=<INSTALL_DIR>/bin:$ENV{PATH}")
 list(APPEND NEWLIB_ARGS "AR_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-ar")
