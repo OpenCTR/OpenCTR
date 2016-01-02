@@ -63,17 +63,6 @@ if(NOT PATCH_EXECUTABLE)
 	message(SEND_ERROR "GNU Patch not found")
 endif()
 
-# Use Ninja for building LLVM/Clang (when available).
-find_program(NINJA_EXECUTABLE ninja)
-if(NINJA_EXECUTABLE)
-    set(LLVM_CMAKE_GENERATOR "Ninja")
-else()
-    set(LLVM_CMAKE_GENERATOR "Unix Makefiles")
-endif()
-
-# Option --no-builtin-variables speeds up GNU Make considerably.
-set(SPEEDUP_FLAGS --no-builtin-variables)
-
 # Clang arguments when building Newlib.
 list(APPEND CLANG_PARAMS "-gcc-toolchain <INSTALL_DIR>")
 list(APPEND CLANG_PARAMS "-ffreestanding")
@@ -156,7 +145,6 @@ ExternalProject_Add(llvm
         -DLLVM_ENABLE_BINDINGS=OFF
         -DBUILD_SHARED_LIBS=OFF
         ${CMAKE_ARGS}
-    CMAKE_GENERATOR ${LLVM_CMAKE_GENERATOR}
 	LOG_DOWNLOAD ${ENABLE_LOG}
 	LOG_CONFIGURE ${ENABLE_LOG}
 	LOG_BUILD ${ENABLE_LOG}
@@ -195,7 +183,6 @@ ExternalProject_Add(clang
 		-DLLVM_INSTALL_TOOLCHAIN_ONLY=ON
 		-DGCC_INSTALL_PREFIX=<INSTALL_DIR>
         ${CMAKE_ARGS}
-    CMAKE_GENERATOR ${LLVM_CMAKE_GENERATOR}
 	LOG_DOWNLOAD ${ENABLE_LOG}
 	LOG_CONFIGURE ${ENABLE_LOG}
 	LOG_BUILD ${ENABLE_LOG}
