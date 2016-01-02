@@ -63,6 +63,17 @@ if(NOT PATCH_EXECUTABLE)
 	message(SEND_ERROR "GNU Patch not found")
 endif()
 
+# Use Ninja for building LLVM/Clang (when available).
+find_program(NINJA_EXECUTABLE ninja)
+if(NINJA_EXECUTABLE)
+    set(LLVM_CMAKE_GENERATOR "Ninja")
+else()
+    set(LLVM_CMAKE_GENERATOR "Unix Makefiles")
+endif()
+
+# Option --no-builtin-variables speeds up GNU Make considerably.
+set(SPEEDUP_FLAGS --no-builtin-variables)
+
 # Clang arguments when building Newlib.
 list(APPEND CLANG_PARAMS "-gcc-toolchain <INSTALL_DIR>")
 list(APPEND CLANG_PARAMS "-ffreestanding")
@@ -80,12 +91,6 @@ list(APPEND NEWLIB_ARGS
     "CC_FOR_TARGET=<INSTALL_DIR>/bin/clang ${CLANG_PARAMS}")
 list(APPEND NEWLIB_ARGS
     "CXX_FOR_TARGET=<INSTALL_DIR>/bin/clang++ ${CLANG_PARAMS}")
-
-#list(APPEND NEWLIB_ARGS "CC_FOR_TARGET=<INSTALL_DIR>/bin/clang -ffreestanding -fno-integrated-as")
-#list(APPEND NEWLIB_ARGS "CXX_FOR_TARGET=<INSTALL_DIR>/bin/clang++ -ffreestanding -fno-integrated-as")
-#list(APPEND NEWLIB_ARGS "CC=<INSTALL_DIR>/bin/clang -ffreestanding -fno-integrated-as")
-#list(APPEND NEWLIB_ARGS "CXX=<INSTALL_DIR>/bin/clang++ -ffreestanding -fno-integrated-as")
-#list(APPEND NEWLIB_ARGS "AS=<INSTALL_DIR>/bin/arm-none-eabi-as")
 
 # Binutils target
 ExternalProject_Add(binutils
@@ -115,7 +120,7 @@ ExternalProject_Add(binutils
         --enable-interworks
         --enable-nlsi=no
         ${AUTOCONF_ARGS}
-    BUILD_COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS}
+    BUILD_COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS} ${SPEEDUP_FLAGS}
     INSTALL_COMMAND ${MAKE_EXECUTABLE} install
     LOG_DOWNLOAD ${ENABLE_LOG}
     LOG_CONFIGURE ${ENABLE_LOG}
@@ -151,6 +156,7 @@ ExternalProject_Add(llvm
         -DLLVM_ENABLE_BINDINGS=OFF
         -DBUILD_SHARED_LIBS=OFF
         ${CMAKE_ARGS}
+    CMAKE_GENERATOR ${LLVM_CMAKE_GENERATOR}
 	LOG_DOWNLOAD ${ENABLE_LOG}
 	LOG_CONFIGURE ${ENABLE_LOG}
 	LOG_BUILD ${ENABLE_LOG}
@@ -189,34 +195,11 @@ ExternalProject_Add(clang
 		-DLLVM_INSTALL_TOOLCHAIN_ONLY=ON
 		-DGCC_INSTALL_PREFIX=<INSTALL_DIR>
         ${CMAKE_ARGS}
+    CMAKE_GENERATOR ${LLVM_CMAKE_GENERATOR}
 	LOG_DOWNLOAD ${ENABLE_LOG}
 	LOG_CONFIGURE ${ENABLE_LOG}
 	LOG_BUILD ${ENABLE_LOG}
 	LOG_INSTALL ${ENABLE_LOG}
-)
-
-# Newlib target
-ExternalProject_Add(newlib
-    DEPENDS clang
-    PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-    INSTALL_DIR ${OPENCTR_ROOT}
-    URL "${NEWLIB_URL}"
-    URL_HASH "SHA256=${NEWLIB_HASH}"
-    PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet
-        --input=${NEWLIB_PATCH} --directory=<SOURCE_DIR>
-    CONFIGURE_COMMAND <SOURCE_DIR>/configure
-        --prefix=<INSTALL_DIR>
-        --target=arm-none-eabi
-        --disable-newlib-supplied-syscalls
-        --enable-newlib-mb
-        --enable-multilib
-        ${NEWLIB_ARGS}
-    BUILD_COMMAND ${MAKE_EXECUTABLE}
-    INSTALL_COMMAND ${MAKE_EXECUTABLE} install
-    LOG_DOWNLOAD ${ENABLE_LOG}
-    LOG_CONFIGURE ${ENABLE_LOG}
-    LOG_BUILD ${ENABLE_LOG}
-    LOG_INSTALL ${ENABLE_LOG}
 )
 
 # Cleanup
