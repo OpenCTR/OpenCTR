@@ -63,23 +63,14 @@ if(NOT PATCH_EXECUTABLE)
 	message(SEND_ERROR "GNU Patch not found")
 endif()
 
-# Clang arguments when building Newlib.
-list(APPEND CLANG_PARAMS "-gcc-toolchain <INSTALL_DIR>")
-list(APPEND CLANG_PARAMS "-ffreestanding")
-list(APPEND CLANG_PARAMS "-fno-integrated-as")
-list(APPEND CLANG_PARAMS "-target arm-none-eabi")
-string(REPLACE ";" " " CLANG_PARAMS "${CLANG_PARAMS}")
-
-list(APPEND NEWLIB_ARGS "PATH=<INSTALL_DIR>/bin:$ENV{PATH}")
-list(APPEND NEWLIB_ARGS "AR_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-ar")
-list(APPEND NEWLIB_ARGS "AS_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-as")
-list(APPEND NEWLIB_ARGS "LD_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-ld")
-list(APPEND NEWLIB_ARGS
-    "RANLIB_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-ranlib")
-list(APPEND NEWLIB_ARGS
-    "CC_FOR_TARGET=<INSTALL_DIR>/bin/clang ${CLANG_PARAMS}")
-list(APPEND NEWLIB_ARGS
-    "CXX_FOR_TARGET=<INSTALL_DIR>/bin/clang++ ${CLANG_PARAMS}")
+option(ENABLE_NINJA "Build LLVM/Clang using Ninja" ON)
+if(ENABLE_NINJA)
+    set(LLVM_GENERATOR "Ninja")
+    set(CLANG_GENERATOR "Ninja")
+else()
+    set(LLVM_GENERATOR "Unix Makefiles")
+    set(CLANG_GENERATOR "Unix Makefiles")
+endif()
 
 # Binutils target
 ExternalProject_Add(binutils
@@ -145,6 +136,7 @@ ExternalProject_Add(llvm
         -DLLVM_ENABLE_BINDINGS=OFF
         -DBUILD_SHARED_LIBS=OFF
         ${CMAKE_ARGS}
+    CMAKE_GENERATOR "${LLVM_GENERATOR}"
 	LOG_DOWNLOAD ${ENABLE_LOG}
 	LOG_CONFIGURE ${ENABLE_LOG}
 	LOG_BUILD ${ENABLE_LOG}
