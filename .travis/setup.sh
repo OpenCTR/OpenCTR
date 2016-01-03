@@ -11,9 +11,11 @@ fi
 case "${TRAVIS_OS_NAME}" in
 linux)
     CPACK_GENERATOR="TBZ2"
+    CMAKE_GENERATOR="Ninja"
     ;;
 osx)
     CPACK_GENERATOR="TBZ2"
+    CMAKE_GENERATOR="Unix Makefiles"
 
     brew update
     brew outdated cmake || brew upgrade cmake
@@ -35,6 +37,7 @@ mkdir -p ${BUILD_DIR}
 cd ${BUILD_DIR}
 
 cmake \
+  -G "${CMAKE_GENERATOR}" \
   -DCMAKE_BUILD_TYPE="Release" \
   -DCPACK_GENERATOR=${CPACK_GENERATOR} \
   -DENABLE_DOC=OFF \
