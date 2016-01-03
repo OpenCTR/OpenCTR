@@ -143,7 +143,7 @@ ExternalProject_Add(LLVM
 	LOG_INSTALL ${ENABLE_LOG}
 )
 
-ExternalProject_Get_Property(llvm binary_dir)		
+ExternalProject_Get_Property(LLVM binary_dir)		
 set(LLVM_CONFIG_EXECUTABLE ${binary_dir}/bin/llvm-config)
 
 # Clang target
