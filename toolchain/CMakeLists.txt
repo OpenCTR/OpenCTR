@@ -63,10 +63,10 @@ if(NOT PATCH_EXECUTABLE)
 	message(SEND_ERROR "GNU Patch not found")
 endif()
 
-option(ENABLE_NINJA "Build LLVM/Clang using Ninja" ON)
 if(ENABLE_NINJA)
     set(LLVM_GENERATOR "Ninja")
-    set(CLANG_GENERATOR "Ninja")
+    set(CLANG_GENERATOR "Unix Makefiles")
+    #set(CLANG_GENERATOR "Ninja")
 else()
     set(LLVM_GENERATOR "Unix Makefiles")
     set(CLANG_GENERATOR "Unix Makefiles")
@@ -175,6 +175,7 @@ ExternalProject_Add(clang
 		-DLLVM_INSTALL_TOOLCHAIN_ONLY=ON
 		-DGCC_INSTALL_PREFIX=<INSTALL_DIR>
         ${CMAKE_ARGS}
+    CMAKE_GENERATOR "${CLANG_GENERATOR}"
 	LOG_DOWNLOAD ${ENABLE_LOG}
 	LOG_CONFIGURE ${ENABLE_LOG}
 	LOG_BUILD ${ENABLE_LOG}
