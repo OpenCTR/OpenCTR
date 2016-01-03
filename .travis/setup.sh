@@ -30,14 +30,14 @@ osx)
     CPACK_GENERATOR="TBZ2"
 
     brew update
-    brew_install cmake
-    brew_install gmp
-    brew_install mpfr
-    brew_install libmpc
-    brew_install isl
-    brew_install binutils
-    brew_install ninja
-    brew_install libelf
+    brew outdated cmake || brew upgrade cmake
+    brew outdated gmp || brew upgrade gmp
+    brew outdated mpfr || brew upgrade mpfr
+    brew outdated libmpc || brew upgrade libmpc
+    brew outdated isl | brew upgrade isl
+    brew install binutils
+    brew install ninja
+    brew install libelf
     ;;
 *)
     echo "Unrecognized OS: ${TRAVIS_OS_NAME}"
