@@ -1,12 +1,26 @@
 #!/bin/bash
 
-set -e
-
 if [ ! "${TRAVIS}" == "true" ]
 then
     echo "$0 can only be called inside a Travis-CI environment"
     exit 1
 fi
+
+brew_install() {
+    PKG=$1
+
+    brew info $PKG &> /dev/null
+    if [ $? -ne 0 ]
+    then
+        brew install $PKG
+    else
+        brew outdated $PKG &> /dev/null
+        if [ $? -ne 0 ]
+        then
+            brew upgrade $PKG
+        fi
+    fi
+}
 
 case "${TRAVIS_OS_NAME}" in
 linux)
@@ -16,14 +30,14 @@ osx)
     CPACK_GENERATOR="TBZ2"
 
     brew update
-    brew outdated cmake || brew upgrade cmake
-    brew outdated gmp || brew upgrade gmp
-    brew outdated mpfr || brew upgrade mpfr
-    brew outdated libmpc || brew upgrade libmpc
-    brew outdated isl | brew upgrade isl
-    brew outdated binutils || brew install binutils
-    brew outdated ninja || brew install ninja
-    brew outdated libelf | brew install libelf
+    brew_install cmake
+    brew_install gmp
+    brew_install mpfr
+    brew_install libmpc
+    brew_install isl
+    brew_install binutils
+    brew_install ninja
+    brew_install libelf
     ;;
 *)
     echo "Unrecognized OS: ${TRAVIS_OS_NAME}"
