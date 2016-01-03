@@ -63,6 +63,7 @@ if(NOT PATCH_EXECUTABLE)
 	message(SEND_ERROR "GNU Patch not found")
 endif()
 
+option(ENABLE_NINJA "Build LLVM/Clang using Ninja" ON)
 if(ENABLE_NINJA)
     set(LLVM_GENERATOR "Ninja")
     set(CLANG_GENERATOR "Unix Makefiles")
