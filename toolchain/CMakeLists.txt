@@ -109,7 +109,7 @@ ExternalProject_Add(binutils
 )
 
 # LLVM target
-ExternalProject_Add(llvm
+ExternalProject_Add(LLVM
     DEPENDS binutils
 	PREFIX ${CMAKE_CURRENT_BINARY_DIR}
 	INSTALL_DIR ${OPENCTR_ROOT}
@@ -147,8 +147,8 @@ ExternalProject_Get_Property(llvm binary_dir)
 set(LLVM_CONFIG_EXECUTABLE ${binary_dir}/bin/llvm-config)
 
 # Clang target
-ExternalProject_Add(clang
-	DEPENDS llvm
+ExternalProject_Add(Clang
+	DEPENDS LLVM
 	PREFIX ${CMAKE_CURRENT_BINARY_DIR}
 	INSTALL_DIR ${OPENCTR_ROOT}
     URL "${CLANG_URL}"
@@ -160,8 +160,6 @@ ExternalProject_Add(clang
 		-DCMAKE_BUILD_TYPE=Release
 		-DCMAKE_PREFIX_PATH=<INSTALL_DIR>
 		-DCMAKE_PROGRAM_PATH=<INSTALL_DIR>/bin
-        -DCMAKE_JOB_POOL_COMPILE=${LLVM_PARALLEL_COMPILE_JOBS}
-        -DCMAKE_JOB_POOL_LINK=${LLVM_PARALLEL_LINK_JOBS}
 		-DCLANG_PLUGIN_SUPPORT=ON
 		-DCLANG_BUILD_EXAMPLES=OFF
 		-DCLANG_ENABLE_STATIC_ANALYZER=OFF
