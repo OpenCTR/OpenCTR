@@ -203,12 +203,8 @@ ExternalProject_Add(Newlib
         "OBJDUMP_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-objdump"
         "STRIP_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-strip"
         "READELF_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-readelf"
-        "CC=<INSTALL_DIR>/bin/clang"
-        "CXX=<INSTALL_DIR>/bin/clang++"
         "CC_FOR_TARGET=<INSTALL_DIR>/bin/clang"
         "CXX_FOR_TARGET=<INSTALL_DIR>/bin/clang++"
-        "CC_FOR_BUILD=<INSTALL_DIR>/bin/clang"
-        "CXX_FOR_BUILD=<INSTALL_DIR>/bin/clang++"
         "CFLAGS_FOR_TARGET='-ffreestanding -Qunused-arguments -nostdinc -target arm-none-eabi'"
         "CXXFLAGS_FOR_TARGET='-ffreestanding -Qunused-arguments -nostdinc -target arm-none-eabi'"
     BUILD_COMMAND ${MAKE_EXECUTABLE}
