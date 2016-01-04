@@ -6,22 +6,6 @@ then
     exit 1
 fi
 
-brew_install() {
-    PKG=$1
-
-    brew info $PKG &> /dev/null
-    if [ $? -ne 0 ]
-    then
-        brew install $PKG
-    else
-        brew outdated $PKG &> /dev/null
-        if [ $? -ne 0 ]
-        then
-            brew upgrade $PKG
-        fi
-    fi
-}
-
 case "${TRAVIS_OS_NAME}" in
 linux)
     CPACK_GENERATOR="TBZ2"

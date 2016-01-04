@@ -180,6 +180,45 @@ ExternalProject_Add(Clang
 	LOG_INSTALL ${ENABLE_LOG}
 )
 
+# Newlib target
+ExternalProject_Add(newlib
+    DEPENDS clang
+    PREFIX ${CMAKE_CURRENT_BINARY_DIR}
+    INSTALL_DIR ${OPENCTR_ROOT}
+    URL "${NEWLIB_URL}"
+    URL_HASH "SHA256=${NEWLIB_HASH}"
+    PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet
+        --input=${NEWLIB_PATCH} --directory=<SOURCE_DIR>
+    CONFIGURE_COMMAND <SOURCE_DIR>/configure
+        --prefix=<INSTALL_DIR>
+        --target=arm-none-eabi
+        --disable-newlib-supplied-syscalls
+        --enable-newlib-mb
+        --enable-multilib
+        "AR_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-ar"
+        "AS_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-as"
+        "LD_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-ld"
+        "NM_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-nm"
+        "RANLIB_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-ranlib"
+        "OBJDUMP_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-objdump"
+        "STRIP_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-strip"
+        "READELF_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-readelf"
+        "CC=<INSTALL_DIR>/bin/clang"
+        "CXX=<INSTALL_DIR>/bin/clang++"
+        "CC_FOR_TARGET=<INSTALL_DIR>/bin/clang"
+        "CXX_FOR_TARGET=<INSTALL_DIR>/bin/clang++"
+        "CC_FOR_BUILD=<INSTALL_DIR>/bin/clang"
+        "CXX_FOR_BUILD=<INSTALL_DIR>/bin/clang++"
+        "CFLAGS_FOR_TARGET='-ffreestanding -Qunused-arguments -nostdinc -target arm-none-eabi'"
+        "CXXFLAGS_FOR_TARGET='-ffreestanding -Qunused-arguments -nostdinc -target arm-none-eabi'"
+    BUILD_COMMAND ${MAKE_EXECUTABLE}
+    INSTALL_COMMAND ${MAKE_EXECUTABLE} install
+    LOG_DOWNLOAD ${ENABLE_LOG}
+    LOG_CONFIGURE ${ENABLE_LOG}
+    LOG_BUILD ${ENABLE_LOG}
+    LOG_INSTALL ${ENABLE_LOG}
+)
+
 # Cleanup
 set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "src")
 set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "tmp")
