@@ -205,7 +205,7 @@ ExternalProject_Add(Newlib
         "READELF_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-readelf"
         "CC_FOR_TARGET=<INSTALL_DIR>/bin/clang"
         "CXX_FOR_TARGET=<INSTALL_DIR>/bin/clang++"
-    BUILD_COMMAND ${MAKE_EXECUTABLE}
+    BUILD_COMMAND ${MAKE_EXECUTABLE} V=1
     INSTALL_COMMAND ${MAKE_EXECUTABLE} install
     LOG_DOWNLOAD ${ENABLE_LOG}
     LOG_CONFIGURE ${ENABLE_LOG}
