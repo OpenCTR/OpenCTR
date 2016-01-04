@@ -205,8 +205,6 @@ ExternalProject_Add(Newlib
         "READELF_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-readelf"
         "CC_FOR_TARGET=<INSTALL_DIR>/bin/clang"
         "CXX_FOR_TARGET=<INSTALL_DIR>/bin/clang++"
-        "CFLAGS_FOR_TARGET='-ffreestanding -Qunused-arguments -nostdinc -target arm-none-eabi'"
-        "CXXFLAGS_FOR_TARGET='-ffreestanding -Qunused-arguments -nostdinc -target arm-none-eabi'"
     BUILD_COMMAND ${MAKE_EXECUTABLE}
     INSTALL_COMMAND ${MAKE_EXECUTABLE} install
     LOG_DOWNLOAD ${ENABLE_LOG}
