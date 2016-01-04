@@ -205,7 +205,17 @@ ExternalProject_Add(Newlib
         "READELF_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-readelf"
         "CC_FOR_TARGET=<INSTALL_DIR>/bin/clang"
         "CXX_FOR_TARGET=<INSTALL_DIR>/bin/clang++"
-    BUILD_COMMAND ${MAKE_EXECUTABLE} V=1
+    BUILD_COMMAND ${MAKE_EXECUTABLE}
+        "AR_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-ar"
+        "AS_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-as"
+        "LD_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-ld"
+        "NM_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-nm"
+        "RANLIB_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-ranlib"
+        "OBJDUMP_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-objdump"
+        "STRIP_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-strip"
+        "READELF_FOR_TARGET=<INSTALL_DIR>/bin/arm-none-eabi-readelf"
+        "CC_FOR_TARGET=<INSTALL_DIR>/bin/clang"
+        "CXX_FOR_TARGET=<INSTALL_DIR>/bin/clang++"
     INSTALL_COMMAND ${MAKE_EXECUTABLE} install
     LOG_DOWNLOAD ${ENABLE_LOG}
     LOG_CONFIGURE ${ENABLE_LOG}
