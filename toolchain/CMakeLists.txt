@@ -181,8 +181,8 @@ ExternalProject_Add(Clang
 )
 
 # Newlib target
-ExternalProject_Add(newlib
-    DEPENDS clang
+ExternalProject_Add(Newlib
+    DEPENDS Clang
     PREFIX ${CMAKE_CURRENT_BINARY_DIR}
     INSTALL_DIR ${OPENCTR_ROOT}
     URL "${NEWLIB_URL}"
