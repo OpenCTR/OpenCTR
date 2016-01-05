@@ -212,6 +212,15 @@ ExternalProject_Add(Newlib
 # "CC_FOR_TARGET=clang"
 # "CXX_FOR_TARGET=clang++"
 
+# Dependency Injection: Symlink clang as arm-none-eabi-cc
+ExternalProject_Add_Step(Newlib symlink
+    COMMAND ${CMAKE_COMMAND} -E chdir <INSTALL_DIR>/bin ln -s clang arm-none-eabi-cc
+    COMMAND ${CMAKE_COMMAND} -E chdir <INSTALL_DIR>/bin ln -s clang++ arm-none-eabi-c++
+    # Temp
+    COMMAND ${CMAKE_COMMAND} -E chdir <INSTALL_DIR>/bin ls -1
+    DEPENDERS configure
+    WORKING_DIRECTORY <BINARY_DIR>
+)
 
 # Cleanup
 set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "src")
