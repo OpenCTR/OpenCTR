@@ -196,6 +196,8 @@ ExternalProject_Add(Newlib
         --enable-newlib-mb
         --enable-multilib
         "PATH=<INSTALL_DIR>/bin:$ENV{PATH}"
+        "CC="
+        "CXX="
     BUILD_COMMAND ${MAKE_EXECUTABLE}
     INSTALL_COMMAND ${MAKE_EXECUTABLE} install
     LOG_DOWNLOAD ${ENABLE_LOG}
