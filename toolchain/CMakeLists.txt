@@ -196,34 +196,20 @@ ExternalProject_Add(Newlib
         --enable-newlib-mb
         --enable-multilib
         "PATH=<INSTALL_DIR>/bin:$ENV{PATH}"
-        "AR_FOR_TARGET=arm-none-eabi-ar"
-        "AS_FOR_TARGET=arm-none-eabi-as"
-        "LD_FOR_TARGET=arm-none-eabi-ld"
-        "NM_FOR_TARGET=arm-none-eabi-nm"
-        "RANLIB_FOR_TARGET=arm-none-eabi-ranlib"
-        "OBJDUMP_FOR_TARGET=arm-none-eabi-objdump"
-        "STRIP_FOR_TARGET=arm-none-eabi-strip"
-        "READELF_FOR_TARGET=arm-none-eabi-readelf"
-        "CC_FOR_TARGET=clang"
-        "CXX_FOR_TARGET=clang++"
     BUILD_COMMAND ${MAKE_EXECUTABLE}
-        "PATH=<INSTALL_DIR>/bin:$ENV{PATH}"
-        "AR_FOR_TARGET=arm-none-eabi-ar"
-        "AS_FOR_TARGET=arm-none-eabi-as"
-        "LD_FOR_TARGET=arm-none-eabi-ld"
-        "NM_FOR_TARGET=arm-none-eabi-nm"
-        "RANLIB_FOR_TARGET=arm-none-eabi-ranlib"
-        "OBJDUMP_FOR_TARGET=arm-none-eabi-objdump"
-        "STRIP_FOR_TARGET=arm-none-eabi-strip"
-        "READELF_FOR_TARGET=arm-none-eabi-readelf"
-        "CC_FOR_TARGET=clang"
-        "CXX_FOR_TARGET=clang++"
     INSTALL_COMMAND ${MAKE_EXECUTABLE} install
     LOG_DOWNLOAD ${ENABLE_LOG}
     LOG_CONFIGURE ${ENABLE_LOG}
     LOG_BUILD ${ENABLE_LOG}
     LOG_INSTALL ${ENABLE_LOG}
 )
+
+# "AR_FOR_TARGET=arm-none-eabi-ar"
+# "AS_FOR_TARGET=arm-none-eabi-as"
+# "RANLIB_FOR_TARGET=arm-none-eabi-ranlib"
+# "CC_FOR_TARGET=clang"
+# "CXX_FOR_TARGET=clang++"
+
 
 # Cleanup
 set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "src")
