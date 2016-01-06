@@ -199,7 +199,9 @@ ExternalProject_Add(Newlib
         "CC="
         "CXX="
     BUILD_COMMAND ${MAKE_EXECUTABLE}
+        PATH=<INSTALL_DIR>/bin:$ENV{PATH}
     INSTALL_COMMAND ${MAKE_EXECUTABLE} install
+        PATH=<INSTALL_DIR>/bin:$ENV{PATH}
     LOG_DOWNLOAD ${ENABLE_LOG}
     LOG_CONFIGURE ${ENABLE_LOG}
     LOG_BUILD ${ENABLE_LOG}
