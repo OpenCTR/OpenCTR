@@ -1,0 +1,163 @@
+diff -burN gcc-5.2.0/config.sub gcc-5.2.0-ctr/config.sub
+--- gcc-5.2.0/config.sub	2015-01-02 03:30:21.000000000 -0600
++++ gcc-5.2.0-ctr/config.sub	2015-12-11 14:28:39.829710484 -0600
+@@ -600,6 +600,10 @@
+ 		basic_machine=crx-unknown
+ 		os=-elf
+ 		;;
++	ctr)
++		basic_machine=arm-none
++		os=-eabi
++		;;
+ 	da30 | da30-*)
+ 		basic_machine=m68k-da30
+ 		;;
+diff -burN gcc-5.2.0/gcc/config/arm/t-arm-elf gcc-5.2.0-ctr/gcc/config/arm/t-arm-elf
+--- gcc-5.2.0/gcc/config/arm/t-arm-elf	2015-01-05 06:33:28.000000000 -0600
++++ gcc-5.2.0-ctr/gcc/config/arm/t-arm-elf	2015-12-11 14:28:39.829710484 -0600
+@@ -16,11 +16,19 @@
+ # along with GCC; see the file COPYING3.  If not see
+ # <http://www.gnu.org/licenses/>.
+ 
+-MULTILIB_OPTIONS     = marm/mthumb
+-MULTILIB_DIRNAMES    = arm thumb
++MULTILIB_OPTIONS     = mthumb march=armv6k mfloat-abi=hard
++MULTILIB_DIRNAMES    = thumb armv6k fpu
+ MULTILIB_EXCEPTIONS  = 
+ MULTILIB_MATCHES     =
+ 
++MULTILIB_REQUIRED    = mthumb march=armv6k/mfloat-abi=hard 
++
++
++MULTILIB_MATCHES    += march?armv6k=mtune?mpcore
++MULTILIB_MATCHES    += march?armv6k=mcpu?mpcore
++
++
++
+ #MULTILIB_OPTIONS     += mcpu=fa526/mcpu=fa626/mcpu=fa606te/mcpu=fa626te/mcpu=fmp626/mcpu=fa726te
+ #MULTILIB_DIRNAMES    += fa526 fa626 fa606te fa626te fmp626 fa726te
+ #MULTILIB_EXCEPTIONS  += *mthumb*/*mcpu=fa526 *mthumb*/*mcpu=fa626
+@@ -38,9 +46,9 @@
+ # Not quite true.  We can support hard-vfp calling in Thumb2, but how do we
+ # express that here?  Also, we really need architecture v5e or later
+ # (mcrr etc).
+-MULTILIB_OPTIONS       += mfloat-abi=hard
+-MULTILIB_DIRNAMES      += fpu
+-MULTILIB_EXCEPTIONS    += *mthumb/*mfloat-abi=hard*
++#MULTILIB_OPTIONS       += mfloat-abi=hard
++#MULTILIB_DIRNAMES      += fpu
++#MULTILIB_EXCEPTIONS    += *mthumb/*mfloat-abi=hard*
+ #MULTILIB_EXCEPTIONS    += *mcpu=fa526/*mfloat-abi=hard*
+ #MULTILIB_EXCEPTIONS    += *mcpu=fa626/*mfloat-abi=hard*
+ 
+diff -burN gcc-5.2.0/gcc/config/arm/unknown-elf.h gcc-5.2.0-ctr/gcc/config/arm/unknown-elf.h
+--- gcc-5.2.0/gcc/config/arm/unknown-elf.h	2015-01-05 06:33:28.000000000 -0600
++++ gcc-5.2.0-ctr/gcc/config/arm/unknown-elf.h	2015-12-11 14:28:39.833710202 -0600
+@@ -93,4 +93,4 @@
+    udivmoddi4, which will depend on the exception unwind routines,
+    which will depend on abort, which is defined in libc.  */ 
+ #undef LINK_GCC_C_SEQUENCE_SPEC
+-#define LINK_GCC_C_SEQUENCE_SPEC "--start-group %G %L --end-group"
++#define LINK_GCC_C_SEQUENCE_SPEC "--start-group %G %L %(libgloss) --end-group"
+diff -burN gcc-5.2.0/gcc/gcc.c gcc-5.2.0-ctr/gcc/gcc.c
+--- gcc-5.2.0/gcc/gcc.c	2015-03-10 04:37:41.000000000 -0500
++++ gcc-5.2.0-ctr/gcc/gcc.c	2015-12-11 14:28:39.833710202 -0600
+@@ -647,6 +647,11 @@
+ #endif
+ #endif
+ 
++#ifndef LIBGLOSS_SPEC
++# define LIBGLOSS_SPEC "-lsysbase"
++#endif
++
++
+ /* config.h can define STARTFILE_SPEC to override the default crt0 files.  */
+ #ifndef STARTFILE_SPEC
+ #define STARTFILE_SPEC  \
+@@ -879,6 +884,7 @@
+ static const char *lib_spec = LIB_SPEC;
+ static const char *link_gomp_spec = "";
+ static const char *libgcc_spec = LIBGCC_SPEC;
++static const char *libgloss_spec = LIBGLOSS_SPEC;
+ static const char *endfile_spec = ENDFILE_SPEC;
+ static const char *startfile_spec = STARTFILE_SPEC;
+ static const char *linker_name_spec = LINKER_NAME;
+@@ -1374,6 +1380,7 @@
+   INIT_STATIC_SPEC ("lib",			&lib_spec),
+   INIT_STATIC_SPEC ("link_gomp",		&link_gomp_spec),
+   INIT_STATIC_SPEC ("libgcc",			&libgcc_spec),
++  INIT_STATIC_SPEC ("libgloss",			&libgloss_spec),
+   INIT_STATIC_SPEC ("startfile",		&startfile_spec),
+   INIT_STATIC_SPEC ("cross_compile",		&cross_compile),
+   INIT_STATIC_SPEC ("version",			&compiler_version),
+diff -burN gcc-5.2.0/gcc/graphite.c gcc-5.2.0-ctr/gcc/graphite.c
+--- gcc-5.2.0/gcc/graphite.c	2015-01-09 14:18:42.000000000 -0600
++++ gcc-5.2.0-ctr/gcc/graphite.c	2015-12-11 14:26:40.195402023 -0600
+@@ -39,6 +39,7 @@
+ #include <isl/map.h>
+ #include <isl/options.h>
+ #include <isl/union_map.h>
++#include <isl/constraint.h>
+ #endif
+ 
+ #include "system.h"
+diff -burN gcc-5.2.0/gcc/Makefile.in gcc-5.2.0-ctr/gcc/Makefile.in
+--- gcc-5.2.0/gcc/Makefile.in	2015-05-04 05:46:32.000000000 -0500
++++ gcc-5.2.0-ctr/gcc/Makefile.in	2015-12-11 14:28:39.833710202 -0600
+@@ -1053,8 +1053,8 @@
+ # things like the go/%.o rule work properly; but we use $(*F) for the
+ # file part, as we just want the file part of the stem, not the entire
+ # file name.
+-COMPILE = $(COMPILE.base) -MT $@ -MMD -MP -MF $(@D)/$(DEPDIR)/$(*F).TPo
+-POSTCOMPILE = @mv $(@D)/$(DEPDIR)/$(*F).TPo $(@D)/$(DEPDIR)/$(*F).Po
++COMPILE = $(COMPILE.base)
++POSTCOMPILE =
+ else
+ COMPILE = source='$<' object='$@' libtool=no \
+     DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) $(COMPILE.base)
+diff -burN gcc-5.2.0/libcpp/Makefile.in gcc-5.2.0-ctr/libcpp/Makefile.in
+--- gcc-5.2.0/libcpp/Makefile.in	2015-07-16 04:16:25.000000000 -0500
++++ gcc-5.2.0-ctr/libcpp/Makefile.in	2015-12-11 14:28:39.833710202 -0600
+@@ -208,8 +208,7 @@
+ # Note that we put the dependencies into a .Tpo file, then move them
+ # into place if the compile succeeds.  We need this because gcc does
+ # not atomically write the dependency output file.
+-COMPILE = $(COMPILE.base) -o $@ -MT $@ -MMD -MP -MF $(DEPDIR)/$*.Tpo
+-POSTCOMPILE = @mv $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
++COMPILE = $(COMPILE.base) -o $@
+ else
+ COMPILE = source='$<' object='$@' libtool=no DEPDIR=$(DEPDIR) $(DEPMODE) \
+ 	  $(depcomp) $(COMPILE.base)
+diff -burN gcc-5.2.0/libgcc/config/arm/t-bpabi gcc-5.2.0-ctr/libgcc/config/arm/t-bpabi
+--- gcc-5.2.0/libgcc/config/arm/t-bpabi	2012-08-17 10:06:06.000000000 -0500
++++ gcc-5.2.0-ctr/libgcc/config/arm/t-bpabi	2015-12-11 14:28:39.833710202 -0600
+@@ -17,4 +17,4 @@
+ # On ARM, specifying -fnon-call-exceptions will needlessly pull in
+ # the unwinder in simple programs which use 64-bit division.  Omitting
+ # the option is safe.
+-LIB2_DIVMOD_EXCEPTION_FLAGS := -fexceptions
++LIB2_DIVMOD_EXCEPTION_FLAGS := -fno-exceptions
+diff -burN gcc-5.2.0/libgcc/crtstuff.c gcc-5.2.0-ctr/libgcc/crtstuff.c
+--- gcc-5.2.0/libgcc/crtstuff.c	2015-01-05 06:33:28.000000000 -0600
++++ gcc-5.2.0-ctr/libgcc/crtstuff.c	2015-12-11 14:28:39.833710202 -0600
+@@ -47,7 +47,7 @@
+ 
+ /* Target machine header files require this define. */
+ #define IN_LIBGCC2
+-
++#define USED_FOR_TARGET
+ /* FIXME: Including auto-host is incorrect, but until we have
+    identified the set of defines that need to go into auto-target.h,
+    this will have to do.  */
+diff -burN gcc-5.2.0/libgcc/Makefile.in gcc-5.2.0-ctr/libgcc/Makefile.in
+--- gcc-5.2.0/libgcc/Makefile.in	2015-01-29 02:03:56.000000000 -0600
++++ gcc-5.2.0-ctr/libgcc/Makefile.in	2015-12-11 14:28:39.833710202 -0600
+@@ -819,7 +819,7 @@
+ # libgcc_eh.a, only LIB2ADDEH matters.  If we do, only LIB2ADDEHSTATIC and
+ # LIB2ADDEHSHARED matter.  (Usually all three are identical.)
+ 
+-c_flags := -fexceptions
++c_flags := -fno-exceptions
+ 
+ ifeq ($(enable_shared),yes)
+ 
