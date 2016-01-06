@@ -68,6 +68,7 @@ if(NOT PATCH_EXECUTABLE)
 	message(SEND_ERROR "GNU Patch not found")
 endif()
 
+# Use Ninja when available.
 find_program(NINJA_EXECUTABLE ninja)
 if(NINJA_EXECUTABLE)
     set(LLVM_GENERATOR "Ninja")
@@ -144,6 +145,8 @@ ExternalProject_Add(gcc
         --enable-lto
         --enable-multilib
         --with-system-zlib
+        "CFLAGS=-fbracket-depth=2048"
+        "CXXFLAGS=-fbracket-depth=2048"
         ${AUTOCONF_ARGS}
     BUILD_COMMAND ${MAKE_EXECUTABLE} all-gcc
     INSTALL_COMMAND ${MAKE_EXECUTABLE} install-gcc
@@ -168,11 +171,11 @@ ExternalProject_Add(newlib
         --disable-newlib-supplied-syscalls
         --enable-newlib-mb
         --enable-multilib
-        "PATH=$ENV{PATH}:<INSTALL_DIR>/bin"
+        "PATH=<INSTALL_DIR>/bin:$ENV{PATH}"
     BUILD_COMMAND ${MAKE_EXECUTABLE}
-        PATH=$ENV{PATH}:<INSTALL_DIR>/bin
+        PATH=<INSTALL_DIR>/bin:$ENV{PATH}
     INSTALL_COMMAND ${MAKE_EXECUTABLE} install
-        PATH=$ENV{PATH}:<INSTALL_DIR>/bin
+        PATH=<INSTALL_DIR>/bin:$ENV{PATH}
     LOG_DOWNLOAD ${ENABLE_LOG}
     LOG_CONFIGURE ${ENABLE_LOG}
     LOG_BUILD ${ENABLE_LOG}
