@@ -48,6 +48,7 @@ if("$ENV{TRAVIS}" STREQUAL "true")
         list(APPEND AUTOCONF_ARGS "CXX=/usr/bin/clang++-3.6")
     endif()
 
+    set(AUTOCONF_ARGS "${AUTOCONF_ARGS} 2> /dev/null")
 endif()
 
 
