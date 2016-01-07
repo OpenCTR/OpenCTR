@@ -108,6 +108,7 @@ ExternalProject_Add(gcc
         --disable-dependency-tracking
         --disable-werror
         --disable-bootstrap
+        --disable-multilib
         --disable-win32-registry
         --disable-libquadmath
         --disable-libada
@@ -128,7 +129,6 @@ ExternalProject_Add(gcc
         --with-system-zlib
         --with-gnu-as
         --with-gnu-ld
-        --with-multilib-list=fpu
         --with-diagnostics-color=always
         ${AUTOCONF_ARGS}
     BUILD_COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS}
