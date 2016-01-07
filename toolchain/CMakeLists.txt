@@ -114,77 +114,9 @@ ExternalProject_Add(binutils
     LOG_INSTALL ${ENABLE_LOG}
 )
 
-# GCC target
-ExternalProject_Add(gcc
-    DEPENDS binutils
-    PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-    INSTALL_DIR ${OPENCTR_ROOT}
-    URL "${GCC_URL}"
-    URL_HASH "SHA256=${GCC_HASH}"
-    PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet
-        --input=${GCC_PATCH} --directory=<SOURCE_DIR> 
-    CONFIGURE_COMMAND <SOURCE_DIR>/configure
-        --prefix=<INSTALL_DIR>
-        --target=arm-none-eabi
-        --disable-nls
-        --disable-shared
-        --disable-debug
-        --disable-dependency-tracking
-        --disable-werror
-        --with-bugurl=https://github.com/OpenCTR/OpenCTR/issues
-        --enable-checking=release
-        --disable-bootstrap
-        --enable-interwork
-        --enable-languages=c,c++
-        --with-endian=little
-        --with-arch=armv6k
-        --enable-threads
-        --disable-win32-registry
-        --with-newlib
-        --without-headers
-        --enable-lto
-        --enable-multilib
-        --with-system-zlib
-        "CFLAGS=-fbracket-depth=2048"
-        "CXXFLAGS=-fbracket-depth=2048"
-        ${AUTOCONF_ARGS}
-    BUILD_COMMAND ${MAKE_EXECUTABLE} all-gcc
-    INSTALL_COMMAND ${MAKE_EXECUTABLE} install-gcc
-    LOG_DOWNLOAD ${ENABLE_LOG}
-    LOG_CONFIGURE ${ENABLE_LOG}
-    LOG_BUILD ${ENABLE_LOG}
-    LOG_INSTALL ${ENABLE_LOG}
-)
-
-# Newlib target
-ExternalProject_Add(newlib
-    DEPENDS gcc
-    PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-    INSTALL_DIR ${OPENCTR_ROOT}
-    URL "${NEWLIB_URL}"
-    URL_HASH "SHA256=${NEWLIB_HASH}"
-    PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet
-        --input=${NEWLIB_PATCH} --directory=<SOURCE_DIR>
-    CONFIGURE_COMMAND <SOURCE_DIR>/configure
-        --prefix=<INSTALL_DIR>
-        --target=arm-none-eabi
-        --disable-newlib-supplied-syscalls
-        --enable-newlib-mb
-        --enable-multilib
-        "PATH=<INSTALL_DIR>/bin:$ENV{PATH}"
-    BUILD_COMMAND ${MAKE_EXECUTABLE}
-        PATH=<INSTALL_DIR>/bin:$ENV{PATH}
-    INSTALL_COMMAND ${MAKE_EXECUTABLE} install
-        PATH=<INSTALL_DIR>/bin:$ENV{PATH}
-    LOG_DOWNLOAD ${ENABLE_LOG}
-    LOG_CONFIGURE ${ENABLE_LOG}
-    LOG_BUILD ${ENABLE_LOG}
-    LOG_INSTALL ${ENABLE_LOG}
-)
-
 # LLVM target
 ExternalProject_Add(llvm
-    DEPENDS gcc
+    DEPENDS newlib
 	PREFIX ${CMAKE_CURRENT_BINARY_DIR}
 	INSTALL_DIR ${OPENCTR_ROOT}
 	URL "${LLVM_URL}"
@@ -252,6 +184,34 @@ ExternalProject_Add(clang
 	LOG_CONFIGURE ${ENABLE_LOG}
 	LOG_BUILD ${ENABLE_LOG}
 	LOG_INSTALL ${ENABLE_LOG}
+)
+
+# Newlib target
+ExternalProject_Add(newlib
+    DEPENDS clang
+    PREFIX ${CMAKE_CURRENT_BINARY_DIR}
+    INSTALL_DIR ${OPENCTR_ROOT}
+    URL "${NEWLIB_URL}"
+    URL_HASH "SHA256=${NEWLIB_HASH}"
+    PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet
+        --input=${NEWLIB_PATCH} --directory=<SOURCE_DIR>
+    CONFIGURE_COMMAND <SOURCE_DIR>/configure
+        --prefix=<INSTALL_DIR>
+        --target=arm-none-eabi
+        --disable-newlib-supplied-syscalls
+        --enable-newlib-mb
+        --enable-multilib
+        "PATH=$ENV{PATH}:<INSTALL_DIR>/bin"
+        "CC_FOR_TARGET=<INSTALL_DIR>/bin/clang"
+        "CXX_FOR_TARGET=<INSTALL_DIR>/bin/clang++"
+    BUILD_COMMAND ${MAKE_EXECUTABLE}
+        PATH=$ENV{PATH}:<INSTALL_DIR>/bin
+    INSTALL_COMMAND ${MAKE_EXECUTABLE} install
+        PATH=$ENV{PATH}:<INSTALL_DIR>/bin
+    LOG_DOWNLOAD ${ENABLE_LOG}
+    LOG_CONFIGURE ${ENABLE_LOG}
+    LOG_BUILD ${ENABLE_LOG}
+    LOG_INSTALL ${ENABLE_LOG}
 )
 
 # Cleanup
