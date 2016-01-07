@@ -48,9 +48,6 @@ if("$ENV{TRAVIS}" STREQUAL "true")
         list(APPEND AUTOCONF_ARGS "CXX=/usr/bin/clang++-3.6")
     endif()
 
-    list(APPEND AUTOCONF_ARGS "CFLAGS=\"-w\"")
-    list(APPEND AUTOCONF_ARGS "CXXFLAGS=\"-w\"")
-
 endif()
 
 

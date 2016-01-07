@@ -130,6 +130,8 @@ ExternalProject_Add(gcc
         --with-gnu-as
         --with-gnu-ld
         --with-diagnostics-color=always
+        "CFLAGS=\"-w\""
+        "CXXFLAGS=\"-w\""
         ${AUTOCONF_ARGS}
     BUILD_COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS}
     INSTALL_COMMAND ${MAKE_EXECUTABLE} install
