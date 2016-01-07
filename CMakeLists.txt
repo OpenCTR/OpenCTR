@@ -40,8 +40,6 @@ set(ENABLE_LOG ON)
 if("$ENV{TRAVIS}" STREQUAL "true")
     set(ENABLE_LOG OFF)
 
-    list(APPEND AUTOCONF_ARGS "CFLAGS='-w'")
-    list(APPEND AUTOCONF_ARGS "CXXFLAGS='-w'")
     if(APPLE)
         list(APPEND AUTOCONF_ARGS "CC=/usr/bin/clang")
         list(APPEND AUTOCONF_ARGS "CXX=/usr/bin/clang++")
@@ -49,6 +47,10 @@ if("$ENV{TRAVIS}" STREQUAL "true")
         list(APPEND AUTOCONF_ARGS "CC=/usr/bin/clang-3.6")
         list(APPEND AUTOCONF_ARGS "CXX=/usr/bin/clang++-3.6")
     endif()
+
+    list(APPEND AUTOCONF_ARGS "CFLAGS=\"-w\"")
+    list(APPEND AUTOCONF_ARGS "CXXFLAGS=\"-w\"")
+
 endif()
 
 
