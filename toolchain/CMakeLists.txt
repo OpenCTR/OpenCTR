@@ -81,6 +81,8 @@ ExternalProject_Add(binutils
         --enable-build-with-cxx
         --enable-interworks
         --enable-nlsi=no
+        "CFLAGS=-w -O2"
+        "CXXFLAGS=-w -O2"
         ${AUTOCONF_ARGS}
     BUILD_COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS}
     INSTALL_COMMAND ${MAKE_EXECUTABLE} install
@@ -110,6 +112,7 @@ ExternalProject_Add(gcc
         --disable-bootstrap
         --disable-multilib
         --disable-win32-registry
+        --disable-libmudflap
         --disable-libquadmath
         --disable-libada
         --disable-libssp
@@ -117,19 +120,26 @@ ExternalProject_Add(gcc
         --disable-libsanitizer
         --disable-libgomp
         --disable-libvtv
+        --disable-libstdcxx-pch
+        --disable-libstdcxx-verbose
         --enable-interwork
         --enable-languages=c,c++
         --enable-threads=single
         --enable-lto
+        --enable-poison-system-directories
         --without-headers
-        --with-bugurl=https://github.com/OpenCTR/OpenCTR/issues
         --with-endian=little
-        --with-arch=armv6k
+        --with-arch=armv4t
         --with-newlib
         --with-system-zlib
         --with-gnu-as
         --with-gnu-ld
+        --with-gcc
         --with-diagnostics-color=always
+        "CFLAGS=-w -O2"
+        "CXXFLAGS=-w -O2"
+        "CFLAGS_FOR_TARGET=-w -O2"
+        "CXXFLAGS_FOR_TARGET=-w -O2"
         ${AUTOCONF_ARGS}
     BUILD_COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS}
     INSTALL_COMMAND ${MAKE_EXECUTABLE} install

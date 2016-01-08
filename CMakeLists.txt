@@ -31,9 +31,9 @@ include(CMakePackageConfigHelpers)
 project(OpenCTR LANGUAGES NONE VERSION 0.0.1)
 
 option(ENABLE_DOC "Build Sphinx documentation" OFF)
-option(ENABLE_TOOLCHAIN "Build the LLVM/Clang toolchain" ON)
+option(ENABLE_TOOLCHAIN "Build the GCC toolchain" ON)
 option(ENABLE_TOOLS "Build the OpenCTR tools" ON)
-option(ENABLE_LIBCTR "Build libctru" ON)
+option(ENABLE_LIBCTR "Build libctr" ON)
 
 set(ENABLE_LOG ON)
 
@@ -47,8 +47,6 @@ if("$ENV{TRAVIS}" STREQUAL "true")
         list(APPEND AUTOCONF_ARGS "CC=/usr/bin/clang-3.6")
         list(APPEND AUTOCONF_ARGS "CXX=/usr/bin/clang++-3.6")
     endif()
-
-    set(AUTOCONF_ARGS "${AUTOCONF_ARGS} 2> /dev/null")
 endif()
 
 
