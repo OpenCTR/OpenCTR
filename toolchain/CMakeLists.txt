@@ -81,8 +81,8 @@ ExternalProject_Add(binutils
         --enable-build-with-cxx
         --enable-interworks
         --enable-nlsi=no
-        "CFLAGS=-w -O2"
-        "CXXFLAGS=-w -O2"
+        "CFLAGS=-w -O2 ${TRAVIS_CFLAGS}"
+        "CXXFLAGS=-w -O2 ${TRAVIS_CXXFLAGS}"
         ${AUTOCONF_ARGS}
     BUILD_COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS}
     INSTALL_COMMAND ${MAKE_EXECUTABLE} install
@@ -136,10 +136,10 @@ ExternalProject_Add(gcc
         --with-gnu-ld
         --with-gcc
         --with-diagnostics-color=always
-        "CFLAGS=-w -O2"
-        "CXXFLAGS=-w -O2"
-        "CFLAGS_FOR_TARGET=-w -O2"
-        "CXXFLAGS_FOR_TARGET=-w -O2"
+        "CFLAGS=-w -O2 ${TRAVIS_CFLAGS}"
+        "CXXFLAGS=-w -O2 ${TRAVIS_CXXFLAGS}"
+        "CFLAGS_FOR_TARGET=-w -O2 ${TRAVIS_CFLAGS}"
+        "CXXFLAGS_FOR_TARGET=-w -O2 ${TRAVIS_CXXFLAGS}"
         ${AUTOCONF_ARGS}
     BUILD_COMMAND ${MAKE_EXECUTABLE} ${JOB_FLAGS}
     INSTALL_COMMAND ${MAKE_EXECUTABLE} install

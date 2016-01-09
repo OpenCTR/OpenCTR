@@ -40,6 +40,9 @@ set(ENABLE_LOG ON)
 if("$ENV{TRAVIS}" STREQUAL "true")
     set(ENABLE_LOG OFF)
 
+    set(TRAVIS_CFLAGS "-fbracket-depth=512")
+    set(TRAVIS_CXXFLAGS "-fbracket-depth=512")
+
     if(APPLE)
         list(APPEND AUTOCONF_ARGS "CC=/usr/bin/clang")
         list(APPEND AUTOCONF_ARGS "CXX=/usr/bin/clang++")
