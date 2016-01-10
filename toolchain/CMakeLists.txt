@@ -167,7 +167,7 @@ ExternalProject_Add(newlib
         --target=arm-none-eabi
         --disable-newlib-supplied-syscalls
         --disable-multilib
-        --enable-newlib-mb
+        --disable-newlib-mb
         "PATH=<INSTALL_DIR>/bin:$ENV{PATH}"
         ${AUTOCONF_ARGS}
     BUILD_COMMAND ${MAKE_EXECUTABLE}
