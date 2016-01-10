@@ -38,9 +38,14 @@ set(GCC_HASH "b84f5592e9218b73dbae612b5253035a7b34a9a1f7688d2e1bfaaf7267d5c4db")
 set(GCC_PATCH "${CMAKE_CURRENT_SOURCE_DIR}/patches/gcc-5.3.0.patch")
 
 # Newlib settings
-set(NEWLIB_URL "ftp://sourceware.org/pub/newlib/newlib-2.2.0.tar.gz")
-set(NEWLIB_HASH "f8add263b0737591aff451b12a00c262c2efac4fa87d741fa1c318fc3bb335be")
-set(NEWLIB_PATCH "${CMAKE_CURRENT_SOURCE_DIR}/patches/newlib-2.2.0.patch")
+#set(NEWLIB_URL "ftp://sourceware.org/pub/newlib/newlib-2.2.0.tar.gz")
+#set(NEWLIB_HASH "f8add263b0737591aff451b12a00c262c2efac4fa87d741fa1c318fc3bb335be")
+#set(NEWLIB_PATCH "${CMAKE_CURRENT_SOURCE_DIR}/patches/newlib-2.2.0.patch")
+
+# Newlib settings
+set(NEWLIB_URL "ftp://sourceware.org/pub/newlib/newlib-2.3.0.20160104.tar.gz")
+set(NEWLIB_HASH "c92a0e02904bd4fbe1dd416ed94e786c66afbaeae484e4c26be8bb7c7c1e4cd1")
+set(NEWLIB_PATCH "${CMAKE_CURRENT_SOURCE_DIR}/patches/newlib-2.3.0.patch")
 
 # Require GNU Make for building Autotools projects
 find_program(MAKE_EXECUTABLE make gmake)
@@ -61,7 +66,7 @@ ExternalProject_Add(binutils
     URL "${BINUTILS_URL}"
     URL_HASH "SHA256=${BINUTILS_HASH}"
     PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet
-        --input=${BINUTILS_PATCH} --directory=<SOURCE_DIR> 
+        --input=${BINUTILS_PATCH} --directory=<SOURCE_DIR>
     CONFIGURE_COMMAND <SOURCE_DIR>/configure
         --prefix=<INSTALL_DIR>
         --target=arm-none-eabi
@@ -100,7 +105,7 @@ ExternalProject_Add(gcc
     URL "${GCC_URL}"
     URL_HASH "SHA256=${GCC_HASH}"
     PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet
-        --input=${GCC_PATCH} --directory=<SOURCE_DIR> 
+        --input=${GCC_PATCH} --directory=<SOURCE_DIR>
     CONFIGURE_COMMAND <SOURCE_DIR>/configure
         --prefix=<INSTALL_DIR>
         --target=arm-none-eabi
@@ -156,7 +161,7 @@ ExternalProject_Add(newlib
     URL "${NEWLIB_URL}"
     URL_HASH "SHA256=${NEWLIB_HASH}"
     PATCH_COMMAND ${PATCH_EXECUTABLE} --strip=1 --quiet
-        --input=${NEWLIB_PATCH} --directory=<SOURCE_DIR> 
+        --input=${NEWLIB_PATCH} --directory=<SOURCE_DIR>
     CONFIGURE_COMMAND <SOURCE_DIR>/configure
         --prefix=<INSTALL_DIR>
         --target=arm-none-eabi

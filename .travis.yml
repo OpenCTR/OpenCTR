@@ -23,7 +23,7 @@ language: c
 sudo: false
 
 compiler:
-  - clang
+  - gcc
 
 os:
   - linux
@@ -37,12 +37,12 @@ addons:
     sources:
       - george-edison55-precise-backports
       - ubuntu-toolchain-r-test
-      - llvm-toolchain-precise-3.6
+      - llvm-toolchain-precise-3.7
     packages:
       - cmake
       - cmake-data
       - ninja-build
-      - clang-3.6
+      - clang-3.7
       - build-essential
       - texinfo
       - libgmp-dev
@@ -58,6 +58,8 @@ env:
     - BUILD_DIR=${SOURCE_DIR}/build
     - DIST_DIR=${SOURCE_DIR}/dist
     - TRAVIS_DIR=${SOURCE_DIR}/.travis
+  matrix:
+    - CMAKE_BUILD_TYPE="Release"
 
 before_script:
   - ${TRAVIS_DIR}/setup.sh
