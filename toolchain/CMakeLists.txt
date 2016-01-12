@@ -199,7 +199,6 @@ ExternalProject_Add(newlib
         --disable-newlib-supplied-syscalls
         --disable-multilib
         --enable-newlib-mb
-        #--enable-target-optspace
         --with-build-time-tools=<INSTALL_DIR>/bin
         "PATH=$ENV{PATH}:<INSTALL_DIR>/bin"
         "CC_FOR_TARGET=<INSTALL_DIR>/bin/clang"
