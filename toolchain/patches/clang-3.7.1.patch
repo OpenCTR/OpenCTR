@@ -1,0 +1,70 @@
+diff -burN clang-3.7.1/CMakeLists.txt clang-3.7.1-ctr/CMakeLists.txt
+--- clang-3.7.1/CMakeLists.txt	2015-06-12 11:33:38.000000000 -0500
++++ clang-3.7.1-ctr/CMakeLists.txt	2016-01-10 19:23:30.077563635 -0600
+@@ -450,6 +450,12 @@
+   message(FATAL_ERROR "Cannot disable static analyzer while enabling ARCMT")
+ endif()
+ 
++option(CLANG_ENABLE_DIAGTOOL "Build diagtool." ON)
++option(CLANG_ENABLE_CLANGFORMAT "Build clang-format." ON)
++option(CLANG_ENABLE_CLANGFUZZER "Build clang-fuzzer." ON)
++option(CLANG_ENABLE_CINDEXTEST "Build c-index-test." ON)
++
++
+ if(CLANG_ENABLE_ARCMT)
+   add_definitions(-DCLANG_ENABLE_ARCMT)
+   add_definitions(-DCLANG_ENABLE_OBJC_REWRITER)
+diff -burN clang-3.7.1/lib/Basic/Targets.cpp clang-3.7.1-ctr/lib/Basic/Targets.cpp
+--- clang-3.7.1/lib/Basic/Targets.cpp	2015-11-16 15:05:53.000000000 -0600
++++ clang-3.7.1-ctr/lib/Basic/Targets.cpp	2016-01-10 19:30:42.790924223 -0600
+@@ -4209,6 +4209,9 @@
+         IsAAPCS(true), HW_FP(0) {
+     BigEndian = IsBigEndian;
+ 
++    // GCC uses this value in ARM targets. Copy GCC behavior for compatibility.
++    this->UserLabelPrefix = "";
++
+     switch (getTriple().getOS()) {
+     case llvm::Triple::NetBSD:
+       PtrDiffType = SignedLong;
+@@ -4584,6 +4587,9 @@
+         Builder.defineMacro("__ARM_PCS_VFP", "1");
+     }
+ 
++    if (getTriple().isOSBinFormatELF())
++      Builder.defineMacro("__ELF__");
++
+     if (SoftFloat)
+       Builder.defineMacro("__SOFTFP__");
+ 
+diff -burN clang-3.7.1/tools/CMakeLists.txt clang-3.7.1-ctr/tools/CMakeLists.txt
+--- clang-3.7.1/tools/CMakeLists.txt	2015-03-27 19:07:39.000000000 -0500
++++ clang-3.7.1-ctr/tools/CMakeLists.txt	2016-01-10 19:23:30.077563635 -0600
+@@ -1,10 +1,22 @@
+-add_subdirectory(diagtool)
++if(CLANG_ENABLE_DIAGTOOL)
++  add_subdirectory(diagtool)
++endif()
++
+ add_subdirectory(driver)
+-add_subdirectory(clang-format)
+-add_subdirectory(clang-format-vs)
+-add_subdirectory(clang-fuzzer)
+ 
+-add_subdirectory(c-index-test)
++if(CLANG_ENABLE_CLANGFORMAT)
++  add_subdirectory(clang-format)
++  add_subdirectory(clang-format-vs)
++endif()
++
++if(CLANG_ENABLE_CLANGFUZZER)
++  add_subdirectory(clang-fuzzer)
++endif()
++
++if(CLANG_ENABLE_CINDEXTEST)
++  add_subdirectory(c-index-test)
++endif()
++
+ add_subdirectory(libclang)
+ 
+ if(CLANG_ENABLE_ARCMT)

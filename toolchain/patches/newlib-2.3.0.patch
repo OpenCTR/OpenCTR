@@ -1,6 +1,6 @@
 diff -burN newlib-2.3.0/config.sub newlib-2.3.0-ctr/config.sub
 --- newlib-2.3.0/config.sub	2016-01-04 11:57:31.000000000 -0600
-+++ newlib-2.3.0-ctr/config.sub	2016-01-09 17:51:38.445658335 -0600
++++ newlib-2.3.0-ctr/config.sub	2016-01-12 09:47:51.000000000 -0600
 @@ -606,6 +606,10 @@
  		basic_machine=crx-unknown
  		os=-elf
@@ -12,9 +12,142 @@ diff -burN newlib-2.3.0/config.sub newlib-2.3.0-ctr/config.sub
  	da30 | da30-*)
  		basic_machine=m68k-da30
  		;;
+diff -burN newlib-2.3.0/libgloss/arm/linux-crt0.c newlib-2.3.0-ctr/libgloss/arm/linux-crt0.c
+--- newlib-2.3.0/libgloss/arm/linux-crt0.c	2016-01-04 11:57:31.000000000 -0600
++++ newlib-2.3.0-ctr/libgloss/arm/linux-crt0.c	2016-01-12 09:47:51.000000000 -0600
+@@ -27,7 +27,9 @@
+ __attribute__((naked, used))
+ static void _start_thumb(void)
+ #else
++#ifndef __clang__
+ __attribute__((naked))
++#endif
+ void _start(void)
+ #endif
+ {
+diff -burN newlib-2.3.0/libgloss/arm/linux-syscalls0.S newlib-2.3.0-ctr/libgloss/arm/linux-syscalls0.S
+--- newlib-2.3.0/libgloss/arm/linux-syscalls0.S	2016-01-04 11:57:31.000000000 -0600
++++ newlib-2.3.0-ctr/libgloss/arm/linux-syscalls0.S	2016-01-12 09:47:51.000000000 -0600
+@@ -6,6 +6,8 @@
+  * is freely granted, provided that this notice is preserved.
+  */
+ 
++#ifndef __clang__
++
+ #include "linux-syscall.h"
+ 
+ #if __thumb__
+@@ -190,3 +192,5 @@
+ SOCKETCALL2(shutdown, SHUTDOWN)
+ SOCKETCALL3(socket, SOCKET)
+ SOCKETCALL4(socketpair, SOCKETPAIR)
++
++#endif
+diff -burN newlib-2.3.0/libgloss/arm/Makefile.in newlib-2.3.0-ctr/libgloss/arm/Makefile.in
+--- newlib-2.3.0/libgloss/arm/Makefile.in	2016-01-04 11:57:31.000000000 -0600
++++ newlib-2.3.0-ctr/libgloss/arm/Makefile.in	2016-01-12 09:47:51.000000000 -0600
+@@ -69,18 +69,6 @@
+ REDBOOT_SCRIPTS	= redboot.ld redboot.specs
+ REDBOOT_INSTALL	= install-redboot
+ 
+-RDPMON_CRT0	= rdpmon-crt0.o
+-RDPMON_BSP	= librdpmon.a
+-RDPMON_OBJS	= ftruncate.o libcfunc.o syscalls.o trap.o truncate.o _exit.o _kill.o
+-RDPMON_SCRIPTS	= rdpmon.specs
+-RDPMON_INSTALL	= install-rdpmon
+-
+-RDIMON_CRT0	= rdimon-crt0.o
+-RDIMON_BSP	= librdimon.a
+-RDIMON_OBJS	= $(patsubst %,rdimon-%,$(RDPMON_OBJS))
+-RDIMON_SCRIPTS	= rdimon.specs aprofile-validation.specs aprofile-ve.specs
+-RDIMON_INSTALL	= install-rdimon
+-
+ CFLAGS		= -g
+ 
+ # Here is all of the eval board stuff
+@@ -98,7 +86,7 @@
+ # build a test program for each target board. Just trying to get
+ # it to link is a good test, so we ignore all the errors for now.
+ #
+-all: ${CRT0} ${LINUX_CRT0} ${LINUX_BSP} ${REDBOOT_CRT0} ${REDBOOT_OBJS} ${RDPMON_CRT0} ${RDPMON_BSP} ${RDIMON_CRT0} ${RDIMON_BSP}
++all: ${CRT0} ${LINUX_CRT0} ${LINUX_BSP} ${REDBOOT_CRT0} ${REDBOOT_OBJS}
+ 	@rootpre=`pwd`/; export rootpre; \
+ 	srcrootpre=`cd $(srcdir); pwd`/; export srcrootpre; \
+ 	for dir in .. ${SUBDIRS}; do \
+@@ -120,45 +108,10 @@
+ redboot-crt0.o: redboot-crt0.S
+ redboot-syscalls.o: redboot-syscalls.c $(srcdir)/../syscall.h
+ 
+-rdpmon-crt0.o: crt0.S
+-	$(CC) $(CFLAGS_FOR_TARGET) $(CFLAGS) $(INCLUDES) -DARM_RDP_MONITOR -o $@ -c $<
+-
+-rdimon-crt0.o: crt0.S
+-	$(CC) $(CFLAGS_FOR_TARGET) $(CFLAGS) $(INCLUDES) -DARM_RDI_MONITOR -o $@ -c $<
+-
+-rdimon-ftruncate.o: ftruncate.c
+-	$(CC) $(CFLAGS_FOR_TARGET) $(CFLAGS) $(INCLUDES) -DARM_RDI_MONITOR -o $@ -c $<
+-
+-rdimon-trap.o: trap.S
+-	$(CC) $(CFLAGS_FOR_TARGET) $(CFLAGS) $(INCLUDES) -DARM_RDI_MONITOR -o $@ -c $<
+-
+-rdimon-truncate.o: truncate.c
+-	$(CC) $(CFLAGS_FOR_TARGET) $(CFLAGS) $(INCLUDES) -DARM_RDI_MONITOR -o $@ -c $<
+-
+-rdimon-_exit.o: _exit.c
+-	$(CC) $(CFLAGS_FOR_TARGET) $(CFLAGS) $(INCLUDES) -DARM_RDI_MONITOR -o $@ -c $<
+-
+-rdimon-_kill.o: _kill.c
+-	$(CC) $(CFLAGS_FOR_TARGET) $(CFLAGS) $(INCLUDES) -DARM_RDI_MONITOR -o $@ -c $<
+-
+-rdimon-syscalls.o: syscalls.c
+-	$(CC) $(CFLAGS_FOR_TARGET) $(CFLAGS) $(INCLUDES) -DARM_RDI_MONITOR -o $@ -c $<
+-
+-rdimon-libcfunc.o: libcfunc.c
+-	$(CC) $(CFLAGS_FOR_TARGET) $(CFLAGS) $(INCLUDES) -DARM_RDI_MONITOR -o $@ -c $<
+-
+ $(LINUX_BSP): $(LINUX_OBJS)
+ 	${AR} ${ARFLAGS} $@ $^
+ 	${RANLIB} $@
+ 
+-$(RDPMON_BSP): $(RDPMON_OBJS)
+-	${AR} ${ARFLAGS} $@ $^
+-	${RANLIB} $@
+-
+-$(RDIMON_BSP): $(RDIMON_OBJS)
+-	${AR} ${ARFLAGS} $@ $^
+-	${RANLIB} $@
+-
+ clean mostlyclean:
+ 	rm -f a.out core *.i *.o *-test *.srec *.dis *.x $(SIM_BSP) $(IQ80310_BSP)
+ 	@rootpre=`pwd`/; export rootpre; \
+@@ -175,7 +128,7 @@
+ 	rm -f Makefile config.status *~
+ 
+ .PHONY: install info install-info clean-info
+-install: ${CRT0_INSTALL} ${LINUX_INSTALL} ${REDBOOT_INSTALL} ${RDPMON_INSTALL} ${RDIMON_INSTALL} ${IQ80310_INSTALL}  ${PID_INSTALL} ${NANO_INSTALL}
++install: ${CRT0_INSTALL} ${LINUX_INSTALL} ${REDBOOT_INSTALL} ${IQ80310_INSTALL}  ${PID_INSTALL} ${NANO_INSTALL}
+ 	@rootpre=`pwd`/; export rootpre; \
+ 	srcrootpre=`cd $(srcdir); pwd`/; export srcrootpre; \
+ 	for dir in .. ${SUBDIRS}; do \
+@@ -200,15 +153,6 @@
+ 	set -e; for x in ${REDBOOT_CRT0} ${REDBOOT_OBJS}; do ${INSTALL_DATA} $$x $(DESTDIR)${tooldir}/lib${MULTISUBDIR}/$$x; done
+ 	set -e; for x in ${REDBOOT_SCRIPTS}; do ${INSTALL_DATA} ${srcdir}/${objtype}$$x $(DESTDIR)${tooldir}/lib${MULTISUBDIR}/$$x; done
+ 
+-install-rdpmon:
+-	set -e; for x in ${RDPMON_CRT0} ${RDPMON_BSP}; do ${INSTALL_DATA} $$x $(DESTDIR)${tooldir}/lib${MULTISUBDIR}/$$x; done
+-	set -e; for x in ${RDPMON_SCRIPTS}; do ${INSTALL_DATA} ${srcdir}/${objtype}$$x $(DESTDIR)${tooldir}/lib${MULTISUBDIR}/$$x; done
+-
+-install-rdimon:
+-	set -e; for x in ${RDIMON_CRT0} ${RDIMON_BSP}; do ${INSTALL_DATA} $$x $(DESTDIR)${tooldir}/lib${MULTISUBDIR}/$$x; done
+-	set -e; for x in ${RDIMON_SCRIPTS}; do ${INSTALL_DATA} ${srcdir}/${objtype}$$x $(DESTDIR)${tooldir}/lib${MULTISUBDIR}/$$x; done
+-
+-
+ install-pid:
+ 	set -e; for x in ${PID_SCRIPTS}; do ${INSTALL_DATA} ${srcdir}/${objtype}$$x $(DESTDIR)${tooldir}/lib${MULTISUBDIR}/$$x; done
+ 
 diff -burN newlib-2.3.0/libgloss/configure newlib-2.3.0-ctr/libgloss/configure
 --- newlib-2.3.0/libgloss/configure	2016-01-04 11:57:31.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/configure	2016-01-09 17:51:38.445658335 -0600
++++ newlib-2.3.0-ctr/libgloss/configure	2016-01-12 09:47:51.000000000 -0600
 @@ -2589,6 +2589,8 @@
  
  fi
@@ -26,7 +159,7 @@ diff -burN newlib-2.3.0/libgloss/configure newlib-2.3.0-ctr/libgloss/configure
  ac_config_commands="$ac_config_commands depfiles"
 diff -burN newlib-2.3.0/libgloss/configure.in newlib-2.3.0-ctr/libgloss/configure.in
 --- newlib-2.3.0/libgloss/configure.in	2016-01-04 11:57:31.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/configure.in	2016-01-09 17:51:38.445658335 -0600
++++ newlib-2.3.0-ctr/libgloss/configure.in	2016-01-12 09:47:51.000000000 -0600
 @@ -2,6 +2,7 @@
  AC_PREREQ(2.59)
  AC_INIT([libgloss],[LIBGLOSS_VERSION])
@@ -43,9 +176,21 @@ diff -burN newlib-2.3.0/libgloss/configure.in newlib-2.3.0-ctr/libgloss/configur
  
  LIB_AC_PROG_CC
  AS=${AS-as}
+diff -burN newlib-2.3.0/libgloss/libnosys/warning.h newlib-2.3.0-ctr/libgloss/libnosys/warning.h
+--- newlib-2.3.0/libgloss/libnosys/warning.h	2016-01-04 11:57:31.000000000 -0600
++++ newlib-2.3.0-ctr/libgloss/libnosys/warning.h	2016-01-12 09:53:04.000000000 -0600
+@@ -1,7 +1,7 @@
+ #ifndef __WARNING_H__
+ #define __WARNING_H__
+ 
+-#ifdef HAVE_GNU_LD
++#if defined(HAVE_GNU_LD) && !defined(__clang__)
+ # ifdef HAVE_ELF
+ 
+ /* We want the .gnu.warning.SYMBOL section to be unallocated.  */
 diff -burN newlib-2.3.0/libgloss/libsysbase/abort.c newlib-2.3.0-ctr/libgloss/libsysbase/abort.c
 --- newlib-2.3.0/libgloss/libsysbase/abort.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/abort.c	2016-01-09 17:51:38.449658359 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/abort.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,8 @@
 +#include <stdlib.h>
 +#include <unistd.h>
@@ -57,7 +202,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/abort.c newlib-2.3.0-ctr/libgloss/li
 +
 diff -burN newlib-2.3.0/libgloss/libsysbase/acconfig.h newlib-2.3.0-ctr/libgloss/libsysbase/acconfig.h
 --- newlib-2.3.0/libgloss/libsysbase/acconfig.h	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/acconfig.h	2016-01-09 17:51:38.449658359 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/acconfig.h	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,29 @@
 +/* Name of package.  */
 +#undef PACKAGE
@@ -90,7 +235,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/acconfig.h newlib-2.3.0-ctr/libgloss
 +#undef __SYMBOL_PREFIX
 diff -burN newlib-2.3.0/libgloss/libsysbase/aclocal.m4 newlib-2.3.0-ctr/libgloss/libsysbase/aclocal.m4
 --- newlib-2.3.0/libgloss/libsysbase/aclocal.m4	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/aclocal.m4	2016-01-09 17:51:38.449658359 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/aclocal.m4	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,344 @@
 +# generated automatically by aclocal 1.9.5 -*- Autoconf -*-
 +
@@ -438,7 +583,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/aclocal.m4 newlib-2.3.0-ctr/libgloss
 +m4_include([../acinclude.m4])
 diff -burN newlib-2.3.0/libgloss/libsysbase/build_argv.c newlib-2.3.0-ctr/libgloss/libsysbase/build_argv.c
 --- newlib-2.3.0/libgloss/libsysbase/build_argv.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/build_argv.c	2016-01-09 17:51:38.449658359 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/build_argv.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,31 @@
 +struct __argv {
 +	int argvMagic;
@@ -473,7 +618,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/build_argv.c newlib-2.3.0-ctr/libglo
 +}
 diff -burN newlib-2.3.0/libgloss/libsysbase/chdir.c newlib-2.3.0-ctr/libgloss/libsysbase/chdir.c
 --- newlib-2.3.0/libgloss/libsysbase/chdir.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/chdir.c	2016-01-09 17:51:38.449658359 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/chdir.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,192 @@
 +#include <unistd.h>
 +#include <limits.h>
@@ -669,7 +814,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/chdir.c newlib-2.3.0-ctr/libgloss/li
 +}
 diff -burN newlib-2.3.0/libgloss/libsysbase/chmod.c newlib-2.3.0-ctr/libgloss/libsysbase/chmod.c
 --- newlib-2.3.0/libgloss/libsysbase/chmod.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/chmod.c	2016-01-09 17:51:38.449658359 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/chmod.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,28 @@
 +#include "config.h"
 +#include <_ansi.h>
@@ -701,7 +846,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/chmod.c newlib-2.3.0-ctr/libgloss/li
 +
 diff -burN newlib-2.3.0/libgloss/libsysbase/close.c newlib-2.3.0-ctr/libgloss/libsysbase/close.c
 --- newlib-2.3.0/libgloss/libsysbase/close.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/close.c	2016-01-09 17:51:38.449658359 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/close.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,49 @@
 +#include "config.h"
 +#include <_ansi.h>
@@ -754,7 +899,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/close.c newlib-2.3.0-ctr/libgloss/li
 +}
 diff -burN newlib-2.3.0/libgloss/libsysbase/config.h.in newlib-2.3.0-ctr/libgloss/libsysbase/config.h.in
 --- newlib-2.3.0/libgloss/libsysbase/config.h.in	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/config.h.in	2016-01-09 17:51:38.449658359 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/config.h.in	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,25 @@
 +/* config.h.in.  Generated automatically from configure.in by autoheader.  */
 +
@@ -783,7 +928,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/config.h.in newlib-2.3.0-ctr/libglos
 +#undef __SYMBOL_PREFIX
 diff -burN newlib-2.3.0/libgloss/libsysbase/configure newlib-2.3.0-ctr/libgloss/libsysbase/configure
 --- newlib-2.3.0/libgloss/libsysbase/configure	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/configure	2016-01-09 17:51:38.453658381 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/configure	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,4170 @@
 +#! /bin/sh
 +# Guess values for system-dependent variables and create Makefiles.
@@ -4957,7 +5102,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/configure newlib-2.3.0-ctr/libgloss/
 +
 diff -burN newlib-2.3.0/libgloss/libsysbase/configure.in newlib-2.3.0-ctr/libgloss/libsysbase/configure.in
 --- newlib-2.3.0/libgloss/libsysbase/configure.in	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/configure.in	2016-01-09 17:51:38.453658381 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/configure.in	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,210 @@
 +# Copyright (c) 1995, 1996 Cygnus Support
 +#
@@ -5171,7 +5316,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/configure.in newlib-2.3.0-ctr/libglo
 +
 diff -burN newlib-2.3.0/libgloss/libsysbase/dirent.c newlib-2.3.0-ctr/libgloss/libsysbase/dirent.c
 --- newlib-2.3.0/libgloss/libsysbase/dirent.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/dirent.c	2016-01-09 17:51:38.453658381 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/dirent.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,250 @@
 +#include <malloc.h>
 +#include <errno.h>
@@ -5425,7 +5570,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/dirent.c newlib-2.3.0-ctr/libgloss/l
 +}
 diff -burN newlib-2.3.0/libgloss/libsysbase/environ.c newlib-2.3.0-ctr/libgloss/libsysbase/environ.c
 --- newlib-2.3.0/libgloss/libsysbase/environ.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/environ.c	2016-01-09 17:51:38.453658381 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/environ.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,6 @@
 +/*
 + * Version of environ for no OS.
@@ -5435,7 +5580,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/environ.c newlib-2.3.0-ctr/libgloss/
 +char **environ = __env;
 diff -burN newlib-2.3.0/libgloss/libsysbase/execve.c newlib-2.3.0-ctr/libgloss/libsysbase/execve.c
 --- newlib-2.3.0/libgloss/libsysbase/execve.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/execve.c	2016-01-09 17:51:38.453658381 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/execve.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,31 @@
 +/*
 + * Stub version of execve.
@@ -5470,7 +5615,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/execve.c newlib-2.3.0-ctr/libgloss/l
 +
 diff -burN newlib-2.3.0/libgloss/libsysbase/_exit.c newlib-2.3.0-ctr/libgloss/libsysbase/_exit.c
 --- newlib-2.3.0/libgloss/libsysbase/_exit.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/_exit.c	2016-01-09 17:51:38.449658359 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/_exit.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,19 @@
 +/* Stub version of _exit.  */
 +
@@ -5493,7 +5638,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/_exit.c newlib-2.3.0-ctr/libgloss/li
 +}
 diff -burN newlib-2.3.0/libgloss/libsysbase/fchmod.c newlib-2.3.0-ctr/libgloss/libsysbase/fchmod.c
 --- newlib-2.3.0/libgloss/libsysbase/fchmod.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/fchmod.c	2016-01-09 17:51:38.453658381 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/fchmod.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,31 @@
 +#include "config.h"
 +#include <_ansi.h>
@@ -5528,7 +5673,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/fchmod.c newlib-2.3.0-ctr/libgloss/l
 +}
 diff -burN newlib-2.3.0/libgloss/libsysbase/flock.c newlib-2.3.0-ctr/libgloss/libsysbase/flock.c
 --- newlib-2.3.0/libgloss/libsysbase/flock.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/flock.c	2016-01-09 17:51:38.453658381 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/flock.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,21 @@
 +#include <config.h>
 +#include <_ansi.h>
@@ -5553,7 +5698,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/flock.c newlib-2.3.0-ctr/libgloss/li
 +}
 diff -burN newlib-2.3.0/libgloss/libsysbase/fork.c newlib-2.3.0-ctr/libgloss/libsysbase/fork.c
 --- newlib-2.3.0/libgloss/libsysbase/fork.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/fork.c	2016-01-09 17:51:38.453658381 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/fork.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,25 @@
 +/*
 + * Stub version of fork.
@@ -5582,7 +5727,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/fork.c newlib-2.3.0-ctr/libgloss/lib
 +}
 diff -burN newlib-2.3.0/libgloss/libsysbase/fstat.c newlib-2.3.0-ctr/libgloss/libsysbase/fstat.c
 --- newlib-2.3.0/libgloss/libsysbase/fstat.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/fstat.c	2016-01-09 17:51:38.453658381 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/fstat.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,45 @@
 +#include "config.h"
 +#include <_ansi.h>
@@ -5631,7 +5776,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/fstat.c newlib-2.3.0-ctr/libgloss/li
 +}
 diff -burN newlib-2.3.0/libgloss/libsysbase/fsync.c newlib-2.3.0-ctr/libgloss/libsysbase/fsync.c
 --- newlib-2.3.0/libgloss/libsysbase/fsync.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/fsync.c	2016-01-09 17:51:38.453658381 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/fsync.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,35 @@
 +#include "config.h"
 +#include <_ansi.h>
@@ -5670,7 +5815,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/fsync.c newlib-2.3.0-ctr/libgloss/li
 +}
 diff -burN newlib-2.3.0/libgloss/libsysbase/ftruncate.c newlib-2.3.0-ctr/libgloss/libsysbase/ftruncate.c
 --- newlib-2.3.0/libgloss/libsysbase/ftruncate.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/ftruncate.c	2016-01-09 17:51:38.453658381 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/ftruncate.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,36 @@
 +#include "config.h"
 +#include <_ansi.h>
@@ -5710,7 +5855,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/ftruncate.c newlib-2.3.0-ctr/libglos
 +}
 diff -burN newlib-2.3.0/libgloss/libsysbase/getpid.c newlib-2.3.0-ctr/libgloss/libsysbase/getpid.c
 --- newlib-2.3.0/libgloss/libsysbase/getpid.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/getpid.c	2016-01-09 17:51:38.453658381 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/getpid.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,21 @@
 +#include "config.h"
 +#include <_ansi.h>
@@ -5735,7 +5880,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/getpid.c newlib-2.3.0-ctr/libgloss/l
 +
 diff -burN newlib-2.3.0/libgloss/libsysbase/getreent.c newlib-2.3.0-ctr/libgloss/libsysbase/getreent.c
 --- newlib-2.3.0/libgloss/libsysbase/getreent.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/getreent.c	2016-01-09 17:51:38.453658381 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/getreent.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,22 @@
 +
 +/* default reentrant pointer when multithread enabled */
@@ -5761,7 +5906,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/getreent.c newlib-2.3.0-ctr/libgloss
 +
 diff -burN newlib-2.3.0/libgloss/libsysbase/gettod.c newlib-2.3.0-ctr/libgloss/libsysbase/gettod.c
 --- newlib-2.3.0/libgloss/libsysbase/gettod.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/gettod.c	2016-01-09 17:51:38.453658381 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/gettod.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,35 @@
 +#include "config.h"
 +#include <_ansi.h>
@@ -5800,7 +5945,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/gettod.c newlib-2.3.0-ctr/libgloss/l
 +
 diff -burN newlib-2.3.0/libgloss/libsysbase/handle_manager.c newlib-2.3.0-ctr/libgloss/libsysbase/handle_manager.c
 --- newlib-2.3.0/libgloss/libsysbase/handle_manager.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/handle_manager.c	2016-01-09 17:51:38.453658381 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/handle_manager.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,158 @@
 +#include <stdlib.h>
 +#include <stdio.h>
@@ -5962,7 +6107,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/handle_manager.c newlib-2.3.0-ctr/li
 +}
 diff -burN newlib-2.3.0/libgloss/libsysbase/iosupport.c newlib-2.3.0-ctr/libgloss/libsysbase/iosupport.c
 --- newlib-2.3.0/libgloss/libsysbase/iosupport.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/iosupport.c	2016-01-09 17:51:38.453658381 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/iosupport.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,126 @@
 +#include <stdlib.h>
 +#include <string.h>
@@ -6092,7 +6237,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/iosupport.c newlib-2.3.0-ctr/libglos
 +
 diff -burN newlib-2.3.0/libgloss/libsysbase/isatty.c newlib-2.3.0-ctr/libgloss/libsysbase/isatty.c
 --- newlib-2.3.0/libgloss/libsysbase/isatty.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/isatty.c	2016-01-09 17:51:38.457658405 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/isatty.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,20 @@
 +#include "config.h"
 +#include <_ansi.h>
@@ -6116,7 +6261,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/isatty.c newlib-2.3.0-ctr/libgloss/l
 +}
 diff -burN newlib-2.3.0/libgloss/libsysbase/kill.c newlib-2.3.0-ctr/libgloss/libsysbase/kill.c
 --- newlib-2.3.0/libgloss/libsysbase/kill.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/kill.c	2016-01-09 17:51:38.457658405 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/kill.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,23 @@
 +/*
 + * Stub version of kill.
@@ -6143,7 +6288,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/kill.c newlib-2.3.0-ctr/libgloss/lib
 +}
 diff -burN newlib-2.3.0/libgloss/libsysbase/link.c newlib-2.3.0-ctr/libgloss/libsysbase/link.c
 --- newlib-2.3.0/libgloss/libsysbase/link.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/link.c	2016-01-09 17:51:38.457658405 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/link.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,37 @@
 +#include "config.h"
 +#include <_ansi.h>
@@ -6184,7 +6329,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/link.c newlib-2.3.0-ctr/libgloss/lib
 +
 diff -burN newlib-2.3.0/libgloss/libsysbase/lseek.c newlib-2.3.0-ctr/libgloss/libsysbase/lseek.c
 --- newlib-2.3.0/libgloss/libsysbase/lseek.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/lseek.c	2016-01-09 17:51:38.457658405 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/lseek.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,53 @@
 +#include "config.h"
 +#include <_ansi.h>
@@ -6241,7 +6386,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/lseek.c newlib-2.3.0-ctr/libgloss/li
 +}
 diff -burN newlib-2.3.0/libgloss/libsysbase/Makefile.in newlib-2.3.0-ctr/libgloss/libsysbase/Makefile.in
 --- newlib-2.3.0/libgloss/libsysbase/Makefile.in	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/Makefile.in	2016-01-09 17:51:38.445658335 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/Makefile.in	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,148 @@
 +# Copyright (c) 1998 Cygnus Support
 +#
@@ -6393,13 +6538,13 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/Makefile.in newlib-2.3.0-ctr/libglos
 +	$(SHELL) config.status --recheck
 diff -burN newlib-2.3.0/libgloss/libsysbase/malloc_vars.c newlib-2.3.0-ctr/libgloss/libsysbase/malloc_vars.c
 --- newlib-2.3.0/libgloss/libsysbase/malloc_vars.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/malloc_vars.c	2016-01-09 17:51:38.457658405 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/malloc_vars.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,2 @@
 +char *fake_heap_end = (char*)0;
 +char *fake_heap_start = (char*)0;
 diff -burN newlib-2.3.0/libgloss/libsysbase/mkdir.c newlib-2.3.0-ctr/libgloss/libsysbase/mkdir.c
 --- newlib-2.3.0/libgloss/libsysbase/mkdir.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/mkdir.c	2016-01-09 17:51:38.457658405 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/mkdir.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,18 @@
 +#include <reent.h>
 +#include <sys/iosupport.h>
@@ -6421,7 +6566,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/mkdir.c newlib-2.3.0-ctr/libgloss/li
 +}
 diff -burN newlib-2.3.0/libgloss/libsysbase/open.c newlib-2.3.0-ctr/libgloss/libsysbase/open.c
 --- newlib-2.3.0/libgloss/libsysbase/open.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/open.c	2016-01-09 17:51:38.457658405 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/open.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,60 @@
 +#include "config.h"
 +#include <_ansi.h>
@@ -6485,7 +6630,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/open.c newlib-2.3.0-ctr/libgloss/lib
 +}
 diff -burN newlib-2.3.0/libgloss/libsysbase/pthread.c newlib-2.3.0-ctr/libgloss/libsysbase/pthread.c
 --- newlib-2.3.0/libgloss/libsysbase/pthread.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/pthread.c	2016-01-09 17:51:38.457658405 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/pthread.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,144 @@
 +/*
 + * Stub versions of most POSIX Thread functions.
@@ -6633,7 +6778,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/pthread.c newlib-2.3.0-ctr/libgloss/
 +
 diff -burN newlib-2.3.0/libgloss/libsysbase/read.c newlib-2.3.0-ctr/libgloss/libsysbase/read.c
 --- newlib-2.3.0/libgloss/libsysbase/read.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/read.c	2016-01-09 17:51:38.457658405 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/read.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,47 @@
 +#include "config.h"
 +#include <_ansi.h>
@@ -6684,7 +6829,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/read.c newlib-2.3.0-ctr/libgloss/lib
 +
 diff -burN newlib-2.3.0/libgloss/libsysbase/rename.c newlib-2.3.0-ctr/libgloss/libsysbase/rename.c
 --- newlib-2.3.0/libgloss/libsysbase/rename.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/rename.c	2016-01-09 17:51:38.457658405 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/rename.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,40 @@
 +#include "config.h"
 +#include <reent.h>
@@ -6728,7 +6873,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/rename.c newlib-2.3.0-ctr/libgloss/l
 +}
 diff -burN newlib-2.3.0/libgloss/libsysbase/rmdir.c newlib-2.3.0-ctr/libgloss/libsysbase/rmdir.c
 --- newlib-2.3.0/libgloss/libsysbase/rmdir.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/rmdir.c	2016-01-09 17:51:38.457658405 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/rmdir.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,24 @@
 +#include "config.h"
 +#include <_ansi.h>
@@ -6756,7 +6901,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/rmdir.c newlib-2.3.0-ctr/libgloss/li
 +}
 diff -burN newlib-2.3.0/libgloss/libsysbase/sbrk.c newlib-2.3.0-ctr/libgloss/libsysbase/sbrk.c
 --- newlib-2.3.0/libgloss/libsysbase/sbrk.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/sbrk.c	2016-01-09 17:51:38.457658405 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/sbrk.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,60 @@
 +#include "config.h"
 +#include <_ansi.h>
@@ -6820,7 +6965,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/sbrk.c newlib-2.3.0-ctr/libgloss/lib
 +}
 diff -burN newlib-2.3.0/libgloss/libsysbase/socket.c newlib-2.3.0-ctr/libgloss/libsysbase/socket.c
 --- newlib-2.3.0/libgloss/libsysbase/socket.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/socket.c	2016-01-09 17:51:38.457658405 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/socket.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,154 @@
 +#include <stdlib.h>
 +#include <string.h>
@@ -6978,7 +7123,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/socket.c newlib-2.3.0-ctr/libgloss/l
 +
 diff -burN newlib-2.3.0/libgloss/libsysbase/stat.c newlib-2.3.0-ctr/libgloss/libsysbase/stat.c
 --- newlib-2.3.0/libgloss/libsysbase/stat.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/stat.c	2016-01-09 17:51:38.457658405 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/stat.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,43 @@
 +#include "config.h"
 +#include <_ansi.h>
@@ -7025,7 +7170,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/stat.c newlib-2.3.0-ctr/libgloss/lib
 +
 diff -burN newlib-2.3.0/libgloss/libsysbase/statvfs.c newlib-2.3.0-ctr/libgloss/libsysbase/statvfs.c
 --- newlib-2.3.0/libgloss/libsysbase/statvfs.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/statvfs.c	2016-01-09 17:51:38.457658405 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/statvfs.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,23 @@
 +#include <reent.h>
 +#include <sys/iosupport.h>
@@ -7052,7 +7197,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/statvfs.c newlib-2.3.0-ctr/libgloss/
 +}
 diff -burN newlib-2.3.0/libgloss/libsysbase/syscall_support.c newlib-2.3.0-ctr/libgloss/libsysbase/syscall_support.c
 --- newlib-2.3.0/libgloss/libsysbase/syscall_support.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/syscall_support.c	2016-01-09 17:51:38.457658405 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/syscall_support.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,99 @@
 +#include <sys/iosupport.h>
 +
@@ -7155,7 +7300,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/syscall_support.c newlib-2.3.0-ctr/l
 +
 diff -burN newlib-2.3.0/libgloss/libsysbase/times.c newlib-2.3.0-ctr/libgloss/libsysbase/times.c
 --- newlib-2.3.0/libgloss/libsysbase/times.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/times.c	2016-01-09 17:51:38.457658405 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/times.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,21 @@
 +#include "config.h"
 +#include <_ansi.h>
@@ -7180,7 +7325,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/times.c newlib-2.3.0-ctr/libgloss/li
 +
 diff -burN newlib-2.3.0/libgloss/libsysbase/truncate.c newlib-2.3.0-ctr/libgloss/libsysbase/truncate.c
 --- newlib-2.3.0/libgloss/libsysbase/truncate.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/truncate.c	2016-01-09 17:51:38.457658405 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/truncate.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,57 @@
 +#include "config.h"
 +#include <_ansi.h>
@@ -7241,7 +7386,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/truncate.c newlib-2.3.0-ctr/libgloss
 +}
 diff -burN newlib-2.3.0/libgloss/libsysbase/unlink.c newlib-2.3.0-ctr/libgloss/libsysbase/unlink.c
 --- newlib-2.3.0/libgloss/libsysbase/unlink.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/unlink.c	2016-01-09 17:51:38.457658405 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/unlink.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,36 @@
 +#include "config.h"
 +#include <_ansi.h>
@@ -7281,7 +7426,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/unlink.c newlib-2.3.0-ctr/libgloss/l
 +
 diff -burN newlib-2.3.0/libgloss/libsysbase/wait.c newlib-2.3.0-ctr/libgloss/libsysbase/wait.c
 --- newlib-2.3.0/libgloss/libsysbase/wait.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/wait.c	2016-01-09 17:51:38.457658405 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/wait.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,28 @@
 +/*
 + * Stub version of wait.
@@ -7313,7 +7458,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/wait.c newlib-2.3.0-ctr/libgloss/lib
 +
 diff -burN newlib-2.3.0/libgloss/libsysbase/warning.h newlib-2.3.0-ctr/libgloss/libsysbase/warning.h
 --- newlib-2.3.0/libgloss/libsysbase/warning.h	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/warning.h	2016-01-09 17:51:38.461658428 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/warning.h	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,43 @@
 +#ifndef __WARNING_H__
 +#define __WARNING_H__
@@ -7360,7 +7505,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/warning.h newlib-2.3.0-ctr/libgloss/
 +#endif /* __WARNING_H__ */
 diff -burN newlib-2.3.0/libgloss/libsysbase/write.c newlib-2.3.0-ctr/libgloss/libsysbase/write.c
 --- newlib-2.3.0/libgloss/libsysbase/write.c	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/libgloss/libsysbase/write.c	2016-01-09 17:51:38.461658428 -0600
++++ newlib-2.3.0-ctr/libgloss/libsysbase/write.c	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,46 @@
 +#include "config.h"
 +#include <_ansi.h>
@@ -7410,7 +7555,7 @@ diff -burN newlib-2.3.0/libgloss/libsysbase/write.c newlib-2.3.0-ctr/libgloss/li
 +}
 diff -burN newlib-2.3.0/newlib/configure.host newlib-2.3.0-ctr/newlib/configure.host
 --- newlib-2.3.0/newlib/configure.host	2016-01-04 11:57:31.000000000 -0600
-+++ newlib-2.3.0-ctr/newlib/configure.host	2016-01-09 17:51:38.461658428 -0600
++++ newlib-2.3.0-ctr/newlib/configure.host	2016-01-12 09:47:51.000000000 -0600
 @@ -615,6 +615,14 @@
  	syscall_dir=syscalls
  	default_newlib_io_long_long="yes"
@@ -7428,7 +7573,7 @@ diff -burN newlib-2.3.0/newlib/configure.host newlib-2.3.0-ctr/newlib/configure.
  	;;
 diff -burN newlib-2.3.0/newlib/libc/include/arpa/inet.h newlib-2.3.0-ctr/newlib/libc/include/arpa/inet.h
 --- newlib-2.3.0/newlib/libc/include/arpa/inet.h	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/newlib/libc/include/arpa/inet.h	2016-01-09 17:51:38.461658428 -0600
++++ newlib-2.3.0-ctr/newlib/libc/include/arpa/inet.h	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,22 @@
 +/* arpa/inet.h - Functions for converting IP addresses between strings and numbers */
 +
@@ -7454,7 +7599,7 @@ diff -burN newlib-2.3.0/newlib/libc/include/arpa/inet.h newlib-2.3.0-ctr/newlib/
 +
 diff -burN newlib-2.3.0/newlib/libc/include/netdb.h newlib-2.3.0-ctr/newlib/libc/include/netdb.h
 --- newlib-2.3.0/newlib/libc/include/netdb.h	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/newlib/libc/include/netdb.h	2016-01-09 17:51:38.461658428 -0600
++++ newlib-2.3.0-ctr/newlib/libc/include/netdb.h	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,35 @@
 +/* arpa/inet.h - gethostbyname and gethostbyaddr */
 +#ifndef __NETDB_H__
@@ -7493,7 +7638,7 @@ diff -burN newlib-2.3.0/newlib/libc/include/netdb.h newlib-2.3.0-ctr/newlib/libc
 +
 diff -burN newlib-2.3.0/newlib/libc/include/netinet/in.h newlib-2.3.0-ctr/newlib/libc/include/netinet/in.h
 --- newlib-2.3.0/newlib/libc/include/netinet/in.h	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/newlib/libc/include/netinet/in.h	2016-01-09 17:51:38.461658428 -0600
++++ newlib-2.3.0-ctr/newlib/libc/include/netinet/in.h	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,273 @@
 +/*	$NetBSD: in.h,v 1.71 2005/08/05 09:21:25 elad Exp $	*/
 +
@@ -7770,7 +7915,7 @@ diff -burN newlib-2.3.0/newlib/libc/include/netinet/in.h newlib-2.3.0-ctr/newlib
 +#endif /* !_NETINET_IN_H_ */
 diff -burN newlib-2.3.0/newlib/libc/include/netinet/tcp.h newlib-2.3.0-ctr/newlib/libc/include/netinet/tcp.h
 --- newlib-2.3.0/newlib/libc/include/netinet/tcp.h	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/newlib/libc/include/netinet/tcp.h	2016-01-09 17:51:38.461658428 -0600
++++ newlib-2.3.0-ctr/newlib/libc/include/netinet/tcp.h	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,12 @@
 +#ifndef __NETINET_TCP_H__
 +#define __NETINET_TCP_H__
@@ -7786,7 +7931,7 @@ diff -burN newlib-2.3.0/newlib/libc/include/netinet/tcp.h newlib-2.3.0-ctr/newli
 +#endif
 diff -burN newlib-2.3.0/newlib/libc/include/sys/config.h newlib-2.3.0-ctr/newlib/libc/include/sys/config.h
 --- newlib-2.3.0/newlib/libc/include/sys/config.h	2016-01-04 11:57:31.000000000 -0600
-+++ newlib-2.3.0-ctr/newlib/libc/include/sys/config.h	2016-01-09 17:51:38.461658428 -0600
++++ newlib-2.3.0-ctr/newlib/libc/include/sys/config.h	2016-01-12 09:47:51.000000000 -0600
 @@ -4,6 +4,9 @@
  #include <machine/ieeefp.h>  /* floating point macros */
  #include <sys/features.h>	/* POSIX defs */
@@ -7799,7 +7944,7 @@ diff -burN newlib-2.3.0/newlib/libc/include/sys/config.h newlib-2.3.0-ctr/newlib
  #endif
 diff -burN newlib-2.3.0/newlib/libc/include/sys/dirent.h newlib-2.3.0-ctr/newlib/libc/include/sys/dirent.h
 --- newlib-2.3.0/newlib/libc/include/sys/dirent.h	2016-01-04 11:57:31.000000000 -0600
-+++ newlib-2.3.0-ctr/newlib/libc/include/sys/dirent.h	2016-01-09 17:51:38.461658428 -0600
++++ newlib-2.3.0-ctr/newlib/libc/include/sys/dirent.h	2016-01-12 09:47:51.000000000 -0600
 @@ -1,13 +1,52 @@
  /* <dirent.h> includes <sys/dirent.h>, which is this file.  On a
     system which supports <dirent.h>, this file is overridden by
@@ -7858,7 +8003,7 @@ diff -burN newlib-2.3.0/newlib/libc/include/sys/dirent.h newlib-2.3.0-ctr/newlib
 +#endif // _dirent_h_
 diff -burN newlib-2.3.0/newlib/libc/include/sys/features.h newlib-2.3.0-ctr/newlib/libc/include/sys/features.h
 --- newlib-2.3.0/newlib/libc/include/sys/features.h	2016-01-04 11:57:31.000000000 -0600
-+++ newlib-2.3.0-ctr/newlib/libc/include/sys/features.h	2016-01-09 17:51:38.461658428 -0600
++++ newlib-2.3.0-ctr/newlib/libc/include/sys/features.h	2016-01-12 09:47:51.000000000 -0600
 @@ -102,6 +102,15 @@
  #define _POSIX_THREAD_PRIORITY_SCHEDULING	1
  #endif
@@ -7877,7 +8022,7 @@ diff -burN newlib-2.3.0/newlib/libc/include/sys/features.h newlib-2.3.0-ctr/newl
  # define _POSIX_JOB_CONTROL     1
 diff -burN newlib-2.3.0/newlib/libc/include/sys/iosupport.h newlib-2.3.0-ctr/newlib/libc/include/sys/iosupport.h
 --- newlib-2.3.0/newlib/libc/include/sys/iosupport.h	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/newlib/libc/include/sys/iosupport.h	2016-01-09 17:51:38.461658428 -0600
++++ newlib-2.3.0-ctr/newlib/libc/include/sys/iosupport.h	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,107 @@
 +//---------------------------------------------------------------------------------
 +#ifndef __iosupp_h__
@@ -7988,7 +8133,7 @@ diff -burN newlib-2.3.0/newlib/libc/include/sys/iosupport.h newlib-2.3.0-ctr/new
 +//---------------------------------------------------------------------------------
 diff -burN newlib-2.3.0/newlib/libc/include/sys/socket.h newlib-2.3.0-ctr/newlib/libc/include/sys/socket.h
 --- newlib-2.3.0/newlib/libc/include/sys/socket.h	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/newlib/libc/include/sys/socket.h	2016-01-09 17:51:38.461658428 -0600
++++ newlib-2.3.0-ctr/newlib/libc/include/sys/socket.h	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,178 @@
 +/*	$NetBSD: socket.h,v 1.24 2005/05/22 12:44:24 kleink Exp $	*/
 +
@@ -8170,7 +8315,7 @@ diff -burN newlib-2.3.0/newlib/libc/include/sys/socket.h newlib-2.3.0-ctr/newlib
 +#endif /* !_SYS_SOCKET_H_ */
 diff -burN newlib-2.3.0/newlib/libc/include/sys/statvfs.h newlib-2.3.0-ctr/newlib/libc/include/sys/statvfs.h
 --- newlib-2.3.0/newlib/libc/include/sys/statvfs.h	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/newlib/libc/include/sys/statvfs.h	2016-01-09 17:51:38.461658428 -0600
++++ newlib-2.3.0-ctr/newlib/libc/include/sys/statvfs.h	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,35 @@
 +#ifndef _SYS_STATVFS_H
 +#define _SYS_STATVFS_H
@@ -8210,7 +8355,7 @@ diff -burN newlib-2.3.0/newlib/libc/include/sys/statvfs.h newlib-2.3.0-ctr/newli
 \ No newline at end of file
 diff -burN newlib-2.3.0/newlib/libc/include/sys/syslimits.h newlib-2.3.0-ctr/newlib/libc/include/sys/syslimits.h
 --- newlib-2.3.0/newlib/libc/include/sys/syslimits.h	2016-01-04 11:57:31.000000000 -0600
-+++ newlib-2.3.0-ctr/newlib/libc/include/sys/syslimits.h	2016-01-09 17:51:38.465658451 -0600
++++ newlib-2.3.0-ctr/newlib/libc/include/sys/syslimits.h	2016-01-12 09:47:51.000000000 -0600
 @@ -44,12 +44,12 @@
  #define	LINK_MAX		32767	/* max file link count */
  #define	MAX_CANON		  255	/* max bytes in term canon input line */
@@ -8228,7 +8373,7 @@ diff -burN newlib-2.3.0/newlib/libc/include/sys/syslimits.h newlib-2.3.0-ctr/new
  
 diff -burN newlib-2.3.0/newlib/libc/include/sys/_types.h newlib-2.3.0-ctr/newlib/libc/include/sys/_types.h
 --- newlib-2.3.0/newlib/libc/include/sys/_types.h	2016-01-04 11:57:31.000000000 -0600
-+++ newlib-2.3.0-ctr/newlib/libc/include/sys/_types.h	2016-01-09 17:51:38.461658428 -0600
++++ newlib-2.3.0-ctr/newlib/libc/include/sys/_types.h	2016-01-12 09:47:51.000000000 -0600
 @@ -17,7 +17,7 @@
  #endif
  
@@ -8240,7 +8385,7 @@ diff -burN newlib-2.3.0/newlib/libc/include/sys/_types.h newlib-2.3.0-ctr/newlib
  #ifndef __uid_t_defined
 diff -burN newlib-2.3.0/newlib/libc/include/sys/types.h newlib-2.3.0-ctr/newlib/libc/include/sys/types.h
 --- newlib-2.3.0/newlib/libc/include/sys/types.h	2016-01-04 11:57:31.000000000 -0600
-+++ newlib-2.3.0-ctr/newlib/libc/include/sys/types.h	2016-01-09 17:51:38.465658451 -0600
++++ newlib-2.3.0-ctr/newlib/libc/include/sys/types.h	2016-01-12 09:47:51.000000000 -0600
 @@ -139,7 +139,7 @@
      defined(__sparc__) || defined(__SPU__)
  typedef	unsigned long	ino_t;
@@ -8262,7 +8407,7 @@ diff -burN newlib-2.3.0/newlib/libc/include/sys/types.h newlib-2.3.0-ctr/newlib/
  
 diff -burN newlib-2.3.0/newlib/libc/include/sys/unistd.h newlib-2.3.0-ctr/newlib/libc/include/sys/unistd.h
 --- newlib-2.3.0/newlib/libc/include/sys/unistd.h	2016-01-04 11:57:31.000000000 -0600
-+++ newlib-2.3.0-ctr/newlib/libc/include/sys/unistd.h	2016-01-09 17:51:38.465658451 -0600
++++ newlib-2.3.0-ctr/newlib/libc/include/sys/unistd.h	2016-01-12 09:47:51.000000000 -0600
 @@ -89,9 +89,7 @@
  gid_t   _EXFUN(getgid, (void ));
  #endif
@@ -8288,7 +8433,7 @@ diff -burN newlib-2.3.0/newlib/libc/include/sys/unistd.h newlib-2.3.0-ctr/newlib
  int	_EXFUN(getdtablesize, (void));
 diff -burN newlib-2.3.0/newlib/libc/locale/locale.c newlib-2.3.0-ctr/newlib/libc/locale/locale.c
 --- newlib-2.3.0/newlib/libc/locale/locale.c	2016-01-04 11:57:31.000000000 -0600
-+++ newlib-2.3.0-ctr/newlib/libc/locale/locale.c	2016-01-09 17:51:38.465658451 -0600
++++ newlib-2.3.0-ctr/newlib/libc/locale/locale.c	2016-01-12 09:47:51.000000000 -0600
 @@ -188,7 +188,12 @@
  #define _LC_LAST      7
  #define ENCODING_LEN 31
@@ -8321,9 +8466,109 @@ diff -burN newlib-2.3.0/newlib/libc/locale/locale.c newlib-2.3.0-ctr/newlib/libc
  static char lc_ctype_charset[ENCODING_LEN + 1] = "UTF-8";
  #else
  static char lc_ctype_charset[ENCODING_LEN + 1] = "ASCII";
+diff -burN newlib-2.3.0/newlib/libc/machine/arm/aeabi_memmove-arm.S newlib-2.3.0-ctr/newlib/libc/machine/arm/aeabi_memmove-arm.S
+--- newlib-2.3.0/newlib/libc/machine/arm/aeabi_memmove-arm.S	2016-01-04 11:57:31.000000000 -0600
++++ newlib-2.3.0-ctr/newlib/libc/machine/arm/aeabi_memmove-arm.S	2016-01-12 09:47:51.000000000 -0600
+@@ -26,6 +26,8 @@
+  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  */
+ 
++#ifndef __clang__
++
+ 	.arm
+ 	.syntax divided
+ 	.global __aeabi_memmove
+@@ -62,3 +64,5 @@
+ 4:
+ 	bx	lr
+ 	.size __aeabi_memmove, . - __aeabi_memmove
++
++#endif
+diff -burN newlib-2.3.0/newlib/libc/machine/arm/aeabi_memset-arm.S newlib-2.3.0-ctr/newlib/libc/machine/arm/aeabi_memset-arm.S
+--- newlib-2.3.0/newlib/libc/machine/arm/aeabi_memset-arm.S	2016-01-04 11:57:31.000000000 -0600
++++ newlib-2.3.0-ctr/newlib/libc/machine/arm/aeabi_memset-arm.S	2016-01-12 09:47:51.000000000 -0600
+@@ -26,6 +26,8 @@
+  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  */
+ 
++#ifndef __clang__
++
+ 	.arm
+ 	.syntax divided
+ 	.global __aeabi_memset
+@@ -105,3 +107,5 @@
+ 	mov	r3, r0
+ 	b	3b
+ 	.size __aeabi_memset, . - __aeabi_memset
++
++#endif
+diff -burN newlib-2.3.0/newlib/libc/machine/arm/setjmp.S newlib-2.3.0-ctr/newlib/libc/machine/arm/setjmp.S
+--- newlib-2.3.0/newlib/libc/machine/arm/setjmp.S	2016-01-04 11:57:31.000000000 -0600
++++ newlib-2.3.0-ctr/newlib/libc/machine/arm/setjmp.S	2016-01-12 09:47:51.000000000 -0600
+@@ -3,7 +3,7 @@
+    Nick Clifton, Cygnus Solutions, 13 June 1997.  */
+ 
+ /* ANSI concatenation macros.  */
+-#define CONCAT(a, b)  CONCAT2(a, b)
++#define CONCAT(a, b)  CONCAT2(a,b)
+ #define CONCAT2(a, b) a##b
+ 
+ #ifndef __USER_LABEL_PREFIX__
+diff -burN newlib-2.3.0/newlib/libc/machine/arm/strcpy.c newlib-2.3.0-ctr/newlib/libc/machine/arm/strcpy.c
+--- newlib-2.3.0/newlib/libc/machine/arm/strcpy.c	2016-01-04 11:57:31.000000000 -0600
++++ newlib-2.3.0-ctr/newlib/libc/machine/arm/strcpy.c	2016-01-12 09:47:51.000000000 -0600
+@@ -26,6 +26,14 @@
+  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  */
+ 
++#ifdef __clang__
++char*
++strcpy (char* dst, const char* src)
++{
++  return __builtin_strcpy(dst, src);
++}
++#else
++
+ #include "arm_asm.h"
+ #include <_ansi.h>
+ #include <string.h>
+@@ -167,3 +175,5 @@
+ #endif
+        );
+ }
++
++#endif
+diff -burN newlib-2.3.0/newlib/libc/machine/arm/strlen-stub.c newlib-2.3.0-ctr/newlib/libc/machine/arm/strlen-stub.c
+--- newlib-2.3.0/newlib/libc/machine/arm/strlen-stub.c	2016-01-04 11:57:31.000000000 -0600
++++ newlib-2.3.0-ctr/newlib/libc/machine/arm/strlen-stub.c	2016-01-12 09:47:51.000000000 -0600
+@@ -26,6 +26,18 @@
+  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  */
+ 
++#ifdef __clang__
++
++#include <string.h>
++
++size_t
++strlen (const char* str)
++{
++  return __builtin_strlen(str);
++}
++
++#else
++
+ #include "arm_asm.h"
+ #include <_ansi.h>
+ #include <string.h>
+@@ -167,3 +179,5 @@
+ }
+ #endif
+ #endif
++
++#endif
 diff -burN newlib-2.3.0/newlib/libc/machine/arm/sys/stdio.h newlib-2.3.0-ctr/newlib/libc/machine/arm/sys/stdio.h
 --- newlib-2.3.0/newlib/libc/machine/arm/sys/stdio.h	1969-12-31 18:00:00.000000000 -0600
-+++ newlib-2.3.0-ctr/newlib/libc/machine/arm/sys/stdio.h	2016-01-09 17:51:38.465658451 -0600
++++ newlib-2.3.0-ctr/newlib/libc/machine/arm/sys/stdio.h	2016-01-12 09:47:51.000000000 -0600
 @@ -0,0 +1,27 @@
 +#ifndef _NEWLIB_STDIO_H
 +#define _NEWLIB_STDIO_H
@@ -8354,7 +8599,7 @@ diff -burN newlib-2.3.0/newlib/libc/machine/arm/sys/stdio.h newlib-2.3.0-ctr/new
 +#endif /* _NEWLIB_STDIO_H */
 diff -burN newlib-2.3.0/newlib/libc/reent/getreent.c newlib-2.3.0-ctr/newlib/libc/reent/getreent.c
 --- newlib-2.3.0/newlib/libc/reent/getreent.c	2016-01-04 11:57:31.000000000 -0600
-+++ newlib-2.3.0-ctr/newlib/libc/reent/getreent.c	2016-01-09 17:51:38.465658451 -0600
++++ newlib-2.3.0-ctr/newlib/libc/reent/getreent.c	2016-01-12 09:47:51.000000000 -0600
 @@ -1,3 +1,4 @@
 +#if 0
  /* default reentrant pointer when multithread enabled */
@@ -8368,7 +8613,7 @@ diff -burN newlib-2.3.0/newlib/libc/reent/getreent.c newlib-2.3.0-ctr/newlib/lib
 +#endif
 diff -burN newlib-2.3.0/newlib/libc/reent/gettimeofdayr.c newlib-2.3.0-ctr/newlib/libc/reent/gettimeofdayr.c
 --- newlib-2.3.0/newlib/libc/reent/gettimeofdayr.c	2016-01-04 11:57:31.000000000 -0600
-+++ newlib-2.3.0-ctr/newlib/libc/reent/gettimeofdayr.c	2016-01-09 17:51:38.465658451 -0600
++++ newlib-2.3.0-ctr/newlib/libc/reent/gettimeofdayr.c	2016-01-12 09:47:51.000000000 -0600
 @@ -59,7 +59,7 @@
  	Check libc.a to see if its available on yours.
  */
@@ -8387,7 +8632,7 @@ diff -burN newlib-2.3.0/newlib/libc/reent/gettimeofdayr.c newlib-2.3.0-ctr/newli
  #endif /* ! defined (REENTRANT_SYSCALLS_PROVIDED) */
 diff -burN newlib-2.3.0/newlib/libc/stdio/fread.c newlib-2.3.0-ctr/newlib/libc/stdio/fread.c
 --- newlib-2.3.0/newlib/libc/stdio/fread.c	2016-01-04 11:57:31.000000000 -0600
-+++ newlib-2.3.0-ctr/newlib/libc/stdio/fread.c	2016-01-09 17:51:38.465658451 -0600
++++ newlib-2.3.0-ctr/newlib/libc/stdio/fread.c	2016-01-12 09:47:51.000000000 -0600
 @@ -259,7 +259,32 @@
  	  /* fp->_r = 0 ... done in __srefill */
  	  p += r;
@@ -8424,7 +8669,7 @@ diff -burN newlib-2.3.0/newlib/libc/stdio/fread.c newlib-2.3.0-ctr/newlib/libc/s
  #ifdef __SCLE
 diff -burN newlib-2.3.0/newlib/libc/stdlib/mbtowc_r.c newlib-2.3.0-ctr/newlib/libc/stdlib/mbtowc_r.c
 --- newlib-2.3.0/newlib/libc/stdlib/mbtowc_r.c	2016-01-04 11:57:31.000000000 -0600
-+++ newlib-2.3.0-ctr/newlib/libc/stdlib/mbtowc_r.c	2016-01-09 17:51:38.465658451 -0600
++++ newlib-2.3.0-ctr/newlib/libc/stdlib/mbtowc_r.c	2016-01-12 09:47:51.000000000 -0600
 @@ -9,7 +9,7 @@
  
  int (*__mbtowc) (struct _reent *, wchar_t *, const char *, size_t,
@@ -8436,7 +8681,7 @@ diff -burN newlib-2.3.0/newlib/libc/stdlib/mbtowc_r.c newlib-2.3.0-ctr/newlib/li
  #else
 diff -burN newlib-2.3.0/newlib/libc/stdlib/wctomb_r.c newlib-2.3.0-ctr/newlib/libc/stdlib/wctomb_r.c
 --- newlib-2.3.0/newlib/libc/stdlib/wctomb_r.c	2016-01-04 11:57:31.000000000 -0600
-+++ newlib-2.3.0-ctr/newlib/libc/stdlib/wctomb_r.c	2016-01-09 17:51:38.465658451 -0600
++++ newlib-2.3.0-ctr/newlib/libc/stdlib/wctomb_r.c	2016-01-12 09:47:51.000000000 -0600
 @@ -8,7 +8,7 @@
  
  int (*__wctomb) (struct _reent *, char *, wchar_t, const char *charset,
