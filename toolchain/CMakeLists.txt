@@ -204,7 +204,7 @@ ExternalProject_Add(newlib
         "CC_FOR_TARGET=<INSTALL_DIR>/bin/clang"
         "GCC_FOR_TARGET=<INSTALL_DIR>/bin/clang"
         "CXX_FOR_TARGET=<INSTALL_DIR>/bin/clang++"
-        "CFLAGS_FOR_TARGET=-isystem <INSTALL_DIR>/arm-none-eabi/include"
+        "CFLAGS_FOR_TARGET=-ffreestanding -isystem <INSTALL_DIR>/arm-none-eabi/include"
         ${AUTOCONF_ARGS}
     BUILD_COMMAND ${MAKE_EXECUTABLE}
         PATH=$ENV{PATH}:<INSTALL_DIR>/bin
